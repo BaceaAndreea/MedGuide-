@@ -8,15 +8,19 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.Date;
-import java.util.List;
+
 
 public interface AppointmentDao extends JpaRepository<Appointment, Long> {
 
-    Page<Appointment> findAppointmentsByAppointmentDateContains(Date appointmentDate, Pageable pageable);
-
-
+    Page<Appointment> findAppointmentsByStatusContains(String keyword, Pageable pageable);
 
     @Query(value = "SELECT * FROM appointments AS a WHERE a.appointment_id IN (SELECT c.appointment_id FROM consultations AS c) AND a.patient_id = :patientId", nativeQuery = true)
-    List<Appointment>getAppointmentsByPatientId(@Param("patientId") Long patientId);
+    Page<Appointment>getAppointmentsByPatientId(@Param("patientId") Long patientId, Pageable pageable);
+
+    @Query(value = "select * from appointments as a where a.appointment_id not in (SELECT c.appointment_id FROM consultations AS c) AND a.patient_id = :patientId", nativeQuery = true)
+    Page<Appointment>getNoAppointmentsByPatientId(@Param("patientId") Long patientId, Pageable pageable);
+
+    @Query(value = " select a from Appointment as a where a.doctor.doctorId=:doctorId")
+    Page<Appointment> getAppointmentsByDoctorId(@Param("doctorId") Long doctorId, Pageable pageable);
 
 }

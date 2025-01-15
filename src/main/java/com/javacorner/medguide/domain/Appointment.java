@@ -107,6 +107,21 @@ public class Appointment {
         this.consultation = consultation;
     }
 
+    public void assignPatientToAppointment(Patient patient) {
+        if (patient == null) {
+            throw new IllegalArgumentException("Patient cannot be null");
+        }
+        this.patient = patient;
+    }
+
+    public void removePatientFromAppointment(Patient patient) {
+        if (patient == null || !patient.equals(this.patient)) {
+            throw new IllegalArgumentException("Patient is not associated with this appointment");
+        }
+        this.patient = null;
+        System.out.println("Patient has been removed from the appointment.");
+    }
+
 
     @Override
     public String toString() {
@@ -115,4 +130,6 @@ public class Appointment {
                 ", appointmentDate=" + appointmentDate +
                 ", status='" + status + '\'' + '}';
     }
+
+
 }

@@ -22,9 +22,8 @@ public class Consultation {
 
     public Consultation() {}
 
-    public Consultation( String diagnosis, Appointment appointment) {
+    public Consultation( String diagnosis) {
         this.diagnosis = diagnosis;
-        this.appointment = appointment;
     }
 
     @Override
