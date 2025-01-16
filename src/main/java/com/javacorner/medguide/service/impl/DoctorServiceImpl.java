@@ -16,6 +16,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -94,9 +95,12 @@ public class DoctorServiceImpl implements DoctorService {
     @Override
     public void removeDoctor(Long doctorId) {
         Doctor doctor = loadDoctorById(doctorId);
-        for(Appointment appointment: doctor.getAppointments()) {
-            appointmentService.removeAppointment(appointment.getAppointmentId());
+        Iterator<Appointment> appointmentIterator = doctor.getAppointments().iterator();
+        if(appointmentIterator.hasNext()) {
+            Appointment appointment = appointmentIterator.next();
+            appointment.removeDoctorFromAppointment(doctor);
         }
         doctorDao.deleteById(doctorId);
     }
+
 }

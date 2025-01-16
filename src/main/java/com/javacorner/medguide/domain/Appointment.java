@@ -122,6 +122,15 @@ public class Appointment {
         System.out.println("Patient has been removed from the appointment.");
     }
 
+    public void removeDoctorFromAppointment(Doctor doctor) {
+        if (doctor == null || !doctor.equals(this.doctor)) {
+            throw new IllegalArgumentException("Doctor is not associated with this appointment");
+        }
+        this.doctor = null;
+        System.out.println("Doctor has been removed from the appointment.");
+    }
+
+
 
     @Override
     public String toString() {

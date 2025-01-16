@@ -11,6 +11,9 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @Transactional
 public class ConsultationServiceImpl implements ConsultationService {
@@ -51,6 +54,11 @@ public class ConsultationServiceImpl implements ConsultationService {
         existingConsultation.setDiagnosis(consultationDTO.getDiagnosis());
         Consultation updatedConsultation = consultationDao.save(existingConsultation);
         return updatedConsultation;
+    }
+
+    @Override
+    public List<ConsultationDTO> fetchAllConsultations() {
+        return consultationDao.findAll().stream().map(consultation -> consultationMapper.fromConsultation(consultation)).collect(Collectors.toList());
     }
 
     @Override

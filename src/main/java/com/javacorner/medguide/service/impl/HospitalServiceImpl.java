@@ -84,4 +84,6 @@ public class HospitalServiceImpl implements HospitalService {
                 .orElseThrow(() -> new EntityNotFoundException("Hospital with ID " + hospitalId + " not found"));
         hospitalDao.delete(hospital);
     }
+
+
 }
