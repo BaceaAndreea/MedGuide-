@@ -1,0 +1,118 @@
+<div class="main-container">
+  <header class="top-bar">
+    <div class="top-bar-left">Hello</div>
+    <div class="top-bar-right">
+      <span>Admin</span> | <a href="#">Signout</a>
+    </div>
+  </header>
+
+  <div class="content-section">
+    <div class="box">
+      <div class="box-header">
+        <div class="box-header-title">Appointments</div>
+        <div class="box-header-button">
+          <button class="btn btn-primary-gradient" (click)="openModal()">New Appointment</button>
+        </div>
+      </div>
+      <div class="box-content">
+        <table class="table table-bordered table-hover">
+          <thead>
+          <tr>
+            <th>Appointment Id</th>
+            <th>Appointment Status</th>
+            <th>Appointment Date</th>
+            <th>Patient</th>
+            <th>Doctor</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td>1</td>
+            <td>Confirmed</td>
+            <td>2025-01-30</td>
+            <td>John Doe</td>
+            <td>Dr. Smith</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #content let-modal>
+  <div class="modal-header">
+    <div class="modal-title text-muted">
+      <i class="fa-regular fa-circle-dot"></i>&nbsp; Appointment Form
+    </div>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+    <div class="row">
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="text-muted">Appointment Id</label>
+          <input
+            type="number"
+            class="form-control form-font rounded-0 mt-1 mb-3"
+            name="appointmentId"
+          />
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="text-muted">Status</label>
+          <input
+            type="text"
+            class="form-control form-font rounded-0 mt-1 mb-3"
+            name="status"
+          />
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="text-muted">Appointment Date</label>
+          <input
+            type="date"
+            class="form-control form-font rounded-0 mt-1 mb-3"
+            name="appointmentDate"
+          />
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="form-group">
+          <label class="text-muted">Patient</label>
+          <input
+            type="text"
+            class="form-control form-font rounded-0 mt-1 mb-3"
+            name="patient"
+          />
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="form-group">
+          <label class="text-muted">Doctor</label>
+          <input
+            type="text"
+            class="form-control form-font rounded-0 mt-1 mb-3"
+            name="doctor"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" (click)="closeModal()">Close</button>
+    <button
+      type="button"
+      class="btn btn-sm btn-primary"
+      (click)="modal.close('Save click')"
+    >
+      Save changes
+    </button>
+  </div>
+</ng-template>

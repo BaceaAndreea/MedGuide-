@@ -1,1 +1,522 @@
-/* You can add global styles to this file, and also import other style files */
+* {
+  padding: 0px;
+  margin: 0px;
+  box-sizing: border-box;
+}
+
+
+body {
+  font-size: 14px;
+  /* background-color: #ECF0F2; */
+  background: linear-gradient(45deg,#F21A2B,#E787F2);
+}
+
+
+.body-dark,
+.header-dark {
+  background-color: #42424A;
+}
+
+.header-dark .top-menu ul li a {
+  color: #Fff;
+}
+
+.header-dark ul li a {
+  color: #FFF;
+}
+
+header {
+  position: fixed;
+  background-color: #FFF;
+  right: 0px;
+  left: 0px;
+  z-index: 900;
+}
+
+
+.wrapper,
+.header {
+  display: grid;
+  grid-template-columns: 240px auto;
+  align-items: center;
+}
+
+.aside {
+  background: linear-gradient(195deg,#42424a,#191919);
+  height: 100vh;
+  overflow: auto;
+  padding-top: 60px;
+}
+
+.main {
+  height: 100vh;
+  overflow: auto;
+  padding-top: 60px;
+}
+
+.main-header menu {
+  text-align: right;
+}
+
+
+.aside-header span {
+  font-size: 19px;
+}
+
+
+
+.aside nav ul li {
+  list-style: none;
+}
+
+
+.aside nav ul li a{
+  margin-bottom: 10px;
+  padding: 10px 10px;
+  border-radius: 4px;
+  color: #FFF;
+  display: block;
+  text-decoration: none;
+  opacity: .6;
+}
+
+
+.aside nav ul li a.active,
+.aside nav ul li a.active:hover{
+  background: linear-gradient(195deg,#ec407a,#d81b60);
+  opacity: 1;
+}
+
+
+.aside nav ul li a:hover{
+  transition: .35s ease-in;
+  background: rgba(255, 255, 255, 0.253);
+  opacity: 1;
+}
+
+.aside nav ul li a span {
+  width: 17px;
+  display: inline-block;
+}
+
+
+.box {
+  background-color: #fff;
+  border-radius: 4px;
+  margin-bottom: 20px;
+}
+
+
+.dataTables_length {
+  padding-left: 10px;
+  padding-top: 20px;
+}
+
+.dataTables_filter {
+  padding-right: 10px;
+  padding-top: 20px;
+}
+
+
+.dataTables_info {
+  padding-left: 10px;
+}
+
+.pagination{
+  padding-right: 10px;
+  padding-bottom: 10px;
+}
+
+
+
+.paginate_button,
+.page-item  {
+  font-size: 13px;
+}
+
+
+
+.page-item .page-link{
+  font-size: 13px !important;
+}
+
+
+.box-header-grid {
+  display: flex;
+  justify-content:flex-end;
+  align-items: center;
+}
+
+.box-header-title {
+  margin-right:auto;
+}
+
+.btn-primary-gradient {
+  background: linear-gradient(195deg,#49a3f1,#1a73e8);
+  color:rgb(255, 255, 255);
+  border: none;
+}
+
+
+.btn-primary-gradient:hover {
+  background: linear-gradient(-195deg,#49a3f1,#1a73e8);
+  color:rgb(255, 255, 255);
+}
+
+
+.btn-success-gradient {
+  background: linear-gradient(195deg,#66bb6a,#43a047);
+  color:rgb(255, 255, 255);
+  border: none;
+}
+
+
+.btn-success-gradient:hover {
+  background: linear-gradient(-195deg,#66bb6a,#43a047);
+  color:rgb(255, 255, 255);
+}
+
+
+
+.btn-danger-gradient {
+  background: linear-gradient(195deg,#ec407a,#d81b60);
+  color:rgb(255, 255, 255);
+  border: none;
+}
+
+
+.btn-danger-gradient:hover {
+  background: linear-gradient(-195deg,#ec407a,#d81b60);
+  color:rgb(255, 255, 255);
+}
+
+
+
+
+.btn-dark-gradient {
+  background: linear-gradient(195deg,#42424a,#191919);
+  color:rgb(255, 255, 255);
+  border: none;
+}
+
+
+.btn-dark-gradient:hover {
+  background: linear-gradient(-195deg,#42424a,#191919);
+  color:rgb(255, 255, 255);
+}
+
+
+.box-footer {
+  padding: 10px;
+}
+
+
+.dash {
+  background-color: #FFF;
+  border-radius: 4px;
+}
+
+.dash-content {
+  display: grid;
+  grid-template-columns: 50px auto;
+  align-items: center;
+  gap: 20px;
+}
+
+.dash-icon {
+  width: 50px;
+  height: 50px;
+  font-size: 20px;
+  text-align: center;
+  line-height: 50px;
+  border-radius: 4px;
+}
+
+.dash-content {
+  border-bottom: 1px solid #eee;
+  padding: 20px;
+}
+
+.dash-description {
+  padding: 10px 20px;
+}
+
+.dash-info-number {
+  font-size: 20px;
+  color: #2c3e50;
+  font-weight: 600;
+}
+
+
+.main-header-menu {
+  display: grid;
+  grid-template-columns: 300px auto;
+  align-items: center;
+}
+
+
+.top-menu {
+  text-align: right;
+}
+
+.top-menu ul li {
+  display: inline-block;
+  padding-left: 20px;
+  color: rgba(0, 0, 0, 0.644);
+  font-size: 13px;
+}
+
+.top-menu ul li a {
+  text-decoration: none;
+  color:inherit;
+}
+
+.bread a {
+  text-decoration: none;
+  font: 13px Arial;
+}
+
+.form-font {
+  font-size: 13px;
+}
+
+.loader {
+  background: white;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  padding: 5px 10px;
+  border-radius: 100px;
+  user-select: none;
+  cursor: pointer;
+  z-index: 9000;
+}
+
+#fileLabel:hover {
+  color: rgba(0, 0, 0, 1);
+}
+
+#fileLabel {
+  cursor: pointer;
+  display: inline-block;
+  color: rgba(0, 0, 0, 0.5);
+}
+
+
+.table-blue {
+  background-color: #F1EAF2;
+  border-bottom: #F1EAF2;;
+  color: #FFF;
+}
+
+.table-blue tr,
+.table-blue tr td {
+  background-color: #F1EAF2;
+  color: #FFF;
+}
+
+
+@media only screen and (max-width: 768px) {
+
+  .wrapper,
+  .header {
+    display: block;
+    grid-template-columns: none;
+  }
+
+  .aside{
+    display: none;;
+  }
+
+
+  .main-header-menu {
+    display: block;
+    grid-template-columns: 120px auto;
+    align-items: center;
+    font-size: 12px;
+    padding: 10px 0px;
+  }
+
+  .box {
+    display: none;
+  }
+
+  .bread {
+    display: none;;
+  }
+
+
+  .main {
+    padding-top: 100px;
+  }
+
+
+}
+
+
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  background-color: #fff;
+  z-index: 1001;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+.sidebar {
+  position: fixed;
+  top: 0; /* Eliminăm distanța față de partea de sus */
+  left: 0;
+  width: 200px;
+  height: 100vh; /* Acoperă întreaga înălțime a ferestrei */
+  background: linear-gradient(195deg, #42424a, #191919);
+  padding: 20px;
+  color: white;
+  z-index: 1000;
+  overflow-y: auto;
+}
+
+.sidebar-title {
+  font-size: 1.5em;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.sidebar-list {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar-list li {
+  margin-bottom: 15px;
+}
+
+.sidebar-list a {
+  text-decoration: none;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 1.1em;
+  padding: 10px;
+  display: block;
+  border-radius: 5px;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.sidebar-list a.active {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: white;
+}
+
+.sidebar-list a:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+.main-container {
+  margin-left: 200px; /* Spațiu pentru sidebar */
+  margin-top: 60px; /* Spațiu pentru top-bar */
+  padding: 20px;
+  background: linear-gradient(45deg, #F21A2B, #E787F2);
+  min-height: 100vh;
+}
+
+
+
+
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: white;
+  padding: 10px 20px;
+  border-bottom: 1px solid #e0e0e0;
+  position: fixed;
+  top: 0;
+  left: 200px;
+  right: 0;
+  z-index: 100;
+}
+
+.top-bar-left {
+  font-size: 18px;
+  font-weight: bold;
+  color: #42424a;
+}
+
+.top-bar-right {
+  font-size: 14px;
+  color: #42424a;
+}
+
+.top-bar-right a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+
+.content-section {
+  margin-top: 60px; /* Spațiu pentru top-bar */
+  padding: 20px;
+}
+
+.box {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.box-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #e0e0e0;
+  padding: 15px 20px;
+}
+
+.box-header-title {
+  font-size: 18px;
+  font-weight: bold;
+  color: #42424a;
+}
+
+.box-header-button .btn {
+  font-size: 14px;
+  padding: 8px 16px;
+}
+
+.box-content {
+  padding: 20px;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th,
+.table td {
+  padding: 12px;
+  border: 1px solid #e0e0e0;
+  text-align: left;
+}
+
+.table th {
+  background-color: #f9f9f9;
+  font-weight: bold;
+  color: #42424a;
+}
+
+.table tbody tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.table tbody tr:hover {
+  background-color: #f1f1f1;
+}
+

@@ -1,0 +1,93 @@
+<div class="main-container">
+  <header class="top-bar">
+    <div class="top-bar-left">Hello</div>
+    <div class="top-bar-right">
+      <span>Admin</span> | <a href="#">Signout</a>
+    </div>
+  </header>
+
+  <div class="content-section">
+    <div class="box">
+      <div class="box-header">
+        <div class="box-header-title">Doctors</div>
+        <div class="box-header-button">
+          <button class="btn btn-primary-gradient" (click)="openModal()">New Doctor</button>
+        </div>
+      </div>
+      <div class="box-content">
+        <table class="table table-bordered table-hover">
+          <thead>
+          <tr>
+            <th>Doctor Id</th>
+            <th>Doctor First Name</th>
+            <th>Doctor Last Name</th>
+            <th>Doctor Birth Date</th>
+            <th>Doctor Hospital</th>
+            <th>Doctor Specialization</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td>1</td>
+            <td>Jane</td>
+            <td>Smith</td>
+            <td>1985-07-15</td>
+            <td>General Hospital</td>
+            <td>Cardiology</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Afișează modalul dacă showModal este true -->
+<ng-template #content let-modal>
+  <div class="modal-header">
+    <div class="modal-title text-muted"><i class="fa-regular fa-circle-dot"></i>&nbsp; Doctor Registration Form</div>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+    <div class="row">
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="text-muted">First Name</label>
+          <input type="text" class="form-control form-font rounded-0 mt-1 mb-3" name="firstName">
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="text-muted">Last Name</label>
+          <input type="text" class="form-control form-font rounded-0 mt-1 mb-3" name="lastName">
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="text-muted">Birth Date</label>
+          <input type="date" class="form-control form-font rounded-0 mt-1 mb-3" name="birthDate">
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="text-muted">Hospital</label>
+          <input type="text" class="form-control form-font rounded-0 mt-1 mb-3" name="hospital">
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="text-muted">Specialization</label>
+          <input type="text" class="form-control form-font rounded-0 mt-1 mb-3" name="specialization">
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" (click)="closeModal()">Close</button>
+    <button type="button" class="btn btn-sm btn-primary" (click)="modal.close('Save click')">Save changes</button>
+  </div>
+</ng-template>

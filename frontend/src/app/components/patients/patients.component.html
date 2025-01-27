@@ -1,0 +1,85 @@
+<div class="main-container">
+  <header class="top-bar">
+    <div class="top-bar-left">Hello</div>
+    <div class="top-bar-right">
+      <span>Admin</span> | <a href="#">Signout</a>
+    </div>
+  </header>
+
+  <div class="content-section">
+    <div class="box">
+      <div class="box-header">
+        <div class="box-header-title">Patients</div>
+        <div class="box-header-button">
+          <button class="btn btn-primary-gradient" (click)="openModal()">New Patient</button>
+        </div>
+      </div>
+      <div class="box-content">
+        <table class="table table-bordered table-hover">
+          <thead>
+          <tr>
+            <th>Patient Id</th>
+            <th>Patient First Name</th>
+            <th>Patient Last Name</th>
+            <th>Patient Medical History</th>
+            <th>Patient Allergies</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td>1</td>
+            <td>John</td>
+            <td>Doe</td>
+            <td>None</td>
+            <td>Peanuts</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<ng-template #content let-modal>
+  <div class="modal-header">
+    <div class="modal-title text-muted"><i class="fa-regular fa-circle-dot"></i>&nbsp; Patient Registration Form</div>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+    <div class="row">
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="text-muted">First Name</label>
+          <input type="text" class="form-control form-font rounded-0 mt-1 mb-3" name="firstName">
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="text-muted">Last Name</label>
+          <input type="text" class="form-control form-font rounded-0 mt-1 mb-3" name="lastName">
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="text-muted">Medical History</label>
+          <textarea class="form-control form-font rounded-0 mt-1 mb-3" name="medicalHistory" rows="2"></textarea>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="text-muted">Allergies</label>
+          <textarea class="form-control form-font rounded-0 mt-1 mb-3" name="allergies" rows="2"></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+
+    <button type="button" class="btn btn-secondary" (click)="closeModal()">Close</button>
+    <button type="button" class="btn btn-sm btn-primary" (click)="modal.close('Save click')">Save changes</button>
+  </div>
+</ng-template>

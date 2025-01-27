@@ -1,0 +1,79 @@
+<div class="main-container">
+  <header class="top-bar">
+    <div class="top-bar-left">Hello</div>
+    <div class="top-bar-right">
+      <span>Admin</span> | <a href="#">Signout</a>
+    </div>
+  </header>
+
+  <div class="content-section">
+    <div class="box">
+      <div class="box-header">
+        <div class="box-header-title">Specializations</div>
+        <div class="box-header-button">
+          <button class="btn btn-primary-gradient" (click)="openModal()">New Specialization</button>
+        </div>
+      </div>
+      <div class="box-content">
+        <table class="table table-bordered table-hover">
+          <thead>
+          <tr>
+            <th>Specialization Id</th>
+            <th>Specialization Description</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td>1</td>
+            <td>Cardiology</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #content let-modal>
+  <div class="modal-header">
+    <div class="modal-title text-muted">
+      <i class="fa-regular fa-circle-dot"></i>&nbsp; Specialization Registration Form
+    </div>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+    <div class="row">
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="text-muted">Specialization Id</label>
+          <input
+            type="number"
+            class="form-control form-font rounded-0 mt-1 mb-3"
+            name="specializationId"
+          />
+        </div>
+      </div>
+
+      <div class="col-md-8">
+        <div class="form-group">
+          <label class="text-muted">Description</label>
+          <textarea
+            class="form-control form-font rounded-0 mt-1 mb-3"
+            name="description"
+            rows="3"
+          ></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" (click)="closeModal()">Close</button>
+    <button
+      type="button"
+      class="btn btn-sm btn-primary"
+      (click)="modal.close('Save click')"
+    >
+      Save changes
+    </button>
+  </div>
+</ng-template>
