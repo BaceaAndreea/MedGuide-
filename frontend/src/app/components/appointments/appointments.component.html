@@ -15,26 +15,61 @@
         </div>
       </div>
       <div class="box-content">
-        <table class="table table-bordered table-hover">
+        <ng-container *ngIf="pageAppointment$ | async as listAppointments; else failureOrLoading">
+          <div *ngIf="searchFormGroup" class="mb-2">
+          <form [formGroup]="searchFormGroup" (ngSubmit)="handleSearchAppointments()">
+            <div class="input-group w-25">
+              <input type="search" formControlName="keyword" class="form-control rounded mx-2" placeholder="Search" aria-label="Search"/>
+              <button type="submit" class="btn btn-outline-primary">Search</button>
+            </div>
+          </form>
+        </div>
+          <table class="table table-bordered table-hover">
           <thead>
           <tr>
             <th>Appointment Id</th>
             <th>Appointment Status</th>
             <th>Appointment Date</th>
-            <th>Patient</th>
             <th>Doctor</th>
+            <th>Patient</th>
           </tr>
           </thead>
-          <tbody>
-          <tr>
-            <td>1</td>
-            <td>Confirmed</td>
-            <td>2025-01-30</td>
-            <td>John Doe</td>
-            <td>Dr. Smith</td>
-          </tr>
-          </tbody>
+            <tbody>
+            <tr *ngFor="let a of listAppointments.content">
+              <td>{{a.appointmentId}}</td>
+              <td>{{a.status}}</td>
+              <td>{{a.appointmentDate}}</td>
+              <td>{{ a.doctor.firstName }} {{ a.doctor.lastName }}</td>
+              <td>{{a.patient.firstName}} {{a.patient.lastName}}</td>
+              <td>
+                <button (click)="handleDeleteAppointment(a)" class="btn btn-danger">
+                  <i class="bi-trash"></i>
+                </button>
+              </td>
+            </tr>
+            </tbody>
         </table>
+          <ul class="pagination justify-content-center">
+            <li *ngFor="let item of [].constructor(listAppointments.totalPages); let page = index"
+                class="page-item"
+                [ngClass]="{'active': page === currentPage}">
+              <a (click)="gotoPage(page)" class="page-link">{{ page }}</a>
+            </li>
+          </ul>
+
+        </ng-container>
+        <ng-template #failureOrLoading>
+          <ng-container *ngIf="errorMessage; else loading">
+            <div class="text-danger">
+              {{errorMessage}}
+            </div>
+          </ng-container>
+          <ng-template #loading>
+            <div class="loader shadow-sm text-muted">
+              <span><i class="fa-solid fa-rotate fa-spin"></i> </span> &nbsp; <span>Processing...</span>
+            </div>
+          </ng-template>
+        </ng-template>
       </div>
     </div>
   </div>
@@ -47,6 +82,7 @@
     </div>
     <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
   </div>
+
   <div class="modal-body">
     <div class="row">
       <div class="col-md-4">

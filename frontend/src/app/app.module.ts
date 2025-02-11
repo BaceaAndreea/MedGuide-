@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { provideHttpClient } from '@angular/common/http'; // Noua metodă pentru HttpClient
+import {HttpClient, provideHttpClient} from '@angular/common/http'; // Noua metodă pentru HttpClient
 
 import { AppComponent } from './app.component';
 import {PatientsComponent} from './components/patients/patients.component';

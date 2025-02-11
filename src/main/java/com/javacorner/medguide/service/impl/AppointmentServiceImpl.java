@@ -25,7 +25,6 @@ import java.util.stream.Collectors;
 public class AppointmentServiceImpl implements AppointmentService {
 
     private AppointmentDao appointmentDao;
-
     private AppointmentMapper appointmentMapper;
     private DoctorDao doctorDao;
     private PatientDao patientDao;

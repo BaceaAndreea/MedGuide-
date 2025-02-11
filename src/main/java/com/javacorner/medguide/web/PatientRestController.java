@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/patients")
+@CrossOrigin("*")
 public class PatientRestController {
     private PatientService patientService;
     private UserService userService;

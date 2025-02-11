@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/appointments")
+//here we insert the host, * to permit all other resources to consumm this API
+@CrossOrigin("*")
 public class AppointmentRestController {
     private AppointmentService appointmentService;
 

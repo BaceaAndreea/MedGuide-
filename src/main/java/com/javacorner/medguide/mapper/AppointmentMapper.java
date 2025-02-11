@@ -10,16 +10,23 @@ import org.springframework.stereotype.Service;
 public class AppointmentMapper {
 
     private DoctorMapper doctorMapper;
+    private PatientMapper patientMapper;
+
 
     @Autowired
-    public AppointmentMapper(DoctorMapper doctorMapper) {
+    public AppointmentMapper(DoctorMapper doctorMapper, PatientMapper patientMapper) {
         this.doctorMapper = doctorMapper;
+        this.patientMapper = patientMapper;
     }
 
     public AppointmentDTO fromAppointment(Appointment appointment) {
         AppointmentDTO appointmentDTO = new AppointmentDTO();
         BeanUtils.copyProperties(appointment, appointmentDTO);
         appointmentDTO.setDoctor(doctorMapper.fromDoctor(appointment.getDoctor()));
+        // Mapăm pacientul doar dacă nu este null
+        if (appointment.getPatient() != null) {
+            appointmentDTO.setPatient(patientMapper.fromPatient(appointment.getPatient()));
+        }
         return appointmentDTO;
     }
 
