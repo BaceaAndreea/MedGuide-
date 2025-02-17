@@ -1,8 +1,11 @@
 package com.javacorner.medguide.service;
 
 import com.javacorner.medguide.domain.Patient;
+import com.javacorner.medguide.dto.DoctorDTO;
 import com.javacorner.medguide.dto.PatientDTO;
 import org.springframework.data.domain.Page;
+
+import java.util.List;
 
 public interface PatientService {
 
@@ -15,6 +18,8 @@ public interface PatientService {
     PatientDTO createPatient(PatientDTO patientDTO);
 
     PatientDTO updatePatient(PatientDTO patientDTO);
+
+    List<PatientDTO> fetchPatients();
 
     void removePatient(Long patientId);
 }

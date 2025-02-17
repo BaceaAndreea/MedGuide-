@@ -29,6 +29,7 @@ public class AppointmentRestController {
         appointmentService.removeAppointment(appointmentId);
     }
 
+
     //de aici in jos nu merge
     @PostMapping
     public AppointmentDTO saveAppointment(@RequestBody AppointmentDTO appointmentDTO) {

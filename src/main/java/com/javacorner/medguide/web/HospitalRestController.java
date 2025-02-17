@@ -25,7 +25,7 @@ public class HospitalRestController {
         return hospitalService.findHospitalByName(name, page, size);
     }
 
-    @GetMapping
+    @GetMapping("/all")
     public List<HospitalDTO> findAllHospitals() {
         return hospitalService.fetchHospitals();
     }

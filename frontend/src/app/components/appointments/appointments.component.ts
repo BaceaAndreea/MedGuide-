@@ -5,6 +5,11 @@ import {AppointmentsService} from '../../services/appointments.service';
 import {catchError, Observable, throwError} from 'rxjs';
 import {PageRespone} from '../../model/page.response.model';
 import {Appointment} from '../../model/appointment.model';
+import {DoctorsService} from '../../services/doctors.service';
+import {Doctor} from '../../model/doctor.model';
+import {NgbModal, NgbModalModule} from '@ng-bootstrap/ng-bootstrap';
+import {PatientsService} from '../../services/patients.service';
+import {Patient} from '../../model/patient.model';
 
 
 @Component({
@@ -16,7 +21,7 @@ import {Appointment} from '../../model/appointment.model';
     AsyncPipe,
     NgForOf,
     CommonModule,
-
+    NgbModalModule
 
   ],
   templateUrl: './appointments.component.html',
@@ -26,13 +31,21 @@ export class AppointmentsComponent implements OnInit{
 
   searchFormGroup!: FormGroup;
   appointmentFormGroup!:FormGroup;
+  updateAppointmentFormGroup!:FormGroup;
   //$ - indica faptul că variabila este un Observable.
   pageAppointment$!:Observable<PageRespone<Appointment>>;
+  doctors$!:Observable<Array<Doctor>>;
+  patients$!:Observable<Array<Patient>>;
   currentPage: number = 0;
   pageSize: number = 5;
   errorMessage!: string;
+  errorMessageDoctor!: string;
+  errorMessagePatient!:string;
+  submitted:boolean=false;
+  defaultDoctor!: Doctor;
+  defaultPatient!: Patient;
 
-  constructor(private fb: FormBuilder, private appointmentService : AppointmentsService) { }
+  constructor(private modalService: NgbModal,private fb: FormBuilder, private appointmentService : AppointmentsService, private doctorService: DoctorsService, private patientService : PatientsService) { }
 
   ngOnInit(): void {
     this.searchFormGroup = this.fb.group({
@@ -48,16 +61,13 @@ export class AppointmentsComponent implements OnInit{
     this.handleSearchAppointments()
   }
 
-  showModal: boolean = false;
 
   // Deschide modalul
-  openModal(): void {
-    this.showModal = true;
-  }
-
-  // Închide modalul
-  closeModal(): void {
-    this.showModal = false;
+  openModal(content: any){
+    this.submitted=false;
+    this.fetchDoctors();
+    this.fetchPatients();
+    this.modalService.open(content, { size: 'lg', backdrop: 'static' });
   }
 
   handleSearchAppointments() {
@@ -86,6 +96,99 @@ export class AppointmentsComponent implements OnInit{
       error:err => {
         alert(err.message)
         console.log(err)
+      }
+    })
+  }
+
+  fetchDoctors() {
+    this.doctors$ = this.doctorService.findAllDoctors().pipe(
+      catchError(err => {
+        this.errorMessageDoctor = err.message;
+        return throwError(err);
+      })
+    )
+  }
+
+  fetchPatients() {
+    this.patients$ = this.patientService.findAllPatients().pipe(
+      catchError(err => {
+        this.errorMessagePatient = err.message;
+        return throwError(err);
+      })
+    )
+  }
+
+  onCloseModel(modal: any) {
+    modal.close();
+    this.appointmentFormGroup.reset();
+  }
+
+  onSaveAppointment(modal: any) {
+    this.submitted = true;
+
+    if (this.appointmentFormGroup.invalid) return;
+
+    const appointment = {
+      appointmentDate: this.appointmentFormGroup.value.appointmentDate,
+      status: this.appointmentFormGroup.value.appointmentStatus,
+      doctor: { doctorId: this.appointmentFormGroup.value.doctor?.doctorId }, //trimitem id-ul
+      patient: { patientId: this.appointmentFormGroup.value.patient?.patientId }
+    };
+
+    this.appointmentService.saveAppointment(appointment).subscribe({
+      next: () => {
+        alert("Success Saving Appointment");
+        this.handleSearchAppointments();
+        this.appointmentFormGroup.reset();
+        this.submitted = false;
+        modal.close();
+      },
+      error: err => {
+        alert("Error saving appointment: " + err.message);
+        console.error(err);
+      }
+    });
+
+  }
+
+
+  getUpdateModal(a: any, updateContent: any) {
+    this.fetchDoctors();
+    this.fetchPatients();
+    this.updateAppointmentFormGroup = this.fb.group({
+      appointmentId: [a.appointmentId, Validators.required],
+      appointmentDate: [a.appointmentDate, Validators.required],
+      appointmentStatus: [a.appointmentStatus, Validators.required],
+      doctor: [a.doctor, Validators.required], // Doar ID-ul
+      patient: [a.patient, Validators.required] // Doar ID-ul
+    });
+
+    this.defaultDoctor = this.updateAppointmentFormGroup.controls['doctor'].value;
+    this.defaultPatient = this.updateAppointmentFormGroup.controls['patient'].value;
+    this.modalService.open(updateContent, {size:'xl'});
+  }
+
+
+  onUpdateAppointment(updateModal: any) {
+    this.submitted = true;
+    if (this.updateAppointmentFormGroup.invalid) return;
+
+    const appointment = {
+      appointmentId: this.updateAppointmentFormGroup.value.appointmentId,
+      appointmentDate: this.updateAppointmentFormGroup.value.appointmentDate,
+      status: this.updateAppointmentFormGroup.value.appointmentStatus,
+      doctor: { doctorId: this.updateAppointmentFormGroup.value.doctor?.doctorId },
+      patient: { patientId: this.updateAppointmentFormGroup.value.patient?.patientId }
+    };
+    this.appointmentService.updateAppointment(appointment, appointment.appointmentId).subscribe({
+      next:() =>{
+        alert("succes updating Appointment");
+        this.handleSearchAppointments();
+        this.submitted=false;
+        updateModal.close();
+
+      }, error: err => {
+        alert(err.message)
       }
     })
   }

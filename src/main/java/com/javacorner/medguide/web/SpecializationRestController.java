@@ -29,7 +29,7 @@ public class SpecializationRestController {
         return specializationService.findSpecializationByDesciption(keyword, page, size);
     }
 
-    @GetMapping
+    @GetMapping("/all")
     public List<SpecializationDTO> findAllSpecializations() {
         return specializationService.fetchAllSpecializations();
     }

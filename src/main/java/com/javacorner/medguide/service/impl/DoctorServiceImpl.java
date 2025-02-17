@@ -63,12 +63,12 @@ public class DoctorServiceImpl implements DoctorService {
         userService.assignRoleToUser(user.getEmail(), "Doctor");
         Doctor doctor = doctorMapper.fromDoctorDTO(doctorDTO);
         // Setează relațiile Hospital și Specialization
-        Hospital hospital = hospitalDao.findById(doctorDTO.getHospitalId())
-                .orElseThrow(() -> new EntityNotFoundException("Hospital not found with ID: " + doctorDTO.getHospitalId()));
+        Hospital hospital = hospitalDao.findById(doctorDTO.getHospital().getHospitalId())
+                .orElseThrow(() -> new EntityNotFoundException("Hospital not found with ID: " + doctorDTO.getHospital().getHospitalId()));
         doctor.setHospital(hospital);
 
-        Specialization specialization = specializationDao.findById(doctorDTO.getSpecializationId())
-                .orElseThrow(() -> new EntityNotFoundException("Specialization not found with ID: " + doctorDTO.getSpecializationId()));
+        Specialization specialization = specializationDao.findById(doctorDTO.getSpecialization().getSpecializationId())
+                .orElseThrow(() -> new EntityNotFoundException("Specialization not found with ID: " + doctorDTO.getSpecialization().getSpecializationId()));
         doctor.setSpecialization(specialization);
         doctor.setUser(user);
         Doctor savedDoctor = doctorDao.save(doctor);
@@ -78,14 +78,34 @@ public class DoctorServiceImpl implements DoctorService {
     //i don't want to lose the information in an appoiment or user when i update a doctor
     @Override
     public DoctorDTO updateDoctor(DoctorDTO doctorDTO) {
-        Doctor loadedDoctor = loadDoctorById(doctorDTO.getDoctorId());
-        Doctor doctor = doctorMapper.fromDoctorDTO(doctorDTO);
-        doctor.setUser(loadedDoctor.getUser());
-        doctor.setAppointments(loadedDoctor.getAppointments());
-        Doctor updatedDoctor = doctorDao.save(doctor);
-        return doctorMapper.fromDoctor(updatedDoctor);
+        Doctor loadedDoctor = loadDoctorById(doctorDTO.getDoctorId()); // Încărcăm doctorul existent
 
+        loadedDoctor.setFirstName(doctorDTO.getFirstName());
+        loadedDoctor.setLastName(doctorDTO.getLastName());
+        loadedDoctor.setBirthDate(doctorDTO.getBirthDate());
+
+        // Setăm doar ID-ul pentru hospital și specialization, fără să pierdem datele existente
+        if (doctorDTO.getHospital() != null) {
+            Hospital hospital = hospitalDao.findById(doctorDTO.getHospital().getHospitalId())
+                    .orElseThrow(() -> new EntityNotFoundException("Hospital not found"));
+            loadedDoctor.setHospital(hospital);
+        }
+
+        if (doctorDTO.getSpecialization() != null) {
+            Specialization specialization = specializationDao.findById(doctorDTO.getSpecialization().getSpecializationId())
+                    .orElseThrow(() -> new EntityNotFoundException("Specialization not found"));
+            loadedDoctor.setSpecialization(specialization);
+        }
+
+        // NU modificăm user-ul și programările existente
+        loadedDoctor.setUser(loadedDoctor.getUser());
+        loadedDoctor.setAppointments(loadedDoctor.getAppointments());
+
+        // Salvăm doctorul actualizat
+        Doctor updatedDoctor = doctorDao.save(loadedDoctor);
+        return doctorMapper.fromDoctor(updatedDoctor);
     }
+
 
     @Override
     public List<DoctorDTO> fetchDoctors() {

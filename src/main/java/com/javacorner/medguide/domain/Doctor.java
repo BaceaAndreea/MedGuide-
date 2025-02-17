@@ -28,14 +28,14 @@ public class Doctor {
     @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false)
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "specialization_id", referencedColumnName = "specialization_id", nullable = false)
     private Specialization specialization;
 
     @OneToMany(mappedBy = "doctor", fetch = FetchType.LAZY)
     private Set<Appointment> appointments = new HashSet<>();
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "hospital_id", referencedColumnName = "hospital_id", nullable = false)
     private Hospital hospital;
 

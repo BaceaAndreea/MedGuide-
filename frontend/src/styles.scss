@@ -82,6 +82,11 @@ header {
   opacity: .6;
 }
 
+.invalid-feedback {
+  display: block !important;
+  color: red;
+}
+
 
 .aside nav ul li a.active,
 .aside nav ul li a.active:hover{
@@ -132,14 +137,13 @@ header {
 
 
 .paginate_button,
-.page-item  {
-  font-size: 13px;
-}
 
 
 
 .page-item .page-link{
-  font-size: 13px !important;
+  background-color: blue !important;
+  color: white !important;
+  border-radius: 5px;
 }
 
 
