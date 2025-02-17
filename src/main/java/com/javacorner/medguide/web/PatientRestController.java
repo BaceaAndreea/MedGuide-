@@ -2,6 +2,7 @@ package com.javacorner.medguide.web;
 
 import com.javacorner.medguide.domain.User;
 import com.javacorner.medguide.dto.AppointmentDTO;
+import com.javacorner.medguide.dto.DoctorDTO;
 import com.javacorner.medguide.dto.PatientDTO;
 import com.javacorner.medguide.service.AppointmentService;
 import com.javacorner.medguide.service.PatientService;
@@ -9,8 +10,11 @@ import com.javacorner.medguide.service.UserService;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/patients")
+@CrossOrigin("*")
 public class PatientRestController {
     private PatientService patientService;
     private UserService userService;
@@ -32,6 +36,11 @@ public class PatientRestController {
     @DeleteMapping("/{patientId}")
     public void deletePatient(@PathVariable Long patientId){
         patientService.removePatient(patientId);
+    }
+
+    @GetMapping("/all")
+    public List<PatientDTO> findAllPatients(){
+        return patientService.fetchPatients();
     }
 
     @PostMapping

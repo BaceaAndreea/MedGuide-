@@ -10,6 +10,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/hospitals")
+@CrossOrigin("*")
 public class HospitalRestController {
     private HospitalService hospitalService;
 
@@ -24,7 +25,7 @@ public class HospitalRestController {
         return hospitalService.findHospitalByName(name, page, size);
     }
 
-    @GetMapping
+    @GetMapping("/all")
     public List<HospitalDTO> findAllHospitals() {
         return hospitalService.fetchHospitals();
     }

@@ -11,6 +11,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/specializations")
+@CrossOrigin("*")
 public class SpecializationRestController {
 
     private SpecializationService specializationService;
@@ -28,7 +29,7 @@ public class SpecializationRestController {
         return specializationService.findSpecializationByDesciption(keyword, page, size);
     }
 
-    @GetMapping
+    @GetMapping("/all")
     public List<SpecializationDTO> findAllSpecializations() {
         return specializationService.fetchAllSpecializations();
     }

@@ -11,8 +11,8 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface DoctorDao extends JpaRepository<Doctor, Long> {
-    @Query(value = "select d from Doctor  as d where d.firstName like %:name% or d.lastName like %:name%")
-    Page<Doctor> findDoctorsByByName(@Param("name") String name, PageRequest pageRequest);
+    @Query("SELECT d FROM Doctor d LEFT JOIN FETCH d.hospital LEFT JOIN FETCH d.specialization WHERE d.firstName LIKE %:name% OR d.lastName LIKE %:name%")
+    Page<Doctor> findDoctorsByByName(@Param("name") String name, Pageable pageable);
 
     @Query(value = "select d from Doctor  as d where d.user.email=:email")
     Doctor findDoctorByEmail(@Param("email") String email);

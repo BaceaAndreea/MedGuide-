@@ -16,7 +16,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,7 +24,6 @@ import java.util.stream.Collectors;
 public class AppointmentServiceImpl implements AppointmentService {
 
     private AppointmentDao appointmentDao;
-
     private AppointmentMapper appointmentMapper;
     private DoctorDao doctorDao;
     private PatientDao patientDao;
@@ -67,20 +65,22 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     public AppointmentDTO updateAppointment(AppointmentDTO appointmentDTO) {
         Appointment loadedAppointment = loadAppointmentById(appointmentDTO.getAppointmentId());
-        Doctor doctor = doctorDao.findById(appointmentDTO.getDoctor().getDoctorId()).orElseThrow(() -> new EntityNotFoundException("Doctor with ID " + appointmentDTO.getDoctor().getDoctorId() + " not found!"));
-        // Validează pacientul (dacă este specificat)
+        Doctor doctor = null;
+        if (appointmentDTO.getDoctor() != null && appointmentDTO.getDoctor().getDoctorId() != null) {
+            doctor = doctorDao.findById(appointmentDTO.getDoctor().getDoctorId())
+                    .orElseThrow(() -> new EntityNotFoundException("Doctor with ID " + appointmentDTO.getDoctor().getDoctorId() + " not found!"));
+        }
+
         if (appointmentDTO.getPatient() != null && appointmentDTO.getPatient().getPatientId() != null) {
             Patient patient = patientDao.findById(appointmentDTO.getPatient().getPatientId())
                     .orElseThrow(() -> new EntityNotFoundException("Patient with ID " + appointmentDTO.getPatient().getPatientId() + " not found!"));
             loadedAppointment.setPatient(patient);
         }
-        Appointment appointment = appointmentMapper.fromAppointmentDTO(appointmentDTO);
-        appointment.setDoctor(doctor);
-
-        // Actualizează datele programării și statusul, dacă este cazul
+        loadedAppointment.setDoctor(doctor);
         loadedAppointment.setAppointmentDate(appointmentDTO.getAppointmentDate());
         loadedAppointment.setStatus(appointmentDTO.getStatus());
-        Appointment updatedAppointment = appointmentDao.save(appointment);
+
+        Appointment updatedAppointment = appointmentDao.save(loadedAppointment);
         return appointmentMapper.fromAppointment(updatedAppointment);
 
     }

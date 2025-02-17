@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 
 //using the swagger documentation, we can view all of, the parameters that we need for every request,
 //all the return types, as well as the methods exposed by the application.
-//we can also testany api
+//we can also test any api
 
 @Configuration
 public class SwaggerConfig {

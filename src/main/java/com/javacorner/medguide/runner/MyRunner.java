@@ -84,16 +84,17 @@ public class MyRunner implements CommandLineRunner {
         List<HospitalDTO> hospitals = hospitalService.fetchHospitals();
         List<SpecializationDTO> specializations = specializationService.fetchAllSpecializations();
 
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 3; i++) {
             DoctorDTO doctorDTO = new DoctorDTO();
             doctorDTO.setFirstName("Doctor" + i + "FN");
             doctorDTO.setLastName("Doctor" + i + "LN");
             doctorDTO.setBirthDate(LocalDate.now());
-
-            // Atribuie un spital și o specializare (alegem aleatoriu pentru testare)
-            doctorDTO.setHospitalId(hospitals.get(i % hospitals.size()).getHospitalId());
-            doctorDTO.setSpecializationId(specializations.get(i % specializations.size()).getSpecializationId());
-
+            HospitalDTO hospitalDTO = new HospitalDTO();
+            hospitalDTO.setHospitalId(1L+i);
+            doctorDTO.setHospital(hospitalDTO);
+            SpecializationDTO specializationDTO = new SpecializationDTO();
+            specializationDTO.setSpecializationId(1L+i);
+            doctorDTO.setSpecialization(specializationDTO);
             UserDTO userDTO = new UserDTO();
             userDTO.setEmail("doctor" + i + "@gmail.com");
             userDTO.setPassword("1234");

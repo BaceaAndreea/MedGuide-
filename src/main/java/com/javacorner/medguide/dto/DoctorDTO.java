@@ -8,24 +8,23 @@ public class DoctorDTO {
     private String lastName;
     private LocalDate birthDate;
     private UserDTO user;
+    private HospitalDTO hospital;
+    private SpecializationDTO specialization;
 
-    private Long hospitalId;
-    private Long specializationId;
-
-    public Long getHospitalId() {
-        return hospitalId;
+    public HospitalDTO getHospital() {
+        return hospital;
     }
 
-    public void setHospitalId(Long hospitalId) {
-        this.hospitalId = hospitalId;
+    public void setHospital(HospitalDTO hospital) {
+        this.hospital = hospital;
     }
 
-    public Long getSpecializationId() {
-        return specializationId;
+    public SpecializationDTO getSpecialization() {
+        return specialization;
     }
 
-    public void setSpecializationId(Long specializationId) {
-        this.specializationId = specializationId;
+    public void setSpecialization(SpecializationDTO specialization) {
+        this.specialization = specialization;
     }
 
     public String getLastName() {

@@ -16,6 +16,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -68,6 +69,11 @@ public class PatientServiceImpl implements PatientService {
         patient.setAppointments(lodadedPatient.getAppointments());
         Patient updatedPatient = patientDao.save(patient);
         return patientMapper.fromPatient(updatedPatient);
+    }
+
+    @Override
+    public List<PatientDTO> fetchPatients() {
+        return patientDao.findAll().stream().map(patient -> patientMapper.fromPatient(patient)).collect(Collectors.toList());
     }
 
     //we did an iteration over the appointments of each patient's, and over each of the iterations, we deleted the patient from the appointment
