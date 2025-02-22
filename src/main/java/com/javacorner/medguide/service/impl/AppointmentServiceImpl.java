@@ -61,28 +61,39 @@ public class AppointmentServiceImpl implements AppointmentService {
         return appointmentMapper.fromAppointment(savedAppointment);
 
     }
-
     @Override
     public AppointmentDTO updateAppointment(AppointmentDTO appointmentDTO) {
         Appointment loadedAppointment = loadAppointmentById(appointmentDTO.getAppointmentId());
-        Doctor doctor = null;
+
+        // Păstrează doctorul existent
+        Doctor doctor = loadedAppointment.getDoctor();
+
+        // Dacă frontend-ul trimite un nou doctorId, actualizează-l
         if (appointmentDTO.getDoctor() != null && appointmentDTO.getDoctor().getDoctorId() != null) {
             doctor = doctorDao.findById(appointmentDTO.getDoctor().getDoctorId())
                     .orElseThrow(() -> new EntityNotFoundException("Doctor with ID " + appointmentDTO.getDoctor().getDoctorId() + " not found!"));
         }
+        if (doctor != null) {
+            loadedAppointment.setDoctor(doctor);
+        }
 
+        // Păstrează pacientul existent
+        Patient patient = loadedAppointment.getPatient();
+
+        // Dacă frontend-ul trimite un nou patientId, actualizează-l
         if (appointmentDTO.getPatient() != null && appointmentDTO.getPatient().getPatientId() != null) {
-            Patient patient = patientDao.findById(appointmentDTO.getPatient().getPatientId())
+            patient = patientDao.findById(appointmentDTO.getPatient().getPatientId())
                     .orElseThrow(() -> new EntityNotFoundException("Patient with ID " + appointmentDTO.getPatient().getPatientId() + " not found!"));
+        }
+        if (patient != null) {
             loadedAppointment.setPatient(patient);
         }
-        loadedAppointment.setDoctor(doctor);
+
         loadedAppointment.setAppointmentDate(appointmentDTO.getAppointmentDate());
         loadedAppointment.setStatus(appointmentDTO.getStatus());
 
         Appointment updatedAppointment = appointmentDao.save(loadedAppointment);
         return appointmentMapper.fromAppointment(updatedAppointment);
-
     }
 
     @Override

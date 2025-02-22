@@ -12,6 +12,9 @@ import org.springframework.stereotype.Service;
 public class DoctorMapper {
 
     public DoctorDTO fromDoctor(Doctor doctor) {
+        if (doctor == null) {
+            return null; // Evită NullPointerException
+        }
         DoctorDTO dto = new DoctorDTO();
         dto.setDoctorId(doctor.getDoctorId());
         dto.setFirstName(doctor.getFirstName());

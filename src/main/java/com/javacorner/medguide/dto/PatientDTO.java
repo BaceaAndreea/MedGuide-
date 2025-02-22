@@ -1,10 +1,33 @@
 package com.javacorner.medguide.dto;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class PatientDTO {
     private Long patientId;
     private String firstName;
     private String lastName;
     private UserDTO user;
+    private List<String> medicalHistory = new ArrayList<>();
+    private List<String> allergies = new ArrayList<>();
+
+    public List<String> getMedicalHistory() {
+        return medicalHistory;
+    }
+
+    public void setMedicalHistory(List<String> medicalHistory) {
+        this.medicalHistory = (medicalHistory != null) ? medicalHistory : new ArrayList<>();
+    }
+
+    public List<String> getAllergies() {
+        return allergies;
+    }
+
+    public void setAllergies(List<String> allergies) {
+        this.allergies = (allergies != null) ? allergies : new ArrayList<>();
+    }
+
+
 
     public Long getPatientId() {
         return patientId;

@@ -1,0 +1,234 @@
+<p>appointments-doctor works!</p>
+<div class="main-container">
+  <header class="top-bar">
+    <div class="top-bar-left">Hello</div>
+    <div class="top-bar-right">
+      <span>Admin</span> | <a href="#">Signout</a>
+    </div>
+  </header>
+
+  <div class="content-section">
+    <div class="box">
+      <div class="box-header">
+        <div class="box-header-title">These are your current appointments</div>
+        <div class="box-header-button">
+          <button class="btn btn-primary-gradient" (click)="getModal(content)">New Appointment</button>
+        </div>
+      </div>
+      <div class="box-content">
+        <ng-container *ngIf="pageAppointments$ | async as listAppointments; else failureOrLoading">
+          <table class="table table-bordered table-hover" style="width: 100%">
+            <thead>
+            <tr>
+              <th>Appointment Id</th>
+              <th>Appointment Status</th>
+              <th>Appointment Date</th>
+              <th>Patient</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let a of listAppointments.content">
+              <td>{{a.appointmentId}}</td>
+              <td>{{a.status}}</td>
+              <td>{{a.appointmentDate}}</td>
+              <td>{{a.patient.firstName }} {{ a.patient.lastName }}</td>
+              <td>
+                <button (click)="handleDeleteAppointment(a)" class="btn btn-danger">
+                  <i class="bi-trash"></i>
+                </button>
+              </td>
+              <td>
+                <button (click)="getUpdateModal(a, updateContent)" class="btn btn-success">
+                  <i class="bi bi-pencil-square"></i>
+                </button>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+          <ul class="pagination justify-content-center">
+            <li *ngFor="let item of [].constructor(listAppointments.totalPages); let page = index"
+                class="page-item"
+                [ngClass]="{'active': page === currentPage}">
+              <a (click)="gotoPage(page)" class="page-link">{{ page }}</a>
+            </li>
+          </ul>
+
+        </ng-container>
+        <ng-template #failureOrLoading>
+          <ng-container *ngIf="errorMessage; else loading">
+            <div class="text-danger">
+              {{errorMessage}}
+            </div>
+          </ng-container>
+          <ng-template #loading >
+            <div class="loader shadow-sm text-muted">
+              <span><i class="fa-solid fa-rotate fa-spin"></i></span> &nbsp; <span>Processing...</span>
+            </div>
+          </ng-template>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #content let-modal>
+  <div class="modal-header">
+    <div class="modal-title text-muted"><i class="fa-regular fa-circle-dot"></i> Appointment Form </div>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross Click')"></button>
+  </div>
+  <ng-container *ngIf="patients$ | async as listPatients; else modalFailureOrLoading">
+    <form [formGroup]="appointmentFormGroup" method="post">
+      <div class="modal-body">
+        <div class="row">
+
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="text-muted">Appointment Status</label>
+              <input type="text" class="form-control form-font rounded-0 mt-1 mb-3"
+                     [ngClass]="{'is-invalid' : submitted && appointmentFormGroup.controls['appointmentStatus'].errors}"
+                     formControlName="appointmentStatus">
+              <div *ngIf="submitted && appointmentFormGroup.get('appointmentStatus')?.invalid" class="invalid-feedback d-block">
+                <div *ngIf="appointmentFormGroup.get('appointmentStatus')?.errors?.['required']">
+                  Appointment Status is Required
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="text-muted">Appointment Date</label>
+              <input
+                type="date"
+                class="form-control form-font rounded-0 mt-1 mb-3" [ngClass]="{'is-invalid' : submitted && appointmentFormGroup.controls['appointmentDate'].errors}"
+                formControlName="appointmentDate"/>
+              <div *ngIf="submitted && appointmentFormGroup.controls['appointmentDate'].errors" class="invalid-feedback">
+                <div *ngIf="appointmentFormGroup.controls['appointmentDate'].errors?.['required']">Appointment Date is Required</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="form-group">
+              <label class="text-muted">Patient</label>
+              <select class="form-control form-font rounded-0 mt-1 mb-3"
+                      [ngClass]="{'is-invalid' : submitted && appointmentFormGroup.get('patient')?.invalid}"
+                      formControlName="patient">
+                <option [ngValue]="null" disabled> Choose Patient </option>
+                <option *ngFor="let patient of listPatients" [ngValue]="patient">
+                  {{ patient.firstName }} {{ patient.lastName }}
+                </option>
+              </select>
+              <div *ngIf="submitted && appointmentFormGroup.get('patient')?.invalid" class="invalid-feedback">
+                <div *ngIf="appointmentFormGroup.get('patient')?.errors?.['required']">Patient is Required</div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-sm btn-secondary" (click)="onCloseModal(modal)">Close</button>
+        <button type="button" class="btn btn-sm btn-primary" (click)="onSaveAppointment(modal)">Save Appointment</button>
+      </div>
+    </form>
+  </ng-container>
+  <ng-template #modalFailureOrLoading>
+    <ng-container *ngIf="errorMessagePatient ; else modalLoading">
+      <div class="text-danger">
+        {{ errorMessagePatient  }}
+      </div>
+    </ng-container>
+    <ng-template #modalLoading>
+      <div class="loader shadow-sm text-muted">
+        <span><i class="fa-solid fa-rotate fa-spin"></i> </span> &nbsp; <span>Processing...</span>
+      </div>
+    </ng-template>
+  </ng-template>
+</ng-template>
+
+
+<ng-template #updateContent let-updateModal>
+  <div class="modal-header">
+    <div class="modal-title text-muted">
+      <i class="fa-regular fa-circle-dot"></i>&nbsp; Update Appointment Form
+    </div>
+    <button type="button" class="btn-close" aria-label="Close" (click)="updateModal.dismiss('Cross click')"></button>
+  </div>
+
+  <ng-container *ngIf="patients$ | async as listPatients; else modalFailureOrLoading">
+    <form [formGroup]="updateAppointmentFormGroup" method="post">
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="text-muted"> Appointment Id</label>
+              <input type="text" class="form-control form-font rounded-0 mt-1 mb-3" formControlName="appointmentId" readonly>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="text-muted">Appointment Status</label>
+              <input type="text" class="form-control form-font rounded-0 mt-1 mb-3"
+                     [ngClass]="{'is-invalid' : submitted && updateAppointmentFormGroup.controls['appointmentStatus'].errors}"
+                     formControlName="appointmentStatus">
+              <div *ngIf="submitted && updateAppointmentFormGroup.get('appointmentStatus')?.invalid" class="invalid-feedback d-block">
+                <div *ngIf="updateAppointmentFormGroup.get('appointmentStatus')?.errors?.['required']">
+                  Appointment Status is Required
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="text-muted">Appointment Date</label>
+              <input
+                type="date"
+                class="form-control form-font rounded-0 mt-1 mb-3" [ngClass]="{'is-invalid' : submitted && updateAppointmentFormGroup.controls['appointmentDate'].errors}"
+                formControlName="appointmentDate"/>
+              <div *ngIf="submitted && updateAppointmentFormGroup.controls['appointmentDate'].errors" class="invalid-feedback">
+                <div *ngIf="updateAppointmentFormGroup.controls['appointmentDate'].errors?.['required']">Appointment Date is Required</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="form-group">
+              <label class="text-muted">Patient</label>
+              <select class="form-control form-font rounded-0 mt-1 mb-3"
+                      [ngClass]="{'is-invalid' : submitted && updateAppointmentFormGroup.get('patient')?.invalid}"
+                      formControlName="patient">
+                <option [defaultSelected]="true"
+                        [ngValue]="defaultPatient">{{defaultPatient.firstName}} {{defaultPatient.lastName}} </option>
+                <option *ngFor="let patient of listPatients" [ngValue]="patient">
+                  {{ patient.firstName }} {{ patient.lastName }}
+                </option>
+              </select>
+              <div *ngIf="submitted && updateAppointmentFormGroup.get('patient')?.invalid" class="invalid-feedback">
+                <div *ngIf="updateAppointmentFormGroup.get('patient')?.errors?.['required']">Patient is Required</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="onCloseModal(updateModal)">Close</button>
+        <button type="button" class="btn btn-sm btn-primary" (click)="onUpdateAppointment(updateModal)">Save changes</button>
+      </div>
+    </form>
+  </ng-container>
+  <ng-template #modalFailureOrLoading>
+    <ng-container *ngIf="errorMessagePatient; else modalLoading">
+      <div class="text-danger">
+        {{ errorMessagePatient }}
+      </div>
+    </ng-container>
+    <ng-template #modalLoading>
+      <div class="loader shadow-sm text-muted">
+        <span><i class="fa-solid fa-rotate fa-spin"></i> </span> &nbsp; <span>Processing...</span>
+      </div>
+    </ng-template>
+  </ng-template>
+</ng-template>

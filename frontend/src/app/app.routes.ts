@@ -3,10 +3,13 @@ import {PatientsComponent} from './components/patients/patients.component';
 import {NavbarComponent} from './components/navbar/navbar.component';
 import {AppointmentsComponent} from './components/appointments/appointments.component';
 import {DoctorsComponent} from './components/doctors/doctors.component';
-import {ConsultationsComponent} from './components/consultations/consultations.component';
 import {HeaderComponent} from './components/header/header.component';
 import {HospitalsComponent} from './components/hospitals/hospitals.component';
 import {SpecializationsComponent} from './components/specializations/specializations.component';
+import {AppointmentsPatientComponent} from './components/appointments-patient/appointments-patient.component';
+import {AppointmentsDoctorComponent} from './components/appointments-doctor/appointments-doctor.component';
+import {ConsultationsPatientComponent} from './components/consultations-patient/consultations-patient.component';
+import {ConsultationsDoctorComponent} from './components/consultations-doctor/consultations-doctor.component';
 
 
 export const routes: Routes = [
@@ -14,9 +17,12 @@ export const routes: Routes = [
   { path: 'patients', component: PatientsComponent },
   { path: 'doctors', component: DoctorsComponent },
   { path: 'appointments', component: AppointmentsComponent },
-  { path: 'consultations', component: ConsultationsComponent },
   { path: 'hospitals', component: HospitalsComponent },
   { path: 'specializations', component: SpecializationsComponent },
   { path: 'navbar', component: NavbarComponent },
-  { path: 'header', component: HeaderComponent}
+  { path: 'header', component: HeaderComponent},
+  { path: 'patient-appointments/:id', component: AppointmentsPatientComponent},
+  { path: 'doctor-appointments/:id', component: AppointmentsDoctorComponent},
+  { path: 'patient-consultations/:id', component: ConsultationsPatientComponent},
+  { path: 'doctor-consultations/:id', component: ConsultationsDoctorComponent}
 ];

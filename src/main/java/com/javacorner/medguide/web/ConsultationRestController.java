@@ -1,9 +1,7 @@
 package com.javacorner.medguide.web;
 
-import com.javacorner.medguide.dto.AppointmentDTO;
 import com.javacorner.medguide.dto.ConsultationDTO;
 import com.javacorner.medguide.service.ConsultationService;
-import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -11,11 +9,11 @@ import java.util.List;
 @RestController
 @RequestMapping("/consultations")
 @CrossOrigin("*")
-public class ConsultationrestController {
+public class ConsultationRestController {
 
     private ConsultationService consultationService;
 
-    public ConsultationrestController(ConsultationService consultationService) {
+    public ConsultationRestController(ConsultationService consultationService) {
         this.consultationService = consultationService;
     }
 

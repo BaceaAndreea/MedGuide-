@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, inject, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {AsyncPipe, CommonModule, NgForOf, NgIf} from '@angular/common';
 import {AppointmentsService} from '../../services/appointments.service';
@@ -45,7 +45,10 @@ export class AppointmentsComponent implements OnInit{
   defaultDoctor!: Doctor;
   defaultPatient!: Patient;
 
-  constructor(private modalService: NgbModal,private fb: FormBuilder, private appointmentService : AppointmentsService, private doctorService: DoctorsService, private patientService : PatientsService) { }
+  private appointmentService = inject(AppointmentsService); // Folosește inject()
+
+  constructor(private modalService: NgbModal,private fb: FormBuilder,
+              private doctorService: DoctorsService, private patientService : PatientsService) { }
 
   ngOnInit(): void {
     this.searchFormGroup = this.fb.group({
@@ -62,7 +65,6 @@ export class AppointmentsComponent implements OnInit{
   }
 
 
-  // Deschide modalul
   openModal(content: any){
     this.submitted=false;
     this.fetchDoctors();

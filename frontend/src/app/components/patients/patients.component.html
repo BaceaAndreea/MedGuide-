@@ -11,75 +11,279 @@
       <div class="box-header">
         <div class="box-header-title">Patients</div>
         <div class="box-header-button">
-          <button class="btn btn-primary-gradient" (click)="openModal()">New Patient</button>
+          <button class="btn btn-primary-gradient" (click)="openModal(content)">New Patient</button>
         </div>
       </div>
       <div class="box-content">
-        <table class="table table-bordered table-hover">
-          <thead>
-          <tr>
-            <th>Patient Id</th>
-            <th>Patient First Name</th>
-            <th>Patient Last Name</th>
-            <th>Patient Medical History</th>
-            <th>Patient Allergies</th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr>
-            <td>1</td>
-            <td>John</td>
-            <td>Doe</td>
-            <td>None</td>
-            <td>Peanuts</td>
-          </tr>
-          </tbody>
-        </table>
+        <ng-container *ngIf="pagePatients | async as listPatients; else failureOrLoading">
+          <div *ngIf="searchFormGroup" class="mb-2">
+            <form [formGroup]="searchFormGroup" (ngSubmit)="handleSearchPatients()">
+              <div class="input-group w-25">
+                <input type="search" formControlName="keyword" class="form-control rounded mx-2" placeholder="Search" aria-label="Search">
+                <button type="submit" class="btn btn-outline-primary">Search</button>
+              </div>
+            </form>
+          </div>
+          <table class="table table-bordered table-hover">
+            <thead>
+            <tr>
+              <th>Patient ID</th>
+              <th>First Name</th>
+              <th>Last Name</th>
+              <th>Medical History</th>
+              <th>Allergies</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let p of listPatients.content">
+              <td>{{ p.patientId }}</td>
+              <td>{{ p.firstName }}</td>
+              <td>{{ p.lastName }}</td>
+              <td>{{ p.medicalHistory.join(', ') || 'None' }}</td>
+              <td>{{ p.allergies.join(', ') || 'None' }}</td>
+              <td>
+                <button (click)="handleDeletePatients(p)" class="btn btn-danger">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </td>
+              <td>
+                <button (click)="getAppointmentModal(p, appointmentContent)" class="btn btn-info">
+                  Appointments
+                </button>
+              </td>
+              <td>
+                <button (click)="getUpdatePatientModal(p, updateContent)" class="btn btn-success">
+                  <i class="bi bi-pencil-square"></i>
+                </button>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+          <ul class="pagination justify-content-center">
+            <li *ngFor="let item of [].constructor(listPatients.totalPages); let page=index" class="page-item"
+                [ngClass]="{'active': page === currentPage}">
+              <a (click)="gotoPage(page)" class="page-link">{{page}}</a>
+            </li>
+          </ul>
+        </ng-container>
+        <ng-template #failureOrLoading>
+          <ng-container *ngIf="errorMessage; else loading">
+            <div class="text-danger">
+              {{ errorMessage }}
+            </div>
+          </ng-container>
+          <ng-template #loading>
+            <div class="loader shadow-sm text-muted">
+              <span><i class="fa-solid fa-rotate fa-spin"></i></span> &nbsp; <span>Processing...</span>
+            </div>
+          </ng-template>
+        </ng-template>
       </div>
     </div>
   </div>
 </div>
 
-
 <ng-template #content let-modal>
   <div class="modal-header">
-    <div class="modal-title text-muted"><i class="fa-regular fa-circle-dot"></i>&nbsp; Patient Registration Form</div>
+    <div class="modal-title text-muted"><i class="fa-regular fa-circle-dot"></i>&nbsp; Patient Form</div>
     <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
   </div>
-  <div class="modal-body">
-    <div class="row">
-      <div class="col-md-4">
-        <div class="form-group">
-          <label class="text-muted">First Name</label>
-          <input type="text" class="form-control form-font rounded-0 mt-1 mb-3" name="firstName">
-        </div>
-      </div>
 
-      <div class="col-md-4">
-        <div class="form-group">
-          <label class="text-muted">Last Name</label>
-          <input type="text" class="form-control form-font rounded-0 mt-1 mb-3" name="lastName">
-        </div>
-      </div>
+  <form [formGroup]="patientFormGroup" method="post">
+    <div class="modal-body">
+      <div class="row">
 
-      <div class="col-md-4">
-        <div class="form-group">
-          <label class="text-muted">Medical History</label>
-          <textarea class="form-control form-font rounded-0 mt-1 mb-3" name="medicalHistory" rows="2"></textarea>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="text-muted">First Name</label>
+            <input type="text" class="form-control form-font rounded-0 mt-1 mb-3"
+                   [ngClass]="{'is-invalid': submitted && patientFormGroup.controls['firstName'].errors}"
+                   formControlName="firstName">
+            <div *ngIf="submitted && patientFormGroup.get('firstName')?.invalid" class="invalid-feedback d-block">
+              <div *ngIf="patientFormGroup.get('firstName')?.errors?.['required']">First Name is Required</div>
+            </div>
+          </div>
         </div>
-      </div>
 
-      <div class="col-md-4">
-        <div class="form-group">
-          <label class="text-muted">Allergies</label>
-          <textarea class="form-control form-font rounded-0 mt-1 mb-3" name="allergies" rows="2"></textarea>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="text-muted">Last Name</label>
+            <input type="text" class="form-control form-font rounded-0 mt-1 mb-3"
+                   [ngClass]="{'is-invalid': submitted && patientFormGroup.controls['lastName'].errors}"
+                   formControlName="lastName">
+            <div *ngIf="submitted && patientFormGroup.get('lastName')?.invalid" class="invalid-feedback d-block">
+              <div *ngIf="patientFormGroup.get('lastName')?.errors?.['required']">Last Name is Required</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="text-muted">Medical History</label>
+            <textarea class="form-control form-font rounded-0 mt-1 mb-3"
+                      [ngClass]="{'is-invalid': submitted && patientFormGroup.controls['medicalHistory'].errors}"
+                      formControlName="medicalHistory" rows="2"></textarea>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="text-muted">Allergies</label>
+            <textarea class="form-control form-font rounded-0 mt-1 mb-3"
+                      formControlName="allergies" rows="2"></textarea>
+          </div>
+        </div>
+
+        <div formGroupName="user">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="text-muted">Email</label>
+              <input type="email" class="form-control form-font rounded-0 mt-1 mb-3"
+                     [ngClass]="{'is-invalid': submitted && patientFormGroup.get('user.email')?.invalid}"
+                     formControlName="email">
+              <div *ngIf="submitted && patientFormGroup.get('user.email')?.invalid" class="invalid-feedback d-block">
+                <div *ngIf="patientFormGroup.get('user.email')?.errors?.['required']">Email is required</div>
+                <div *ngIf="patientFormGroup.get('user.email')?.errors?.['email']">Invalid email format</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="form-group">
+              <label class="text-muted">Password</label>
+              <input type="password" class="form-control form-font rounded-0 mt-1 mb-3"
+                     [ngClass]="{'is-invalid': submitted && patientFormGroup.get('user.password')?.errors}"
+                     formControlName="password">
+              <div *ngIf="submitted && patientFormGroup.get('user.password')?.invalid" class="invalid-feedback d-block">
+                <div *ngIf="patientFormGroup.get('user.password')?.errors?.['required']">Password is required</div>
+                <div *ngIf="patientFormGroup.get('user.password')?.errors?.['minlength']">Password must be at least 6 characters long</div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-  <div class="modal-footer">
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" (click)="onCloseModal(modal)">Close</button>
+      <button type="button" class="btn btn-sm btn-primary" (click)="onSavePatient(modal)">Save changes</button>
+    </div>
+  </form>
+</ng-template>
 
-    <button type="button" class="btn btn-secondary" (click)="closeModal()">Close</button>
-    <button type="button" class="btn btn-sm btn-primary" (click)="modal.close('Save click')">Save changes</button>
+
+<ng-template  #appointmentContent let-appointmentModal>>
+  <div class="modal-header">
+    <div class="modal-title text-muted"><i class="fa-regular fa-circle-dot"></i>&nbsp; Patient Appointments</div>
+    <button type="button" class="btn-close" aria-label="Close" (click)="appointmentModal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+    <div class="box-content">
+      <ng-container *ngIf="pageAppointment$ | async as listAppointments; else failureOrLoading">
+        <table class="table table-bordered table-hover">
+          <thead>
+          <tr>
+            <th>Appointment Id</th>
+            <th>Appointment Status</th>
+            <th>Appointment Date</th>
+            <th>Doctor</th>
+            <th>Patient</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let a of listAppointments.content">
+            <td>{{a.appointmentId}}</td>
+            <td>{{a.status}}</td>
+            <td>{{a.appointmentDate}}</td>
+            <td>{{a.doctor.firstName }} {{ a.doctor.lastName }}</td>
+            <td>{{a.patient.firstName}} {{a.patient.lastName}}</td>
+          </tr>
+          </tbody>
+        </table>
+        <ul class="nav nav-pills">
+          <li *ngFor="let item of [].constructor(listAppointments.totalPages); let page = index">
+            <a [ngClass]="page==appointmentCurrentPage?'btn-info':'btn-outline-info'" (click)="gotoAppointmentsPage(page)"
+               class="btn mb-1 ms-1 mt-1">{{ page }}</a>
+          </li>
+        </ul>
+
+      </ng-container>
+      <ng-template #failureOrLoading>
+        <ng-container *ngIf="errorMessage; else loading">
+          <div class="text-danger">
+            {{errorMessage}}
+          </div>
+        </ng-container>
+        <ng-template #loading>
+          <div class="loader shadow-sm text-muted">
+            <span><i class="fa-solid fa-rotate fa-spin"></i> </span> &nbsp; <span>Processing...</span>
+          </div>
+        </ng-template>
+      </ng-template>
+    </div>
   </div>
 </ng-template>
+
+<ng-template #updateContent let-updateModal>
+  <div class="modal-header">
+    <div class="modal-title text-muted">
+      <i class="fa-regular fa-circle-dot"></i>&nbsp; Update Patient Form
+    </div>
+    <button type="button" class="btn-close" aria-label="Close" (click)="updateModal.dismiss('Cross click')"></button>
+  </div>
+
+  <form [formGroup]="updatePatientFormGroup" method="post">
+    <div class="modal-body">
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="text-muted">First Name</label>
+            <input type="text" class="form-control form-font rounded-0 mt-1 mb-3"
+                   [ngClass]="{'is-invalid': submitted && updatePatientFormGroup.controls['firstName'].errors}"
+                   formControlName="firstName">
+            <div *ngIf="submitted && updatePatientFormGroup.get('firstName')?.invalid" class="invalid-feedback d-block">
+              <div *ngIf="updatePatientFormGroup.get('firstName')?.errors?.['required']">First Name is Required</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="text-muted">Last Name</label>
+            <input type="text" class="form-control form-font rounded-0 mt-1 mb-3"
+                   [ngClass]="{'is-invalid': submitted && updatePatientFormGroup.controls['lastName'].errors}"
+                   formControlName="lastName">
+            <div *ngIf="submitted && updatePatientFormGroup.get('lastName')?.invalid" class="invalid-feedback d-block">
+              <div *ngIf="updatePatientFormGroup.get('lastName')?.errors?.['required']">Last Name is Required</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="text-muted">Medical History</label>
+            <textarea class="form-control form-font rounded-0 mt-1 mb-3"
+                      formControlName="medicalHistory"
+                      [value]="updatePatientFormGroup.get('medicalHistory')?.value"
+                      rows="2"></textarea>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="text-muted">Allergies</label>
+            <textarea class="form-control form-font rounded-0 mt-1 mb-3"
+                      formControlName="allergies"
+                      [value]="updatePatientFormGroup.get('allergies')?.value"
+                      rows="2"></textarea>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" (click)="onCloseModal(updateModal)">Close</button>
+      <button type="button" class="btn btn-sm btn-primary" (click)="onUpdatePatient(updateModal)">Save changes</button>
+    </div>
+  </form>
+</ng-template>
+

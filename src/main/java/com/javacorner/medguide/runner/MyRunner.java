@@ -84,7 +84,7 @@ public class MyRunner implements CommandLineRunner {
         List<HospitalDTO> hospitals = hospitalService.fetchHospitals();
         List<SpecializationDTO> specializations = specializationService.fetchAllSpecializations();
 
-        for (int i = 0; i < 3; i++) {
+        for (int i = 1; i < 3; i++) {
             DoctorDTO doctorDTO = new DoctorDTO();
             doctorDTO.setFirstName("Doctor" + i + "FN");
             doctorDTO.setLastName("Doctor" + i + "LN");
@@ -139,14 +139,27 @@ public class MyRunner implements CommandLineRunner {
     }
 
     private void createConsultation() {
-        // Obține toate programările existente din baza de date
         List<AppointmentDTO> appointments = appointmentService.fetchAllAppointments();
 
-        for (int i = 0; i < appointments.size(); i++) {
+        for (AppointmentDTO appointment : appointments) {
+            if (appointment.getPatient() == null || appointment.getDoctor() == null) {
+                System.out.println("Skipping consultation creation for appointment ID " + appointment.getAppointmentId() + " because doctor or patient is null");
+                continue;
+            }
+
             ConsultationDTO consultationDTO = new ConsultationDTO();
-            consultationDTO.setDiagnosis("Diagnosis for appointment " + (i + 1));
-            consultationDTO.setAppointmentId(appointments.get(i).getAppointmentId());
+            consultationDTO.setDiagnosis("Diagnosis for appointment " + appointment.getAppointmentId());
+            consultationDTO.setAppointmentId(appointment.getAppointmentId());
+            consultationDTO.setPatientId(appointment.getPatient().getPatientId());
+            consultationDTO.setDoctorId(appointment.getDoctor().getDoctorId());
+
+            System.out.println("Creating consultation for appointment ID " + appointment.getAppointmentId() +
+                    " with doctor ID " + appointment.getDoctor().getDoctorId() +
+                    " and patient ID " + appointment.getPatient().getPatientId());
+
             consultationService.createConsultation(consultationDTO);
         }
     }
+
+
 }

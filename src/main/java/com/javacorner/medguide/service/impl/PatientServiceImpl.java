@@ -1,5 +1,7 @@
 package com.javacorner.medguide.service.impl;
 
+import com.javacorner.medguide.dao.AppointmentDao;
+import com.javacorner.medguide.dao.ConsultationDao;
 import com.javacorner.medguide.dao.PatientDao;
 import com.javacorner.medguide.domain.Appointment;
 import com.javacorner.medguide.domain.Patient;
@@ -15,6 +17,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,11 +29,15 @@ public class PatientServiceImpl implements PatientService {
     private PatientDao patientDao;
     private PatientMapper patientMapper;
     private UserService userService;
+    private ConsultationDao consultationDao;
+    private AppointmentDao appointmentDao;
 
-    public PatientServiceImpl(PatientDao patientDao, PatientMapper patientMapper, UserService userService) {
+    public PatientServiceImpl(PatientDao patientDao, PatientMapper patientMapper, UserService userService, ConsultationDao consultationDao, AppointmentDao appointmentDao) {
         this.patientDao = patientDao;
         this.patientMapper = patientMapper;
         this.userService = userService;
+        this.consultationDao = consultationDao;
+        this.appointmentDao = appointmentDao;
     }
 
     @Override
@@ -58,18 +65,27 @@ public class PatientServiceImpl implements PatientService {
         patient.setUser(user);
         Patient savedPatient = patientDao.save(patient);
         return patientMapper.fromPatient(savedPatient);
-
     }
 
     @Override
     public PatientDTO updatePatient(PatientDTO patientDTO) {
-        Patient lodadedPatient = loadPatientById(patientDTO.getPatientId());
-        Patient patient = patientMapper.fromPatientDTO(patientDTO);
-        patient.setUser(lodadedPatient.getUser());
-        patient.setAppointments(lodadedPatient.getAppointments());
-        Patient updatedPatient = patientDao.save(patient);
+        Patient loadedPatient = loadPatientById(patientDTO.getPatientId());
+
+        loadedPatient.setFirstName(patientDTO.getFirstName());
+        loadedPatient.setLastName(patientDTO.getLastName());
+
+        loadedPatient.getMedicalHistory().clear(); // Ștergem valorile vechi
+        loadedPatient.getMedicalHistory().addAll(patientDTO.getMedicalHistory()); // Adăugăm noile valori
+
+
+        loadedPatient.getAllergies().clear(); // Ștergem valorile vechi
+        loadedPatient.getAllergies().addAll(patientDTO.getAllergies()); // Adăugăm noile valori
+
+        Patient updatedPatient = patientDao.save(loadedPatient);
+
         return patientMapper.fromPatient(updatedPatient);
     }
+
 
     @Override
     public List<PatientDTO> fetchPatients() {
@@ -79,13 +95,16 @@ public class PatientServiceImpl implements PatientService {
     //we did an iteration over the appointments of each patient's, and over each of the iterations, we deleted the patient from the appointment
     //example: if we need to delete a patient, we must delete the subscription of that patient from all the appointments that they're subscribed to
     @Override
+    @Transactional
     public void removePatient(Long patientId) {
         Patient patient = loadPatientById(patientId);
-        Iterator<Appointment> appointmentIterator = patient.getAppointments().iterator();
-        if(appointmentIterator.hasNext()) {
-            Appointment appointment = appointmentIterator.next();
-            appointment.removePatientFromAppointment(patient);
-        }
+
+        // Șterge toate programările pacientului (Consultation se șterge automat)
+        // Consultation se șterge automat din cauza cascadei
+        appointmentDao.deleteAll(new ArrayList<>(patient.getAppointments()));
+
+        // Șterge pacientul
         patientDao.deleteById(patientId);
     }
+
 }

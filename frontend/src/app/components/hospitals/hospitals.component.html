@@ -11,33 +11,71 @@
       <div class="box-header">
         <div class="box-header-title">Hospitals</div>
         <div class="box-header-button">
-          <button class="btn btn-primary-gradient" (click)="openModal()">New Hospital</button>
+          <button class="btn btn-primary-gradient" (click)="openModal(content)">New Hospital</button>
         </div>
       </div>
       <div class="box-content">
-        <table class="table table-bordered table-hover">
-          <thead>
-          <tr>
-            <th>Hospital Id</th>
-            <th>Hospital Name</th>
-            <th>Address</th>
-            <th>City</th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr>
-            <td>1</td>
-            <td>City Hospital</td>
-            <td>123 Main Street</td>
-            <td>New York</td>
-          </tr>
-          </tbody>
-        </table>
+        <ng-container *ngIf="pageHospitals | async as listHospitals; else failureOrLoading">
+          <div *ngIf="searchFormGroup" class="mb-2">
+            <form [formGroup]="searchFormGroup" (ngSubmit)="handleSearchHospitals()">
+              <div class="input-group w-25">
+                <input type="search" formControlName = "keyword" class = "form-control rounded mx-2" placeholder="Search" aria-label="Search">
+                <button type="submit" class="btn btn-outline-primary">search</button>
+              </div>
+            </form>
+          </div>
+          <table class="table table-bordered table-hover">
+            <thead>
+            <tr>
+              <th>Hospital Id</th>
+              <th>Hospital Name</th>
+              <th>Address</th>
+              <th>City</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let h of listHospitals.content">
+              <td>{{h.hospitalId}}</td>
+              <td>{{h.name}}</td>
+              <td>{{h.address}}</td>
+              <td>{{h.city}}</td>
+              <td>
+                <button (click)="handleDeleteHospital(h)" class="btn btn-danger">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </td>
+              <td>
+                <button (click)="getUpdateHospitalModal(h, updateContent)" class="btn btn-success">
+                  <i class="bi bi-pencil-square"></i>
+                </button>
+              </td>
+
+            </tr>
+            </tbody>
+          </table>
+          <ul class="pagination justify-content-center">
+            <li *ngFor="let item of [].constructor(listHospitals.totalPages); let page=index" class="page-item"
+                [ngClass]="{'active': page === currentPage}">
+              <a (click)="gotoPage(page)" class="page-link">{{page}}</a>
+            </li>
+          </ul>
+        </ng-container>
+        <ng-template #failureOrLoading>
+          <ng-container *ngIf="errorMessage; else loading">
+            <div class="text-danger">
+              {{errorMessage}}
+            </div>
+          </ng-container>
+          <ng-template #loading>
+            <div class="loader shadow-sm text-muted">
+              <span><i class="fa-solid fa-rotate fa-spin"></i> </span> &nbsp; <span>Processing...</span>
+            </div>
+          </ng-template>
+        </ng-template>
       </div>
     </div>
   </div>
 </div>
-
 
 <ng-template #content let-modal>
   <div class="modal-header">
@@ -46,61 +84,112 @@
     </div>
     <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
   </div>
-  <div class="modal-body">
-    <div class="row">
-      <div class="col-md-4">
-        <div class="form-group">
-          <label class="text-muted">Hospital Id</label>
-          <input
-            type="number"
-            class="form-control form-font rounded-0 mt-1 mb-3"
-            name="hospitalId"
-          />
-        </div>
-      </div>
 
-      <div class="col-md-4">
-        <div class="form-group">
-          <label class="text-muted">Name</label>
-          <input
-            type="text"
-            class="form-control form-font rounded-0 mt-1 mb-3"
-            name="name"
-          />
-        </div>
-      </div>
+  <form [formGroup]="hospitalFormGroup" method="post">
+    <div class="modal-body">
+      <div class="row">
 
-      <div class="col-md-4">
-        <div class="form-group">
-          <label class="text-muted">Address</label>
-          <textarea
-            class="form-control form-font rounded-0 mt-1 mb-3"
-            name="address"
-            rows="2"
-          ></textarea>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="text-muted">Name</label>
+            <input type="text" class="form-control form-font rounded-0 mt-1 mb-3"
+                   [ngClass]="{'is-invalid': submitted && hospitalFormGroup.controls['name'].errors}"
+                   formControlName="name">
+            <div *ngIf="submitted && hospitalFormGroup.get('name')?.invalid" class="invalid-feedback d-block">
+              <div *ngIf="hospitalFormGroup.get('name')?.errors?.['required']">Name is required</div>
+            </div>
+          </div>
         </div>
-      </div>
 
-      <div class="col-md-4">
-        <div class="form-group">
-          <label class="text-muted">City</label>
-          <input
-            type="text"
-            class="form-control form-font rounded-0 mt-1 mb-3"
-            name="city"
-          />
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="text-muted">Address</label>
+            <textarea class="form-control form-font rounded-0 mt-1 mb-3"
+                      [ngClass]="{'is-invalid': submitted && hospitalFormGroup.controls['address'].errors}"
+                      formControlName="address" rows="2"></textarea>
+            <div *ngIf="submitted && hospitalFormGroup.get('address')?.invalid" class="invalid-feedback d-block">
+              <div *ngIf="hospitalFormGroup.get('address')?.errors?.['required']">Address is required</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="text-muted">City</label>
+            <input type="text" class="form-control form-font rounded-0 mt-1 mb-3"
+                   [ngClass]="{'is-invalid': submitted && hospitalFormGroup.controls['city'].errors}"
+                   formControlName="city">
+            <div *ngIf="submitted && hospitalFormGroup.get('city')?.invalid" class="invalid-feedback d-block">
+              <div *ngIf="hospitalFormGroup.get('city')?.errors?.['required']">City is required</div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
+
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" (click)="onCloseModal(modal)">Close</button>
+      <button type="button" class="btn btn-sm btn-primary" (click)="onSaveHospital(modal)">Save changes</button>
+    </div>
+  </form>
+</ng-template>
+
+
+<ng-template #updateContent let-updateModal>
+  <div class="modal-header">
+    <div class="modal-title text-muted">
+      <i class="fa-regular fa-circle-dot"></i>&nbsp; Update Hospital Form
+    </div>
+    <button type="button" class="btn-close" aria-label="Close" (click)="updateModal.dismiss('Cross click')"></button>
   </div>
-  <div class="modal-footer">
-    <button type="button" class="btn btn-secondary" (click)="closeModal()">Close</button>
-    <button
-      type="button"
-      class="btn btn-sm btn-primary"
-      (click)="modal.close('Save click')"
-    >
-      Save changes
-    </button>
-  </div>
+
+
+  <form [formGroup]="updateHospitalFormGroup" method="post">
+    <div class="modal-body">
+      <div class="row">
+
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="text-muted">Name</label>
+            <input type="text" class="form-control form-font rounded-0 mt-1 mb-3"
+                   [ngClass]="{'is-invalid': submitted && updateHospitalFormGroup.controls['name'].errors}"
+                   formControlName="name">
+            <div *ngIf="submitted && updateHospitalFormGroup.get('name')?.invalid" class="invalid-feedback d-block">
+              <div *ngIf="updateHospitalFormGroup.get('name')?.errors?.['required']">Name is required</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="text-muted">Address</label>
+            <textarea class="form-control form-font rounded-0 mt-1 mb-3"
+                      [ngClass]="{'is-invalid': submitted && updateHospitalFormGroup.controls['address'].errors}"
+                      formControlName="address" rows="2"></textarea>
+            <div *ngIf="submitted && updateHospitalFormGroup.get('address')?.invalid" class="invalid-feedback d-block">
+              <div *ngIf="updateHospitalFormGroup.get('address')?.errors?.['required']">Address is required</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="text-muted">City</label>
+            <input type="text" class="form-control form-font rounded-0 mt-1 mb-3"
+                   [ngClass]="{'is-invalid': submitted && updateHospitalFormGroup.controls['city'].errors}"
+                   formControlName="city">
+            <div *ngIf="submitted && updateHospitalFormGroup.get('city')?.invalid" class="invalid-feedback d-block">
+              <div *ngIf="updateHospitalFormGroup.get('city')?.errors?.['required']">City is required</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" (click)="onCloseModal(updateModal)">Close</button>
+      <button type="button" class="btn btn-sm btn-primary" (click)="onUpdateHospital(updateModal)">Save changes</button>
+    </div>
+  </form>
+
 </ng-template>

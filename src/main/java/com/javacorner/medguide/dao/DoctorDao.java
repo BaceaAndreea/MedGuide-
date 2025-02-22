@@ -17,6 +17,8 @@ public interface DoctorDao extends JpaRepository<Doctor, Long> {
     @Query(value = "select d from Doctor  as d where d.user.email=:email")
     Doctor findDoctorByEmail(@Param("email") String email);
 
+    @Query("SELECT d FROM Doctor d WHERE d.hospital.hospitalId = :hospitalId")
+    List<Doctor> findByHospitalId(@Param("hospitalId") Long hospitalId);
 
 
 }

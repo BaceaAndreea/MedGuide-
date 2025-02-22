@@ -34,9 +34,13 @@ public class Consultation {
         return consultationId.equals(that.consultationId) && Objects.equals(appointment, that.appointment) && Objects.equals(diagnosis, that.diagnosis);
     }
 
+//    @Override
+//    public int hashCode() {
+//        return Objects.hash(consultationId, appointment, diagnosis);
+//    }
     @Override
     public int hashCode() {
-        return Objects.hash(consultationId, appointment, diagnosis);
+        return Objects.hash(this.getConsultationId());
     }
 
     public Long getConsultationId() {

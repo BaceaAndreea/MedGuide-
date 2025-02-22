@@ -56,8 +56,9 @@ public class Appointment {
 
     @Override
     public int hashCode() {
-        return Objects.hash(appointmentId, appointmentDate, status, patient, doctor, consultation);
+        return Objects.hash(this.getAppointmentId()); // Folosește doar ID-ul pentru hash
     }
+
 
     public Long getAppointmentId() {
         return appointmentId;
