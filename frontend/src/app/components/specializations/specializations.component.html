@@ -1,8 +1,8 @@
 <div class="main-container">
   <header class="top-bar">
-    <div class="top-bar-left">Specializations</div>
+    <div class="top-bar-left">Hello</div>
     <div class="top-bar-right">
-      <button class="btn btn-primary" (click)="openModal(content)">New Specialization</button>
+      <span>Admin</span> | <a href="#">Signout</a>
     </div>
   </header>
 
@@ -11,7 +11,7 @@
       <div class="box-header">
         <div class="box-header-title">Specializations</div>
         <div class="box-header-button">
-          <button class="btn btn-primary-gradient" (click)="openModal(content)">New Hospital</button>
+          <button class="btn btn-primary-gradient" (click)="openModal(content)">New Specialization</button>
         </div>
       </div>
       <div class="box-content">
@@ -28,13 +28,24 @@
             <thead>
             <tr>
               <th>Specialization ID</th>
-              <th>Specialization Name</th>
+              <th>Specialization Description</th>
+              <th></th>
             </tr>
             </thead>
             <tbody>
             <tr *ngFor="let spec of listSpecializations.content">
               <td>{{spec.specializationId}}</td>
               <td>{{spec.description}}</td>
+              <td>
+                <button (click)="handleDeleteSpecialization(spec)" class="btn btn-danger">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </td>
+              <td>
+                <button (click)="getUpdateSpecializationModal(spec, updateContent)" class="btn btn-success">
+                  <i class="bi bi-pencil-square"></i>
+                </button>
+              </td>
             </tr>
             </tbody>
           </table>
@@ -69,25 +80,55 @@
     </div>
     <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
   </div>
-  <div class="modal-body">
-    <div class="row">
-      <div class="col-md-6">
-        <div class="form-group">
-          <label class="text-muted">Name</label>
-          <input type="text" class="form-control form-font rounded-0 mt-1 mb-3" name="name" />
-        </div>
-      </div>
-
-      <div class="col-md-6">
-        <div class="form-group">
-          <label class="text-muted">Description</label>
-          <textarea class="form-control form-font rounded-0 mt-1 mb-3" name="description" rows="2"></textarea>
+  <form [formGroup]="specializationFormGroup" method="post">
+    <div class="modal-body">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="form-group">
+            <label class="text-muted">Description</label>
+            <textarea class="form-control form-font rounded-0 mt-1 mb-3"
+                      [ngClass]="{'is-invalid': submitted && specializationFormGroup.controls['description'].errors}"
+                      formControlName="description" rows="2"></textarea>
+            <div *ngIf="submitted && specializationFormGroup.get('description')?.invalid" class="invalid-feedback d-block">
+              <div *ngIf="specializationFormGroup.get('description')?.errors?.['required']">Description is required</div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" (click)="onCloseModal(modal)">Close</button>
+      <button type="button" class="btn btn-sm btn-primary" (click)="onSaveSpecialization(modal)">Save changes</button>
+    </div>
+  </form>
+</ng-template>
+
+<ng-template #updateContent let-updateModal>
+  <div class="modal-header">
+    <div class="modal-title text-muted">
+      <i class="fa-regular fa-circle-dot"></i> Update Specialization Form
+    </div>
+    <button type="button" class="btn-close" aria-label="Close" (click)="updateModal.dismiss('Cross click')"></button>
   </div>
-  <div class="modal-footer">
-    <button type="button" class="btn btn-secondary" (click)="closeModal()">Close</button>
-    <button type="button" class="btn btn-sm btn-primary" (click)="modal.close('Save click')">Save changes</button>
-  </div>
+  <form [formGroup]="updateSpecializationFormGroup" method="post">
+    <div class="modal-body">
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="text-muted">Description</label>
+            <textarea class="form-control form-font rounded-0 mt-1 mb-3"
+                      [ngClass]="{'is-invalid': submitted && updateSpecializationFormGroup.controls['description'].errors}"
+                      formControlName="description" rows="2"></textarea>
+            <div *ngIf="submitted && updateSpecializationFormGroup.get('description')?.invalid" class="invalid-feedback d-block">
+              <div *ngIf="updateSpecializationFormGroup.get('description')?.errors?.['required']">Description is required</div>
+            </div>
+        </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" (click)="onCloseModal(updateModal)">Close</button>
+      <button type="button" class="btn btn-sm btn-primary" (click)="onUpdateSpecialization(updateModal)">Save changes</button>
+    </div>
+  </form>
 </ng-template>

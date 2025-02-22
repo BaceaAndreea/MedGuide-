@@ -67,4 +67,6 @@ public class ConsultationServiceImpl implements ConsultationService {
                 .orElseThrow(() -> new EntityNotFoundException("Consultation with ID " + consultationId + " not found"));
         consultationDao.delete(consultation);
     }
+
+
 }

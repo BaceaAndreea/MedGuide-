@@ -32,8 +32,6 @@ export class HospitalsComponent  implements OnInit{
   updateHospitalFormGroup!:FormGroup;
 
 
-
-
   constructor(private modalService : NgbModal, private fb : FormBuilder, private hospitalsService : HospitalsService) { }
 
   ngOnInit(): void {
@@ -56,11 +54,12 @@ export class HospitalsComponent  implements OnInit{
     this.submitted = false;
     this.modalService.open(content, {size : 'xl'})
   }
-
   onCloseModal(modal: any) {
     modal.close();
     this.hospitalFormGroup.reset();
   }
+
+
 
   handleSearchHospitals() {
     let keyword = this.searchFormGroup.value.keyword;

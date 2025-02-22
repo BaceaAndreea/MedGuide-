@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {Specialization} from '../model/specialization.model';
 import {environment} from '../../environments/environment';
@@ -22,12 +22,17 @@ export class SpecializationsService {
     );
   }
 
-  public createSpecialization(specialization: Specialization): Observable<Specialization> {
-    return this.http.post<Specialization>(environment.backendHost + "/specializations", specialization);
+
+  public createSpecialization(specialization: any): Observable<any> {
+    return this.http.post(environment.backendHost + "/specializations", specialization, {
+      headers: new HttpHeaders({ "Content-Type": "application/json" }) //Aceasta asigură că Angular trimite corect Content-Type: application/json, la fel ca Postman.
+    });
   }
 
-  public updateSpecialization(specializationId: number, specialization: Specialization): Observable<Specialization> {
-    return this.http.put<Specialization>(environment.backendHost + "/specializations/" + specializationId, specialization);
+  public updateSpecialization(specialization: any, specializationId: number): Observable<any> {
+    return this.http.put(environment.backendHost + "/specializations/" + specializationId, specialization, {
+      headers: new HttpHeaders({ "Content-Type": "application/json" })
+    });
   }
 
   public deleteSpecialization(specializationId: number): Observable<void> {
