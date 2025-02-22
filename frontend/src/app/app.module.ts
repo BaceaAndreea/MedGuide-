@@ -22,7 +22,7 @@ import { routes } from './app.routes';
   imports: [
     BrowserModule,
     FormsModule,
-    RouterModule.forRoot(routes),
+    RouterModule.forRoot(routes)
 
   ],
   providers: [

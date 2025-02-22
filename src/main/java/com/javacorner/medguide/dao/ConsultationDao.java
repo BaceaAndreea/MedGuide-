@@ -1,10 +1,12 @@
 package com.javacorner.medguide.dao;
 
 import com.javacorner.medguide.domain.Consultation;
+import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -20,4 +22,8 @@ public interface ConsultationDao extends JpaRepository<Consultation, Long> {
 
     Consultation findConsultationByDiagnosis(String diagnosis);
 
+    @Transactional
+    @Modifying
+    @Query("DELETE FROM Consultation c WHERE c.appointment.appointmentId = :appointmentId")
+    void deleteByAppointmentId(@Param("appointmentId") Long appointmentId);
 }

@@ -2,10 +2,7 @@ package com.javacorner.medguide.domain;
 
 import jakarta.persistence.*;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(name = "patients")
@@ -47,8 +44,8 @@ public class Patient {
     public Patient(String firstName, String lastName, List<String> medicalHistory, List<String> allergies, User user) {
         this.firstName = firstName;
         this.lastName = lastName;
-        this.medicalHistory = medicalHistory;
-        this.allergies = allergies;
+        this.medicalHistory = new ArrayList<>();
+        this.allergies = new ArrayList<>();
         this.user = user;
     }
 
@@ -62,7 +59,7 @@ public class Patient {
 
     @Override
     public int hashCode() {
-        return Objects.hash(patientId, firstName, lastName, medicalHistory, allergies);
+        return Objects.hash(this.getPatientId());
     }
 
     public Long getPatientId() {

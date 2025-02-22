@@ -1,8 +1,8 @@
 <div class="main-container">
   <header class="top-bar">
-    <div class="top-bar-left">Hello</div>
+    <div class="top-bar-left">Specializations</div>
     <div class="top-bar-right">
-      <span>Admin</span> | <a href="#">Signout</a>
+      <button class="btn btn-primary" (click)="openModal(content)">New Specialization</button>
     </div>
   </header>
 
@@ -11,24 +11,52 @@
       <div class="box-header">
         <div class="box-header-title">Specializations</div>
         <div class="box-header-button">
-          <button class="btn btn-primary-gradient" (click)="openModal()">New Specialization</button>
+          <button class="btn btn-primary-gradient" (click)="openModal(content)">New Hospital</button>
         </div>
       </div>
       <div class="box-content">
-        <table class="table table-bordered table-hover">
-          <thead>
-          <tr>
-            <th>Specialization Id</th>
-            <th>Specialization Description</th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr>
-            <td>1</td>
-            <td>Cardiology</td>
-          </tr>
-          </tbody>
-        </table>
+        <ng-container *ngIf="pageSpecializations | async as listSpecializations; else failureOrLoading">
+          <div *ngIf="searchFormGroup" class="mb-2">
+            <form [formGroup]="searchFormGroup" (ngSubmit)="handleSearchSpecializations()">
+              <div class="input-group w-25">
+                <input type="search" formControlName="keyword" class="form-control rounded mx-2" placeholder="Search" aria-label="Search">
+                <button type="submit" class="btn btn-outline-primary">Search</button>
+              </div>
+            </form>
+          </div>
+          <table class="table table-bordered table-hover">
+            <thead>
+            <tr>
+              <th>Specialization ID</th>
+              <th>Specialization Name</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let spec of listSpecializations.content">
+              <td>{{spec.specializationId}}</td>
+              <td>{{spec.description}}</td>
+            </tr>
+            </tbody>
+          </table>
+          <ul class="pagination justify-content-center">
+            <li *ngFor="let item of [].constructor(listSpecializations.totalPages); let page=index" class="page-item"
+                [ngClass]="{'active': page === currentPage}">
+              <a (click)="gotoPage(page)" class="page-link">{{page}}</a>
+            </li>
+          </ul>
+        </ng-container>
+        <ng-template #failureOrLoading>
+          <ng-container *ngIf="errorMessage; else loading">
+            <div class="text-danger">
+              {{errorMessage}}
+            </div>
+          </ng-container>
+          <ng-template #loading>
+            <div class="loader shadow-sm text-muted">
+              <span><i class="fa-solid fa-rotate fa-spin"></i></span> &nbsp; <span>Processing...</span>
+            </div>
+          </ng-template>
+        </ng-template>
       </div>
     </div>
   </div>
@@ -43,37 +71,23 @@
   </div>
   <div class="modal-body">
     <div class="row">
-      <div class="col-md-4">
+      <div class="col-md-6">
         <div class="form-group">
-          <label class="text-muted">Specialization Id</label>
-          <input
-            type="number"
-            class="form-control form-font rounded-0 mt-1 mb-3"
-            name="specializationId"
-          />
+          <label class="text-muted">Name</label>
+          <input type="text" class="form-control form-font rounded-0 mt-1 mb-3" name="name" />
         </div>
       </div>
 
-      <div class="col-md-8">
+      <div class="col-md-6">
         <div class="form-group">
           <label class="text-muted">Description</label>
-          <textarea
-            class="form-control form-font rounded-0 mt-1 mb-3"
-            name="description"
-            rows="3"
-          ></textarea>
+          <textarea class="form-control form-font rounded-0 mt-1 mb-3" name="description" rows="2"></textarea>
         </div>
       </div>
     </div>
   </div>
   <div class="modal-footer">
     <button type="button" class="btn btn-secondary" (click)="closeModal()">Close</button>
-    <button
-      type="button"
-      class="btn btn-sm btn-primary"
-      (click)="modal.close('Save click')"
-    >
-      Save changes
-    </button>
+    <button type="button" class="btn btn-sm btn-primary" (click)="modal.close('Save click')">Save changes</button>
   </div>
 </ng-template>

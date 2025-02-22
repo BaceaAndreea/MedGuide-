@@ -10,8 +10,9 @@ import {PageRespone} from '../model/page.response.model';
 })
 export class DoctorsService {
 
-  constructor(private http:HttpClient) { }
-
+  constructor(private http: HttpClient) {
+    console.log('HttpClient:', http);
+  }
   public searchDoctors(keyword:String, currentPage:number, pageSize:number): Observable<PageRespone<Doctor>>{
     return this.http.get<PageRespone<Doctor>>(environment.backendHost + "/doctors?keyword=" + keyword + "&page= " + currentPage + "&size" + pageSize)
   }

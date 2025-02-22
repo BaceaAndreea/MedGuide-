@@ -1,6 +1,9 @@
 package com.javacorner.medguide.service.impl;
 
+import com.javacorner.medguide.dao.AppointmentDao;
+import com.javacorner.medguide.dao.DoctorDao;
 import com.javacorner.medguide.dao.HospitalDao;
+import com.javacorner.medguide.domain.Doctor;
 import com.javacorner.medguide.domain.Hospital;
 import com.javacorner.medguide.dto.HospitalDTO;
 import com.javacorner.medguide.mapper.HospitalMappper;
@@ -19,10 +22,14 @@ import java.util.stream.Collectors;
 @Transactional
 public class HospitalServiceImpl implements HospitalService {
     private HospitalDao hospitalDao;
+    private DoctorDao doctorDao;
+    private AppointmentDao appointmentDao;
     private HospitalMappper hospitalMappper;
 
-    public HospitalServiceImpl(HospitalDao hospitalDao, HospitalMappper hospitalMappper) {
+    public HospitalServiceImpl(HospitalDao hospitalDao, DoctorDao doctorDao, AppointmentDao appointmentDao, HospitalMappper hospitalMappper) {
         this.hospitalDao = hospitalDao;
+        this.doctorDao = doctorDao;
+        this.appointmentDao = appointmentDao;
         this.hospitalMappper = hospitalMappper;
     }
 
@@ -82,8 +89,19 @@ public class HospitalServiceImpl implements HospitalService {
     public void removeHospital(Long hospitalId) {
         Hospital hospital = hospitalDao.findById(hospitalId)
                 .orElseThrow(() -> new EntityNotFoundException("Hospital with ID " + hospitalId + " not found"));
+
+        // Șterge doctorii asociați cu acest spital
+        List<Doctor> doctors = doctorDao.findByHospitalId(hospitalId);
+        for (Doctor doctor : doctors) {
+            // Șterge toate programările asociate doctorului
+            appointmentDao.deleteByDoctorId(doctor.getDoctorId());
+            doctorDao.delete(doctor);
+        }
+
+        // Șterge spitalul
         hospitalDao.delete(hospital);
     }
+
 
 
 }

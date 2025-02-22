@@ -3,16 +3,15 @@ import { bootstrapApplication } from '@angular/platform-browser';
 
 import { AppComponent } from './app/app.component';
 import { environment } from './environments/environment';
-import { provideRouter } from '@angular/router'; // Pentru rutare, dacă folosești RouterModule
+import { provideRouter } from '@angular/router';
 import { routes } from './app/app.routes';
-import {provideHttpClient} from '@angular/common/http'; // Importă rutele tale
+import {provideHttpClient} from '@angular/common/http';
 
 if (environment.production) {
   enableProdMode();
 }
-
-// Bootstrap direct la AppComponent
-bootstrapApplication(AppComponent, {
+console.log('Initializing Angular app with provideHttpClient');
+bootstrapApplication(AppComponent,  {
   providers: [
     provideRouter(routes), // Configurează rutarea
     provideHttpClient(),

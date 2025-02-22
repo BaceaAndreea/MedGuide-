@@ -70,7 +70,7 @@
           </ul>
         </ng-container>
         <ng-template #failureOrLoading>
-          <ng-container *ngIf="errorMessage"; else loading>
+          <ng-container *ngIf="errorMessage; else loading">
             <div class="text-danger">
               {{errorMessage}}
             </div>
@@ -139,7 +139,7 @@
           <select class="form-control form-font rounded-0 mt-1 mb-3"
                   [ngClass]="{'is-invalid' : submitted && doctorFormGroup.get('hospital')?.invalid}"
                   formControlName="hospital">
-            <option [defaultSelected]="true" [ngValue]="defaultHospital">{{ defaultHospital?.name }}</option>
+            <option [defaultSelected]="true" [ngValue]="defaultHospital">{{ defaultHospital.name }}</option>
             <option *ngFor="let h of hospitals$ | async" [ngValue]="h">{{ h.name }}</option>
           </select>
           <div *ngIf="submitted && doctorFormGroup.get('hospital')?.invalid" class="invalid-feedback">
@@ -155,7 +155,7 @@
           <select class="form-control form-font rounded-0 mt-1 mb-3"
                   [ngClass]="{'is-invalid' : submitted && doctorFormGroup.get('specialization')?.invalid}"
                   formControlName="specialization">
-            <option [defaultSelected]="true" [ngValue]="defaultSpecialization">{{ defaultSpecialization?.description }}</option>
+            <option [defaultSelected]="true" [ngValue]="defaultSpecialization">{{ defaultSpecialization.description }}</option>
             <option *ngFor="let s of specializations$ | async" [ngValue]="s">{{ s.description }}</option>
           </select>
           <div *ngIf="submitted && doctorFormGroup.get('specialization')?.invalid" class="invalid-feedback">

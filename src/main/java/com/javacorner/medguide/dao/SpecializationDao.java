@@ -5,12 +5,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
-import java.util.List;
 
 public interface SpecializationDao extends JpaRepository<Specialization, Long> {
 
     Specialization findByDescription(String description);
 
-    Page<Specialization> findSpecializationByDescription(String description, Pageable pageable);
+    @Query("SELECT s FROM Specialization s WHERE LOWER(s.description) LIKE LOWER(CONCAT('%', :description, '%'))")
+    Page<Specialization> findSpecializationByDescription(@Param("description") String description, Pageable pageable);
 }

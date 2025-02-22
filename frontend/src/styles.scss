@@ -107,11 +107,6 @@ header {
 }
 
 
-.box {
-  background-color: #fff;
-  border-radius: 4px;
-  margin-bottom: 20px;
-}
 
 
 .dataTables_length {
@@ -470,6 +465,9 @@ header {
   padding: 20px;
 }
 
+
+
+
 .box {
   background-color: white;
   border-radius: 8px;
@@ -491,14 +489,23 @@ header {
   color: #42424a;
 }
 
+.box-header-button {
+  margin-left: auto;
+}
+
+
+
 .box-header-button .btn {
   font-size: 14px;
   padding: 8px 16px;
+  margin-left: auto;
 }
 
 .box-content {
   padding: 20px;
 }
+
+
 
 .table {
   width: 100%;

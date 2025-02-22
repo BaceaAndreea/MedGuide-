@@ -6,5 +6,8 @@ export interface Patient {
   lastName : string;
   medicalHistory: string[];
   allergies: string[];
-  user : User;
+  user: {
+    email: string;
+    password: string;
+  };
 }

@@ -18,15 +18,20 @@ public class AppointmentMapper {
         this.doctorMapper = doctorMapper;
         this.patientMapper = patientMapper;
     }
-
     public AppointmentDTO fromAppointment(Appointment appointment) {
         AppointmentDTO appointmentDTO = new AppointmentDTO();
         BeanUtils.copyProperties(appointment, appointmentDTO);
-        appointmentDTO.setDoctor(doctorMapper.fromDoctor(appointment.getDoctor()));
+
+        // Mapăm doctorul doar dacă nu este null
+        if (appointment.getDoctor() != null) {
+            appointmentDTO.setDoctor(doctorMapper.fromDoctor(appointment.getDoctor()));
+        }
+
         // Mapăm pacientul doar dacă nu este null
         if (appointment.getPatient() != null) {
             appointmentDTO.setPatient(patientMapper.fromPatient(appointment.getPatient()));
         }
+
         return appointmentDTO;
     }
 

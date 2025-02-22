@@ -7,6 +7,8 @@ import {ConsultationsComponent} from './components/consultations/consultations.c
 import {HeaderComponent} from './components/header/header.component';
 import {HospitalsComponent} from './components/hospitals/hospitals.component';
 import {SpecializationsComponent} from './components/specializations/specializations.component';
+import {AppointmentsPatientComponent} from './components/appointments-patient/appointments-patient.component';
+import {AppointmentsDoctorComponent} from './components/appointments-doctor/appointments-doctor.component';
 
 
 export const routes: Routes = [
@@ -18,5 +20,7 @@ export const routes: Routes = [
   { path: 'hospitals', component: HospitalsComponent },
   { path: 'specializations', component: SpecializationsComponent },
   { path: 'navbar', component: NavbarComponent },
-  { path: 'header', component: HeaderComponent}
+  { path: 'header', component: HeaderComponent},
+  { path: 'patient-appointments/:id', component: AppointmentsPatientComponent},
+  { path: 'doctor-appointments/:id', component: AppointmentsDoctorComponent}
 ];

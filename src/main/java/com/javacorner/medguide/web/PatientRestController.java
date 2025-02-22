@@ -7,6 +7,7 @@ import com.javacorner.medguide.dto.PatientDTO;
 import com.javacorner.medguide.service.AppointmentService;
 import com.javacorner.medguide.service.PatientService;
 import com.javacorner.medguide.service.UserService;
+import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,6 +34,7 @@ public class PatientRestController {
         return patientService.loadPatientsByName(keyword, page, size);
     }
 
+    @Transactional
     @DeleteMapping("/{patientId}")
     public void deletePatient(@PathVariable Long patientId){
         patientService.removePatient(patientId);
