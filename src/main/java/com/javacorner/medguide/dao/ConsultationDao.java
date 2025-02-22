@@ -14,10 +14,11 @@ import java.util.List;
 
 public interface ConsultationDao extends JpaRepository<Consultation, Long> {
 
-    @Query(value = "select c from Consultation as c where c.appointment.patient.patientId =: patientId")
+    @Query("SELECT c FROM Consultation c WHERE c.appointment.patient.patientId = :patientId")
     Page<Consultation> findConsultationsByPatientId(@Param("patientId") Long patientId, Pageable pageable);
 
-    @Query(value = "select c from Consultation as c where c.appointment.doctor.doctorId =: doctorId")
+
+    @Query(value = "select c from Consultation as c where c.appointment.doctor.doctorId = :doctorId")
     Page<Consultation> findConsultationsByDoctorId(@Param("doctorId") Long doctorId, Pageable pageable);
 
     Consultation findConsultationByDiagnosis(String diagnosis);

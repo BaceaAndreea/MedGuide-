@@ -2,9 +2,11 @@ package com.javacorner.medguide.web;
 
 import com.javacorner.medguide.domain.User;
 import com.javacorner.medguide.dto.AppointmentDTO;
+import com.javacorner.medguide.dto.ConsultationDTO;
 import com.javacorner.medguide.dto.DoctorDTO;
 import com.javacorner.medguide.dto.PatientDTO;
 import com.javacorner.medguide.service.AppointmentService;
+import com.javacorner.medguide.service.ConsultationService;
 import com.javacorner.medguide.service.PatientService;
 import com.javacorner.medguide.service.UserService;
 import jakarta.transaction.Transactional;
@@ -20,11 +22,13 @@ public class PatientRestController {
     private PatientService patientService;
     private UserService userService;
     private AppointmentService appointmentService;
+    private ConsultationService consultationService;
 
-    public PatientRestController(PatientService patientService, UserService userService, AppointmentService appointmentService) {
+    public PatientRestController(PatientService patientService, UserService userService, AppointmentService appointmentService, ConsultationService consultationService) {
         this.patientService = patientService;
         this.userService = userService;
         this.appointmentService = appointmentService;
+        this.consultationService = consultationService;
     }
 
     @GetMapping
@@ -76,6 +80,13 @@ public class PatientRestController {
     @GetMapping("/get")
     public PatientDTO loadPatientByEmail(@RequestParam(name = "email", defaultValue = "") String email){
         return patientService.loadPatientByEmail(email);
+    }
+
+    @GetMapping("/{patientId}/consultations")
+    public Page<ConsultationDTO> findConsultationsByPatientId(@PathVariable Long patientId,
+                                                             @RequestParam(name="page", defaultValue = "0") int page,
+                                                             @RequestParam(name="size", defaultValue = "5") int size){
+        return consultationService.findConsultationsByPatientId(patientId, page, size);
     }
 
 

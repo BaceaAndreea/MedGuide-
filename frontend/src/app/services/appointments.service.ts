@@ -19,11 +19,7 @@ export class AppointmentsService {
   }
   public searchAppointments(keyword: string, currentPage: number, pageSize: number): Observable<PageRespone<Appointment>> {
     return this.http.get<PageRespone<Appointment>>(`${environment.backendHost}/appointments`, {
-      params: {
-        keyword,
-        page: currentPage.toString(),
-        size: pageSize.toString()
-      }
+      params: {keyword, page: currentPage.toString(), size: pageSize.toString()}
     }).pipe(
       catchError(error => {
         console.error('API Error:', error);

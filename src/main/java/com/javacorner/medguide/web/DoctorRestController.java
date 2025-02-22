@@ -2,8 +2,10 @@ package com.javacorner.medguide.web;
 
 import com.javacorner.medguide.domain.User;
 import com.javacorner.medguide.dto.AppointmentDTO;
+import com.javacorner.medguide.dto.ConsultationDTO;
 import com.javacorner.medguide.dto.DoctorDTO;
 import com.javacorner.medguide.service.AppointmentService;
+import com.javacorner.medguide.service.ConsultationService;
 import com.javacorner.medguide.service.DoctorService;
 import com.javacorner.medguide.service.UserService;
 import org.springframework.data.domain.Page;
@@ -18,11 +20,13 @@ public class DoctorRestController {
     private DoctorService doctorService;
     private UserService userService;
     private AppointmentService appointmentService;
+    private ConsultationService consultationService;
 
-    public DoctorRestController(DoctorService doctorService, UserService userService, AppointmentService appointmentService) {
+    public DoctorRestController(DoctorService doctorService, UserService userService, AppointmentService appointmentService, ConsultationService consultationService) {
         this.doctorService = doctorService;
         this.userService = userService;
         this.appointmentService = appointmentService;
+        this.consultationService = consultationService;
     }
 
     @GetMapping
@@ -66,6 +70,13 @@ public class DoctorRestController {
     @GetMapping("/find")
     public DoctorDTO findDoctorByEmail(@RequestParam(name = "email", defaultValue = "") String email){
         return doctorService.loadDoctorByEmail(email);
+    }
+
+    @GetMapping("/{doctorId}/consultations")
+    public Page<ConsultationDTO> findConsultationsByDoctorId(@PathVariable Long doctorId,
+                                                        @RequestParam(name="page", defaultValue = "0") int page,
+                                                        @RequestParam(name="size", defaultValue = "5") int size){
+        return consultationService.findConsultationsByDoctorId(doctorId, page, size);
     }
 
 

@@ -49,7 +49,6 @@ export class PatientsService {
     });
   }
 
-
   public getNoAppointmentsByPatientId(patientId: number, page: number, size: number): Observable<PageRespone<Appointment>> {
     return this.http.get<PageRespone<Appointment>>(
       `${environment.backendHost}/patients/${patientId}/other-appointments?page=${page}&size=${size}`

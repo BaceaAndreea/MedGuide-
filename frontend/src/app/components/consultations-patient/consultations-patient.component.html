@@ -1,0 +1,60 @@
+<div class="main-container">
+  <header class="top-bar">
+    <div class="top-bar-left">Hello</div>
+    <div class="top-bar-right">
+      <span>Admin</span> | <a href="#">Signout</a>
+    </div>
+  </header>
+
+  <div class="content-section">
+    <div class="box">
+      <div class="box-header">
+        <div class="box-header-title">These are your current consultations</div>
+      </div>
+      <div class="box-content">
+        <ng-container *ngIf="pageConsultations$ | async as listConsultations; else failureOrLoading">
+          <table class="table table-bordered table-hover" style="width: 100%">
+            <thead>
+            <tr>
+              <th>Doctor</th>
+              <th>Date</th>
+              <th>Location</th>
+              <th>Details</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let consultation of listConsultations.content">
+              <td>{{ consultation.doctorFirstName }} {{ consultation.doctorLastName }}</td>
+              <td>{{ consultation.appointmentDate }}</td>
+              <td>{{ consultation.hospitalAddress }}</td>
+              <td>
+                <button (click)="viewDetails(consultation)" class="btn btn-info">View Details</button>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+          <ul class="pagination justify-content-center">
+            <li *ngFor="let item of [].constructor(listConsultations.totalPages); let page = index"
+                class="page-item"
+                [ngClass]="{'active': page === currentPage}">
+              <a (click)="gotoPage(page)" class="page-link">{{ page }}</a>
+            </li>
+          </ul>
+
+        </ng-container>
+        <ng-template #failureOrLoading>
+          <ng-container *ngIf="errorMessage; else loading">
+            <div class="text-danger">
+              {{errorMessage}}
+            </div>
+          </ng-container>
+          <ng-template #loading >
+            <div class="loader shadow-sm text-muted">
+              <span><i class="fa-solid fa-rotate fa-spin"></i></span> &nbsp; <span>Processing...</span>
+            </div>
+          </ng-template>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+</div>

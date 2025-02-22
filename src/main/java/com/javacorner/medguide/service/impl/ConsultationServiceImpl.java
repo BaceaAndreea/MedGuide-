@@ -9,6 +9,10 @@ import com.javacorner.medguide.mapper.ConsultationMapper;
 import com.javacorner.medguide.service.ConsultationService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -66,6 +70,35 @@ public class ConsultationServiceImpl implements ConsultationService {
         Consultation consultation = consultationDao.findById(consultationId)
                 .orElseThrow(() -> new EntityNotFoundException("Consultation with ID " + consultationId + " not found"));
         consultationDao.delete(consultation);
+    }
+
+    @Override
+    public Page<ConsultationDTO> findConsultationsByPatientId(Long patientId, int page, int size) {
+        if (patientId == null) {
+            throw new IllegalArgumentException("Patient ID cannot be null");
+        }
+        PageRequest pageRequest = PageRequest.of(page, size);
+        Page<Consultation> patientConsultationsPage = consultationDao.findConsultationsByPatientId(patientId, pageRequest);
+        return new PageImpl<>(
+                patientConsultationsPage.getContent().stream()
+                        .map(consultationMapper::fromConsultation)
+                        .collect(Collectors.toList()),
+                pageRequest,
+                patientConsultationsPage.getTotalElements()
+        );
+    }
+
+    @Override
+    public Page<ConsultationDTO> findConsultationsByDoctorId(Long doctorId, int page, int size) {
+        PageRequest pageRequest = PageRequest.of(page, size);
+        Page<Consultation> doctorConsultationsPage = consultationDao.findConsultationsByDoctorId(doctorId, pageRequest);
+        return new PageImpl<>(
+                doctorConsultationsPage.getContent().stream()
+                        .map(consultationMapper::fromConsultation)
+                        .collect(Collectors.toList()),
+                pageRequest,
+                doctorConsultationsPage.getTotalElements()
+        );
     }
 
 
