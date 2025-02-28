@@ -22,9 +22,7 @@ Patient Records: Access patient medical history and test results.
 AI Diagnostic Tools: Utilize AI for mammogram analysis and other diagnostics.
 
 Security Features:
-Data Encryption: Secure password encoding in the database.
-User Authentication: Comprehensive login system with role-based access.
-GDPR Compliance: Clear privacy policy and data handling protocols.
+The security layer of the Online Doctor Platform ensures data protection, secure authentication, and role-based access control. This implementation follows industry best practices to safeguard user information and restrict unauthorized access. User passwords are securely stored in the database using BCrypt hashing to prevent exposure in case of a data breach.Configured Spring Security with JWT-based authentication. Applied CORS and CSRF settings to allow secure communication between the frontend and backend. Implemented a helper class for JWT (JSON Web Token) generation, validation, and extraction. Includes methods to generate both Access Tokens (short-lived) and Refresh Tokens (longer-lived).Applied role-based access control (RBAC) using @PreAuthorize annotations.
 
 System Architecture:
 Backend: Spring Boot with RESTful API services.
