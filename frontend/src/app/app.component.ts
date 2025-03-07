@@ -9,7 +9,7 @@ import {ReactiveFormsModule} from '@angular/forms';
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
   standalone: true,
-  imports: [RouterModule, HeaderComponent, NavbarComponent, ReactiveFormsModule,]
+  imports: [RouterModule, HeaderComponent, NavbarComponent, ReactiveFormsModule]
 })
 export class AppComponent {
   title = 'frontend';

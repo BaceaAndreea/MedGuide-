@@ -6,14 +6,11 @@ import { environment } from './environments/environment';
 import { provideRouter } from '@angular/router';
 import { routes } from './app/app.routes';
 import {provideHttpClient} from '@angular/common/http';
+import {appConfig} from './app/app.config';
 
 if (environment.production) {
   enableProdMode();
 }
-console.log('Initializing Angular app with provideHttpClient');
-bootstrapApplication(AppComponent,  {
-  providers: [
-    provideRouter(routes), // Configurează rutarea
-    provideHttpClient(),
-  ],
-}).catch(err => console.error(err));
+
+bootstrapApplication(AppComponent,  appConfig)
+.catch(err => console.error(err));

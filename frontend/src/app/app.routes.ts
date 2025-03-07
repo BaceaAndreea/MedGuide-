@@ -10,10 +10,11 @@ import {AppointmentsPatientComponent} from './components/appointments-patient/ap
 import {AppointmentsDoctorComponent} from './components/appointments-doctor/appointments-doctor.component';
 import {ConsultationsPatientComponent} from './components/consultations-patient/consultations-patient.component';
 import {ConsultationsDoctorComponent} from './components/consultations-doctor/consultations-doctor.component';
+import {AuthenticationComponent} from './components/authentication/authentication.component';
 
 
 export const routes: Routes = [
-  { path: '', redirectTo: '/patients', pathMatch: 'full' }, // Redirecționare implicită
+  { path: '', redirectTo: '/auth', pathMatch: 'full' }, // Redirecționare implicită
   { path: 'patients', component: PatientsComponent },
   { path: 'doctors', component: DoctorsComponent },
   { path: 'appointments', component: AppointmentsComponent },
@@ -24,5 +25,6 @@ export const routes: Routes = [
   { path: 'patient-appointments/:id', component: AppointmentsPatientComponent},
   { path: 'doctor-appointments/:id', component: AppointmentsDoctorComponent},
   { path: 'patient-consultations/:id', component: ConsultationsPatientComponent},
-  { path: 'doctor-consultations/:id', component: ConsultationsDoctorComponent}
+  { path: 'doctor-consultations/:id', component: ConsultationsDoctorComponent},
+  { path: 'auth', component: AuthenticationComponent}
 ];

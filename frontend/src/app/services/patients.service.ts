@@ -16,8 +16,6 @@ export class PatientsService {
   private http = inject(HttpClient);
 
   constructor() {
-    console.log('PatientsService initialized!');
-    console.trace('PatientsService stack trace');
   }
 
 
@@ -53,6 +51,10 @@ export class PatientsService {
     return this.http.get<PageRespone<Appointment>>(
       `${environment.backendHost}/patients/${patientId}/other-appointments?page=${page}&size=${size}`
     );
+  }
+
+  public loadPatientByEmail(email : string) : Observable<Patient>{
+    return this.http.get<Patient>(environment.backendHost + "/patients/find?email=" + email)
   }
 
 }

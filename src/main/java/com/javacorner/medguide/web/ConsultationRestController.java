@@ -2,6 +2,7 @@ package com.javacorner.medguide.web;
 
 import com.javacorner.medguide.dto.ConsultationDTO;
 import com.javacorner.medguide.service.ConsultationService;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,21 +19,25 @@ public class ConsultationRestController {
     }
 
     @GetMapping("/all")
+    @PreAuthorize("hasAnyAuthority('Admin', 'Doctor')")
     public List<ConsultationDTO> listAllConsultations() {
         return consultationService.fetchAllConsultations();
     }
 
     @PostMapping
+    @PreAuthorize("hasAnyAuthority('Admin', 'Doctor')")
     public ConsultationDTO saveConsultation(@RequestBody ConsultationDTO consultationDTO) {
         return consultationService.createConsultation(consultationDTO);
     }
 
     @DeleteMapping("/consultationId")
+    @PreAuthorize("hasAuthority('Admin')")
     public void deleteConsultation (@PathVariable Long consultationId) {
         consultationService.deleteConsultationById(consultationId);
     }
 
     @PutMapping("/appointmentId")
+    @PreAuthorize("hasAnyAuthority('Admin', 'Doctor')")
     public ConsultationDTO updateConsultation(@RequestBody ConsultationDTO consultationDTO, @PathVariable Long consultationId) {
         consultationDTO.setConsultationId(consultationId);
         return consultationService.createConsultation(consultationDTO);

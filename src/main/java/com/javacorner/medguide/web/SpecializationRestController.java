@@ -5,6 +5,7 @@ import com.javacorner.medguide.dto.SpecializationDTO;
 import com.javacorner.medguide.mapper.SpecializationMapper;
 import com.javacorner.medguide.service.SpecializationService;
 import org.springframework.data.domain.Page;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,6 +24,7 @@ public class SpecializationRestController {
     }
 
     @GetMapping("/search")
+    @PreAuthorize("hasAnyAuthority('Admin', 'Doctor', 'Patient')")
     public Page<SpecializationDTO> searchSpecializations(@RequestParam(name = "keyword", defaultValue = "") String keyword,
                                                          @RequestParam(name = "page", defaultValue = "0") int page,
                                                          @RequestParam(name = "size", defaultValue = "5") int size) {
@@ -30,28 +32,33 @@ public class SpecializationRestController {
     }
 
     @GetMapping("/all")
+    @PreAuthorize("hasAnyAuthority('Admin', 'Doctor', 'Patient')")
     public List<SpecializationDTO> findAllSpecializations() {
         return specializationService.fetchAllSpecializations();
     }
 
     @GetMapping("/{specializationId}")
+    @PreAuthorize("hasAuthority('Admin')")
     public Specialization getSpecializationById(@PathVariable Long specializationId) {
         return specializationService.loadSpecializationById(specializationId);
     }
 
     // Create a new specialization
     @PostMapping
+    @PreAuthorize("hasAuthority('Admin')")
     public SpecializationDTO createSpecialization(@RequestBody SpecializationDTO specializationDTO) {
         return specializationService.createSpecialization(specializationDTO);
     }
 
     // Delete a specialization by ID
     @DeleteMapping("/{specializationId}")
+    @PreAuthorize("hasAuthority('Admin')")
     public void deleteSpecialization(@PathVariable Long specializationId) {
         specializationService.deleteSpecializationById(specializationId);
     }
 
     @PutMapping("/{specializationId}")
+    @PreAuthorize("hasAuthority('Admin')")
     public SpecializationDTO updateSpecialization(@PathVariable Long specializationId,
                                                   @RequestBody SpecializationDTO specializationDTO) {
         specializationDTO.setSpecializationId(specializationId);

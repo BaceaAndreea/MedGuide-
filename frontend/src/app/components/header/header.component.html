@@ -8,8 +8,8 @@
         <div class="main-header-menu">
           <div class="top-menu ">
             <ul>
-              <li><a routerLink="/"><i class="fa-solid fa-circle-user"></i>&nbsp; Admin </a></li>
-              <li><a routerLink="/login.html"><i class="fa-solid fa-right-from-bracket"></i>&nbsp; Signout</a></li>
+              <li *ngIf="isAuthenticated"><a (click)="logout()"><i class="fa-solid fa-right-from-bracket"></i>&nbsp; Signout</a></li>
+              <li *ngIf="!isAuthenticated"><a routerLink="/auth"><i class="fa-solid fa-right-from-bracket"></i>&nbsp; Login</a></li>
             </ul>
           </div>
         </div>

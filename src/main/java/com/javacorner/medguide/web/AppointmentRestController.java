@@ -4,6 +4,7 @@ import com.javacorner.medguide.domain.Appointment;
 import com.javacorner.medguide.dto.AppointmentDTO;
 import com.javacorner.medguide.service.AppointmentService;
 import org.springframework.data.domain.Page;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -18,6 +19,7 @@ public class AppointmentRestController {
     }
 
     @GetMapping
+    @PreAuthorize("hasAuthority('Admin')")
     public Page<AppointmentDTO> searchAppointments(@RequestParam(name = "keyword", defaultValue = "") String keyword,
                                                    @RequestParam(name = "page", defaultValue = "0") int page,
                                                    @RequestParam(name = "size", defaultValue = "5") int size) {
@@ -25,18 +27,19 @@ public class AppointmentRestController {
     }
 
     @DeleteMapping("/{appointmentId}")
+    @PreAuthorize("hasAnyAuthority('Admin', 'Patient')")
     public void deleteAppointment(@PathVariable Long appointmentId) {
         appointmentService.removeAppointment(appointmentId);
     }
 
-
-    //de aici in jos nu merge
     @PostMapping
+    @PreAuthorize("hasAnyAuthority('Admin', 'Patient')")
     public AppointmentDTO saveAppointment(@RequestBody AppointmentDTO appointmentDTO) {
         return appointmentService.createAppointment(appointmentDTO);
     }
 
     @PutMapping("/{appointmentId}")
+    @PreAuthorize("hasAnyAuthority('Admin', 'Patient')")
     public AppointmentDTO updateAppointment(@RequestBody AppointmentDTO appointmentDTO, @PathVariable Long appointmentId) {
         appointmentDTO.setAppointmentId(appointmentId);
         return appointmentService.updateAppointment(appointmentDTO);

@@ -14,8 +14,7 @@ export class AppointmentsService {
   private http = inject(HttpClient);
 
   constructor() {
-    console.log('AppointmentsService initialized!');
-    console.log('HttpClient in AppointmentsService:', this.http);
+
   }
   public searchAppointments(keyword: string, currentPage: number, pageSize: number): Observable<PageRespone<Appointment>> {
     return this.http.get<PageRespone<Appointment>>(`${environment.backendHost}/appointments`, {

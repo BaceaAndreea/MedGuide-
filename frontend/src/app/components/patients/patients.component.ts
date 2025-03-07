@@ -8,7 +8,7 @@ import {AsyncPipe, NgClass, NgForOf, NgIf} from '@angular/common';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {AppointmentsService} from '../../services/appointments.service';
 import {Appointment} from '../../model/appointment.model';
-import {HttpClient} from '@angular/common/http';
+
 
 @Component({
   selector: 'app-patients',

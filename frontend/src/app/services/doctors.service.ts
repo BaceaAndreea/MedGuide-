@@ -11,7 +11,6 @@ import {PageRespone} from '../model/page.response.model';
 export class DoctorsService {
 
   constructor(private http: HttpClient) {
-    console.log('HttpClient:', http);
   }
   public searchDoctors(keyword:String, currentPage:number, pageSize:number): Observable<PageRespone<Doctor>>{
     return this.http.get<PageRespone<Doctor>>(environment.backendHost + "/doctors?keyword=" + keyword + "&page= " + currentPage + "&size" + pageSize)
@@ -35,6 +34,10 @@ export class DoctorsService {
     return this.http.put(environment.backendHost + "/doctors/" + doctorId, doctor, {
       headers: new HttpHeaders({ "Content-Type": "application/json" })
     });
+  }
+
+  public loadDoctorByEmail(email : string) : Observable<Doctor>{
+    return this.http.get<Doctor>(environment.backendHost + "/doctors/find?email=" + email)
   }
 
 }
