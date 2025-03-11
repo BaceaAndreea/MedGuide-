@@ -2,7 +2,7 @@ import {Component, inject, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {AsyncPipe, CommonModule, NgForOf, NgIf} from '@angular/common';
 import {AppointmentsService} from '../../services/appointments.service';
-import {catchError, Observable, throwError} from 'rxjs';
+import {catchError, filter, Observable, take, throwError} from 'rxjs';
 import {PageRespone} from '../../model/page.response.model';
 import {Appointment} from '../../model/appointment.model';
 import {DoctorsService} from '../../services/doctors.service';
@@ -10,6 +10,7 @@ import {Doctor} from '../../model/doctor.model';
 import {NgbModal, NgbModalModule} from '@ng-bootstrap/ng-bootstrap';
 import {PatientsService} from '../../services/patients.service';
 import {Patient} from '../../model/patient.model';
+import {AuthService} from '../../services/auth.service';
 
 
 @Component({
@@ -48,7 +49,7 @@ export class AppointmentsComponent implements OnInit{
   private appointmentService = inject(AppointmentsService); // Folosește inject()
 
   constructor(private modalService: NgbModal,private fb: FormBuilder,
-              private doctorService: DoctorsService, private patientService : PatientsService) { }
+              private doctorService: DoctorsService, private patientService : PatientsService, private authService : AuthService) { }
 
   ngOnInit(): void {
     this.searchFormGroup = this.fb.group({
@@ -60,8 +61,16 @@ export class AppointmentsComponent implements OnInit{
       doctor: [null, Validators.required],
       patient: [null, Validators.required]
     })
-
-    this.handleSearchAppointments()
+    // Așteptăm până user != null în BehaviorSubject
+    this.authService.user
+      .pipe(
+        filter(u => !!u), // trece doar când user este diferit de null
+        take(1)           // ne oprim după primul user valid
+      )
+      .subscribe(() => {
+        // Abia acum chemăm service-ul
+        this.handleSearchAppointments();
+      });
   }
 
 

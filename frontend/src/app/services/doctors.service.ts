@@ -8,13 +8,22 @@ import {PageRespone} from '../model/page.response.model';
 @Injectable({
   providedIn: 'root'
 })
+
+
 export class DoctorsService {
 
   constructor(private http: HttpClient) {
-    console.log('HttpClient:', http);
+  }
+
+  private getHeaders(): HttpHeaders {
+    const token = localStorage.getItem('token'); // Obține token-ul la fiecare request
+    return new HttpHeaders({
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}`
+    });
   }
   public searchDoctors(keyword:String, currentPage:number, pageSize:number): Observable<PageRespone<Doctor>>{
-    return this.http.get<PageRespone<Doctor>>(environment.backendHost + "/doctors?keyword=" + keyword + "&page= " + currentPage + "&size" + pageSize)
+    return this.http.get<PageRespone<Doctor>>(environment.backendHost + "/doctors?keyword=" + keyword + "&page=" + currentPage + "&size=" + pageSize)
   }
 
   public findAllDoctors(): Observable<Array<Doctor>> {
@@ -32,9 +41,11 @@ export class DoctorsService {
   }
 
   public updateDoctor(doctor: any, doctorId: number): Observable<any> {
-    return this.http.put(environment.backendHost + "/doctors/" + doctorId, doctor, {
-      headers: new HttpHeaders({ "Content-Type": "application/json" })
-    });
+    return this.http.put(`${environment.backendHost}/doctors/${doctorId}`, doctor);
+  }
+
+  public loadDoctorByEmail(email : string) : Observable<Doctor>{
+    return this.http.get<Doctor>(environment.backendHost + "/doctors/find?email=" + email)
   }
 
 }

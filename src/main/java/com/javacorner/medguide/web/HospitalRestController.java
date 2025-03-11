@@ -4,6 +4,7 @@ package com.javacorner.medguide.web;
 import com.javacorner.medguide.dto.HospitalDTO;
 import com.javacorner.medguide.service.HospitalService;
 import org.springframework.data.domain.Page;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,6 +20,7 @@ public class HospitalRestController {
     }
 
     @GetMapping("/search/name")
+    @PreAuthorize("hasAnyAuthority('Admin', 'Doctor', 'Patient')")
     public Page<HospitalDTO> searchHospitalsByName(@RequestParam(name = "name", defaultValue = "") String name,
                                                    @RequestParam(name = "page", defaultValue = "0") int page,
                                                    @RequestParam(name = "size", defaultValue = "5") int size) {
@@ -26,11 +28,13 @@ public class HospitalRestController {
     }
 
     @GetMapping("/all")
+    @PreAuthorize("hasAnyAuthority('Admin', 'Doctor', 'Patient')")
     public List<HospitalDTO> findAllHospitals() {
         return hospitalService.fetchHospitals();
     }
 
     @GetMapping("/search/city")
+    @PreAuthorize("hasAnyAuthority('Admin', 'Doctor', 'Patient')")
     public Page<HospitalDTO> searchHospitalsByCity(@RequestParam(name = "city", defaultValue = "") String city,
                                                    @RequestParam(name = "page", defaultValue = "0") int page,
                                                    @RequestParam(name = "size", defaultValue = "5") int size) {
@@ -38,11 +42,13 @@ public class HospitalRestController {
     }
 
     @PostMapping
+    @PreAuthorize("hasAuthority('Admin')")
     public HospitalDTO createHospital(@RequestBody HospitalDTO hospitalDTO) {
         return hospitalService.createHospital(hospitalDTO);
     }
 
     @PutMapping("/{hospitalId}")
+    @PreAuthorize("hasAuthority('Admin')")
     public HospitalDTO updateHospital(@PathVariable Long hospitalId,
                                       @RequestBody HospitalDTO hospitalDTO) {
         hospitalDTO.setHospitalId(hospitalId);
@@ -50,6 +56,7 @@ public class HospitalRestController {
     }
 
     @DeleteMapping("/{hospitalId}")
+    @PreAuthorize("hasAuthority('Admin')")
     public void deleteHospital(@PathVariable Long hospitalId) {
         hospitalService.removeHospital(hospitalId);
     }

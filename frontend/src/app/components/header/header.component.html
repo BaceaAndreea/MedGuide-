@@ -8,8 +8,14 @@
         <div class="main-header-menu">
           <div class="top-menu ">
             <ul>
-              <li><a routerLink="/"><i class="fa-solid fa-circle-user"></i>&nbsp; Admin </a></li>
-              <li><a routerLink="/login.html"><i class="fa-solid fa-right-from-bracket"></i>&nbsp; Signout</a></li>
+              <li *ngIf="isDoctor">
+                <a (click)="getModal(doctorContent)"> <i class="fa-solid fa-circle-user"></i>{{name}}</a>
+              </li>
+              <li *ngIf="isPatient">
+                <a (click)="getModal(patientContent)"><i class="fa-solid fa-circle-user"></i>{{name}} </a>
+              </li>
+              <li *ngIf="isAuthenticated"><a (click)="logout()"><i class="fa-solid fa-right-from-bracket"></i>&nbsp; Signout</a></li>
+              <li *ngIf="!isAuthenticated"><a routerLink="/auth"><i class="fa-solid fa-right-from-bracket"></i>&nbsp; Login</a></li>
             </ul>
           </div>
         </div>
@@ -18,3 +24,150 @@
     </div>
   </div>
 </header>
+
+<ng-template #doctorContent let-modal>
+  <div class="modal-header">
+    <div class="modal-title text-muted"><i class="fa-regular fa-circle-dot"></i> Update Profile </div>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <form [formGroup]="updateDoctorFormGroup" method="post">
+    <div class="modal-body">
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="text-muted">First Name</label>
+            <input type="text" class="form-control form-font rounded-0 mt-1 mb-3"
+                   [ngClass]="{'is-invalid': submitted && updateDoctorFormGroup.controls['firstName'].errors}"
+                   formControlName="firstName">
+            <div *ngIf="submitted && updateDoctorFormGroup.get('firstName')?.invalid" class="invalid-feedback d-block">
+              <div *ngIf="updateDoctorFormGroup.get('firstName')?.errors?.['required']">First Name is Required</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="text-muted">Last Name</label>
+            <input type="text" class="form-control form-font rounded-0 mt-1 mb-3"
+                   [ngClass]="{'is-invalid': submitted && updateDoctorFormGroup.controls['lastName'].errors}"
+                   formControlName="lastName">
+            <div *ngIf="submitted && updateDoctorFormGroup.get('lastName')?.invalid" class="invalid-feedback d-block">
+              <div *ngIf="updateDoctorFormGroup.get('lastName')?.errors?.['required']">Last Name is Required</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="text-muted">Birth Date</label>
+            <input type="date" class="form-control form-font rounded-0 mt-1 mb-3"
+                   [ngClass]="{'is-invalid': submitted && updateDoctorFormGroup.controls['birthDate'].errors}"
+                   formControlName="birthDate">
+            <div *ngIf="submitted && updateDoctorFormGroup.get('birthDate')?.invalid" class="invalid-feedback d-block">
+              <div *ngIf="updateDoctorFormGroup.get('birthDate')?.errors?.['required']">Birth Date is Required</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Hospital Field -->
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="text-muted">Hospital</label>
+            <select class="form-control form-font rounded-0 mt-1 mb-3"
+                    [ngClass]="{'is-invalid' : submitted && updateDoctorFormGroup.get('hospital')?.invalid}"
+                    formControlName="hospital">
+              <option *ngFor="let h of hospitals$ | async" [ngValue]="h.hospitalId">{{ h.name }}</option>
+            </select>
+            <div *ngIf="submitted && updateDoctorFormGroup.get('hospital')?.invalid" class="invalid-feedback">
+              <div *ngIf="updateDoctorFormGroup.get('hospital')?.errors?.['required']">Hospital is Required</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Specialization Field -->
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="text-muted">Specialization</label>
+            <select class="form-control form-font rounded-0 mt-1 mb-3"
+                    [ngClass]="{'is-invalid' : submitted && updateDoctorFormGroup.get('specialization')?.invalid}"
+                    formControlName="specialization">
+              <option *ngFor="let s of specializations$ | async" [ngValue]="s.specializationId">{{ s.description }}</option>
+            </select>
+            <div *ngIf="submitted && updateDoctorFormGroup.get('specialization')?.invalid" class="invalid-feedback">
+              <div *ngIf="updateDoctorFormGroup.get('specialization')?.errors?.['required']">Specialization is Required</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-sm btn-secondary" (click)="onCloseModal(modal)">Close</button>
+      <button type="button" class="btn btn-sm btn-primary" (click)="onUpdateDoctor(modal)">Update Profile Doctor</button>
+    </div>
+  </form>
+</ng-template>
+
+<ng-template #patientContent let-modal>
+  <div class="modal-header">
+    <div class="modal-title text-muted"><i class="fa-regular fa-circle-dot"></i> Update Profile </div>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+
+  <form [formGroup]="updatePatientFormGroup" method="post">
+    <div class="modal-body">
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="text-muted">First Name</label>
+            <input type="text" class="form-control form-font rounded-0 mt-1 mb-3"
+                   [ngClass]="{'is-invalid': submitted && updatePatientFormGroup.controls['firstName'].errors}"
+                   formControlName="firstName">
+            <div *ngIf="submitted && updatePatientFormGroup.get('firstName')?.invalid" class="invalid-feedback d-block">
+              <div *ngIf="updatePatientFormGroup.get('firstName')?.errors?.['required']">First Name is Required</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="text-muted">Last Name</label>
+            <input type="text" class="form-control form-font rounded-0 mt-1 mb-3"
+                   [ngClass]="{'is-invalid': submitted && updatePatientFormGroup.controls['lastName'].errors}"
+                   formControlName="lastName">
+            <div *ngIf="submitted && updatePatientFormGroup.get('lastName')?.invalid" class="invalid-feedback d-block">
+              <div *ngIf="updatePatientFormGroup.get('lastName')?.errors?.['required']">Last Name is Required</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Medical History (Read-Only) -->
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="text-muted">Medical History</label>
+            <textarea class="form-control form-font rounded-0 mt-1 mb-3"
+                      formControlName="medicalHistory"
+                      rows="2"
+                      readonly></textarea>
+          </div>
+        </div>
+
+        <!-- Allergies (Read-Only) -->
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="text-muted">Allergies</label>
+            <textarea class="form-control form-font rounded-0 mt-1 mb-3"
+                      formControlName="allergies"
+                      rows="2"
+                      readonly></textarea>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" (click)="onCloseModal(modal)">Close</button>
+      <button type="button" class="btn btn-sm btn-primary" (click)="onUpdatePatient(modal)">Save changes</button>
+    </div>
+  </form>
+</ng-template>

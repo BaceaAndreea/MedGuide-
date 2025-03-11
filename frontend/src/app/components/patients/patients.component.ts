@@ -8,7 +8,7 @@ import {AsyncPipe, NgClass, NgForOf, NgIf} from '@angular/common';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {AppointmentsService} from '../../services/appointments.service';
 import {Appointment} from '../../model/appointment.model';
-import {HttpClient} from '@angular/common/http';
+
 
 @Component({
   selector: 'app-patients',
@@ -174,7 +174,7 @@ export class PatientsComponent implements OnInit {
       lastName: this.updatePatientFormGroup.value.lastName,
       medicalHistory: Array.isArray(this.updatePatientFormGroup.value.medicalHistory)
         ? this.updatePatientFormGroup.value.medicalHistory
-        : [this.updatePatientFormGroup.value.medicalHistory], // Convertește într-un array dacă e necesar
+        : [this.updatePatientFormGroup.value.medicalHistory],
       allergies: Array.isArray(this.updatePatientFormGroup.value.allergies)
         ? this.updatePatientFormGroup.value.allergies
         : [this.updatePatientFormGroup.value.allergies],

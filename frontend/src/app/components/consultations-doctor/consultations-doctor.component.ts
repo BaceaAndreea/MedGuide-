@@ -36,7 +36,7 @@ export class ConsultationsDoctorComponent implements OnInit{
 
 
   loadConsultations() {
-    this.pageConsultations$ = this.consultationService.getConsultationsByPatient(
+    this.pageConsultations$ = this.consultationService.getConsultationsByDoctor(
       this.doctorId, this.currentPage, this.pageSize
     ).pipe(
       catchError(error => {
