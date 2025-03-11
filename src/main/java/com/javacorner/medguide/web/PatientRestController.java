@@ -48,7 +48,7 @@ public class PatientRestController {
     }
 
     @GetMapping("/all")
-    @PreAuthorize("hasAuthority('Admin')")
+    @PreAuthorize("hasAnyAuthority('Admin', 'Doctor', 'Patient')")
     public List<PatientDTO> findAllPatients(){
         return patientService.fetchPatients();
     }

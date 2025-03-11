@@ -8,6 +8,7 @@ import {authInterceptor} from './services/auth.interceptor.service';
 import {AuthService} from './services/auth.service';
 
 
+
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),

@@ -11,20 +11,22 @@ import {AppointmentsDoctorComponent} from './components/appointments-doctor/appo
 import {ConsultationsPatientComponent} from './components/consultations-patient/consultations-patient.component';
 import {ConsultationsDoctorComponent} from './components/consultations-doctor/consultations-doctor.component';
 import {AuthenticationComponent} from './components/authentication/authentication.component';
+import {AuthGardService} from './services/auth.gard.service';
+import {DoctorPatientGuardService} from './services/doctor-patient.guard.service';
 
 
 export const routes: Routes = [
-  { path: '', redirectTo: '/auth', pathMatch: 'full' }, // Redirecționare implicită
-  { path: 'patients', component: PatientsComponent },
-  { path: 'doctors', component: DoctorsComponent },
-  { path: 'appointments', component: AppointmentsComponent },
-  { path: 'hospitals', component: HospitalsComponent },
-  { path: 'specializations', component: SpecializationsComponent },
+  { path: '', redirectTo: '/auth', pathMatch: 'full' },
+  { path: 'appointments', component: AppointmentsComponent, canActivate: [AuthGardService], data: {role : 'Admin'}},
+  { path: 'patients', component: PatientsComponent, canActivate: [AuthGardService], data: {role : 'Admin'}},
+  { path: 'doctors', component: DoctorsComponent, canActivate: [AuthGardService], data: {role : 'Admin'}},
+  { path: 'hospitals', component: HospitalsComponent, canActivate: [AuthGardService], data: {role : 'Admin'}},
+  { path: 'specializations', component: SpecializationsComponent, canActivate: [AuthGardService], data: {role : 'Admin'}},
+  { path: 'patient-appointments/:id', component: AppointmentsPatientComponent, canActivate: [AuthGardService, DoctorPatientGuardService], data: {role : 'Patient'}},
+  { path: 'doctor-appointments/:id', component: AppointmentsDoctorComponent, canActivate: [AuthGardService, DoctorPatientGuardService], data: {role : 'Doctor'}},
+  { path: 'patient-consultations/:id', component: ConsultationsPatientComponent, canActivate: [AuthGardService, DoctorPatientGuardService], data: {role : 'Patient'}},
+  { path: 'doctor-consultations/:id', component: ConsultationsDoctorComponent, canActivate: [AuthGardService, DoctorPatientGuardService], data: {role : 'Doctor'}},
+  { path: 'auth', component: AuthenticationComponent},
   { path: 'navbar', component: NavbarComponent },
   { path: 'header', component: HeaderComponent},
-  { path: 'patient-appointments/:id', component: AppointmentsPatientComponent},
-  { path: 'doctor-appointments/:id', component: AppointmentsDoctorComponent},
-  { path: 'patient-consultations/:id', component: ConsultationsPatientComponent},
-  { path: 'doctor-consultations/:id', component: ConsultationsDoctorComponent},
-  { path: 'auth', component: AuthenticationComponent}
 ];

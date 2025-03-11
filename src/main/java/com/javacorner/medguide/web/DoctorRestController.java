@@ -39,7 +39,7 @@ public class DoctorRestController {
     }
 
     @GetMapping("/all")
-    @PreAuthorize("hasAuthority('Admin')")
+    @PreAuthorize("hasAnyAuthority('Admin', 'Doctor', 'Patient')")
     public List<DoctorDTO> findAllDoctors(){
         return doctorService.fetchDoctors();
     }
@@ -62,6 +62,7 @@ public class DoctorRestController {
     @PreAuthorize("hasAuthority('Doctor')")
     public DoctorDTO updateDoctor(@RequestBody DoctorDTO doctorDTO, @PathVariable Long doctorId){
         doctorDTO.setDoctorId(doctorId);
+
         return doctorService.updateDoctor(doctorDTO);
     }
 
@@ -81,7 +82,7 @@ public class DoctorRestController {
     }
 
     @GetMapping("/{doctorId}/consultations")
-    @PreAuthorize("hasAnyAuthority('Doctor', 'Admin')")
+    @PreAuthorize("hasAnyAuthority('Doctor', 'Admin', 'Patient')")
     public Page<ConsultationDTO> findConsultationsByDoctorId(@PathVariable Long doctorId,
                                                         @RequestParam(name="page", defaultValue = "0") int page,
                                                         @RequestParam(name="size", defaultValue = "5") int size){

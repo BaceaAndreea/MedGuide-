@@ -41,7 +41,7 @@ export class PatientsService {
   }
 
 
-  updatePatient(patient: Patient, id: number): Observable<any> {
+  updatePatient(patient: Partial<Patient>, id: number): Observable<any> {
     return this.http.put<Patient>(`${environment.backendHost}/patients/${id}`, patient, {
       headers: new HttpHeaders({ "Content-Type": "application/json" })
     });
