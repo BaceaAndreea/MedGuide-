@@ -1,5 +1,294 @@
-.card{
-  margin : 300px auto;
-  width: 600px;
-  padding: 10px;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body, html {
+  height: 100%;
+  margin: 0;
+  overflow-x: hidden;
+}
+
+.login-container {
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  background: white;
+}
+
+.container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+}
+
+.left-panel {
+  flex: 0 0 45%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 60px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  position: relative;
+  height: 100vh;
+  overflow: hidden;
+  text-align: center;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: -50px;
+    right: -50px;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -80px;
+    left: -80px;
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+  }
+}
+
+.right-panel {
+  flex: 0 0 55%;
+  padding: 60px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background: white;
+  height: 100vh;
+}
+
+.app-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 40px;
+
+  .icon {
+    width: 50px;
+    height: 50px;
+    background: white;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 15px;
+
+    svg {
+      width: 30px;
+      height: 30px;
+      fill: #667eea;
+    }
+  }
+
+  h1 {
+    font-size: 32px;
+    font-weight: 600;
+  }
+}
+
+.app-description {
+  margin-bottom: 50px;
+  max-width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+
+  h2 {
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    line-height: 1.3;
+  }
+
+  p {
+    opacity: 0.85;
+    line-height: 1.7;
+    font-size: 16px;
+  }
+}
+
+.illustration {
+  margin-top: auto;
+  text-align: center;
+  position: relative;
+  z-index: 2;
+  margin-bottom: 40px;
+
+  svg {
+    max-width: 300px;
+    height: auto;
+  }
+}
+
+.login-header {
+  margin-bottom: 40px;
+  text-align: center;
+
+  h2 {
+    font-size: 28px;
+    color: #333;
+    margin-bottom: 10px;
+  }
+
+  p {
+    color: #777;
+    font-size: 14px;
+  }
+}
+
+.login-form {
+  width: 100%;
+  max-width: 450px;
+  margin: 0 auto;
+}
+
+.form-group {
+  margin-bottom: 25px;
+
+  label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 14px;
+    color: #555;
+    font-weight: 500;
+  }
+
+  input {
+    width: 100%;
+    padding: 15px;
+    border: 1px solid #e1e1e1;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    background: #f9f9f9;
+
+    &:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15);
+      background: white;
+    }
+
+    &.is-invalid {
+      border-color: #dc3545;
+      box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.15);
+    }
+  }
+
+  .invalid-feedback {
+    color: #dc3545;
+    font-size: 12px;
+    margin-top: 5px;
+  }
+}
+
+.remember-forgot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+  font-size: 14px;
+
+  .remember {
+    display: flex;
+    align-items: center;
+
+    input {
+      margin-right: 8px;
+    }
+  }
+
+  .forgot a {
+    color: #667eea;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+.login-button {
+  width: 100%;
+  padding: 15px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+  }
+}
+
+.signup-link {
+  text-align: center;
+  margin-top: 25px;
+  font-size: 14px;
+  color: #666;
+
+  a {
+    color: #667eea;
+    font-weight: 600;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+.alert-error {
+  padding: 12px;
+  background-color: #fdeaea;
+  border-left: 4px solid #dc3545;
+  color: #dc3545;
+  border-radius: 4px;
+  margin-top: 20px;
+  font-size: 14px;
+}
+
+@media (max-width: 900px) {
+  .container {
+    flex-direction: column;
+  }
+
+  .left-panel {
+    flex: 0 0 auto;
+    height: auto;
+    min-height: 250px;
+    padding: 30px;
+  }
+
+  .right-panel {
+    flex: 1;
+    height: auto;
+    padding: 30px;
+  }
+
+  .app-description {
+    max-width: 100%;
+  }
+
+  .illustration {
+    display: none;
+  }
 }

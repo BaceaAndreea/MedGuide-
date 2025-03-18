@@ -13,10 +13,11 @@ import {ConsultationsDoctorComponent} from './components/consultations-doctor/co
 import {AuthenticationComponent} from './components/authentication/authentication.component';
 import {AuthGardService} from './services/auth.gard.service';
 import {DoctorPatientGuardService} from './services/doctor-patient.guard.service';
+import {HomeComponent} from './components/home/home.component';
 
 
 export const routes: Routes = [
-  { path: '', redirectTo: '/auth', pathMatch: 'full' },
+  { path: '', redirectTo: '/home', pathMatch: 'full' },
   { path: 'appointments', component: AppointmentsComponent, canActivate: [AuthGardService], data: {role : 'Admin'}},
   { path: 'patients', component: PatientsComponent, canActivate: [AuthGardService], data: {role : 'Admin'}},
   { path: 'doctors', component: DoctorsComponent, canActivate: [AuthGardService], data: {role : 'Admin'}},
@@ -29,4 +30,5 @@ export const routes: Routes = [
   { path: 'auth', component: AuthenticationComponent},
   { path: 'navbar', component: NavbarComponent },
   { path: 'header', component: HeaderComponent},
+  { path: 'home', component: HomeComponent}
 ];
