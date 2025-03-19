@@ -20,7 +20,7 @@ export class AppComponent implements OnInit{
   constructor(private authService : AuthService, private router : Router) {
     this.router.events.subscribe(() => {
       // Listează rutele unde vrei să ascunzi sidebar-ul
-      const hiddenRoutes = [ '/home', '/auth'];
+      const hiddenRoutes = [ '/home', '/auth', '/signup'];
       this.showNavbar = !hiddenRoutes.includes(this.router.url);
     });
   }

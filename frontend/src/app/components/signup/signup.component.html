@@ -1,0 +1,82 @@
+<h2>Sign Up</h2>
+
+<form [formGroup]="signUpForm" (ngSubmit)="onSubmit()">
+  <!-- First Name -->
+  <div class="form-group">
+    <label for="firstName">First Name</label>
+    <input type="text" id="firstName" formControlName="firstName" />
+    <div *ngIf="firstName?.invalid && ($any(firstName)?.touched)">
+      <small *ngIf="firstName?.errors?.['required']">First name is required</small>
+    </div>
+  </div>
+
+  <!-- Last Name -->
+  <div class="form-group">
+    <label for="lastName">Last Name</label>
+    <input type="text" id="lastName" formControlName="lastName" />
+    <div *ngIf="lastName?.invalid && ($any(lastName)?.touched)">
+      <small *ngIf="lastName?.errors?.['required']">Last name is required</small>
+    </div>
+  </div>
+
+  <!-- Email -->
+  <div class="form-group">
+    <label for="email">Email</label>
+    <input type="email" id="email" formControlName="email" />
+    <div *ngIf="email?.invalid && ($any(email)?.touched)">
+      <small *ngIf="email?.errors?.['required']">Email is required</small>
+      <small *ngIf="email?.errors?.['email']">Invalid email format</small>
+      <small *ngIf="email?.errors?.['emailAlreadyExists']">
+        This email is already in use
+      </small>
+    </div>
+  </div>
+
+  <!-- Password -->
+  <div class="form-group">
+    <label for="password">Password</label>
+    <input
+      type="password"
+      id="password"
+      formControlName="password"
+    />
+    <div *ngIf="password?.invalid && ($any(password)?.touched)">
+      <small *ngIf="password?.errors?.['required']">Password is required</small>
+      <small *ngIf="password?.errors?.['minlength']">
+        Password must be at least 6 characters
+      </small>
+    </div>
+  </div>
+
+  <!-- Confirm Password -->
+  <div class="form-group">
+    <label for="confirmPassword">Confirm Password</label>
+    <input
+      type="password"
+      id="confirmPassword"
+      formControlName="confirmPassword"
+    />
+    <div *ngIf="confirmPassword?.invalid && ($any(confirmPassword)?.touched)">
+      <small *ngIf="confirmPassword?.errors?.['required']">
+        Confirm password is required
+      </small>
+    </div>
+
+    <div
+      *ngIf="
+        signUpForm.hasError('passwordsMismatch') &&
+        confirmPassword?.touched
+      "
+      class="error"
+    >
+      <small>Passwords do not match</small>
+    </div>
+  </div>
+
+  <button
+    type="submit"
+    [disabled]="signUpForm.invalid || loading"
+  >
+    {{ loading ? 'Loading...' : 'Sign Up' }}
+  </button>
+</form>

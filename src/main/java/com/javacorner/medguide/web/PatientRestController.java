@@ -54,7 +54,7 @@ public class PatientRestController {
     }
 
     @PostMapping
-    @PreAuthorize("hasAuthority('Admin')")
+    @PreAuthorize("permitAll()")
     public PatientDTO savePatient(@RequestBody PatientDTO patientDTO){
         User user = userService.loadUserByEmail(patientDTO.getUser().getEmail());
         if(user != null) throw new RuntimeException("User already exists");
