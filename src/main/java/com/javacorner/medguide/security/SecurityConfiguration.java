@@ -6,6 +6,7 @@ import com.javacorner.medguide.helper.JWTHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -48,6 +49,8 @@ public class SecurityConfiguration {
                         .requestMatchers("/refresh-token/**").permitAll()
                         .requestMatchers("/api/public/**").permitAll() // Endpointuri publice
                         .requestMatchers("/api/private/**").authenticated() // Endpointuri protejate
+                        .requestMatchers("/users**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/patients").permitAll()
                         .anyRequest().authenticated() // Orice alt request trebuie autentificat
                 )
                 .addFilter(new JWTAuthenticationFilter(authenticationManager(http.getSharedObject(AuthenticationConfiguration.class)), jwtHelper))

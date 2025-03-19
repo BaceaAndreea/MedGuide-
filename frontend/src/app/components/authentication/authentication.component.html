@@ -1,51 +1,219 @@
-<div class="card">
-  <form [formGroup]="loginFormGroup" method="post">
-    <div class="card-body">
-      <div class="form-group">
-        <label class="text-muted">Email</label>
-        <input
-          type="email"
-          class="form-control form-font rounded-0 mt-1 mb-3"
-          [ngClass]="{'is-invalid': submitted && loginFormGroup.controls['username'].errors}"
-          formControlName="username">
-
-        <div *ngIf="submitted && loginFormGroup.get('username')?.errors" class="invalid-feedback">
-          <div *ngIf="loginFormGroup.get('username')!.errors?.['required']">
-            Email is required.
-          </div>
-          <div *ngIf="loginFormGroup.get('username')!.errors?.['pattern']">
-            Please enter a valid email.
-          </div>
+<div class="login-container">
+  <div class="container">
+    <!-- Left panel - Always visible -->
+    <div class="left-panel">
+      <div class="app-logo">
+        <div class="icon">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M19 3H5c-1.1 0-1.99.9-1.99 2L3 19c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-1 11h-4v4h-4v-4H6v-4h4V6h4v4h4v4z"/>
+          </svg>
         </div>
+        <h1>MedGuide</h1>
       </div>
 
-      <div class="form-group">
-        <label class="text-muted">Password</label>
-        <input
-          type="password"
-          class="form-control form-font rounded-0 mt-1 mb-3"
-          [ngClass]="{'is-invalid': submitted && loginFormGroup.controls['password'].errors}"
-          formControlName="password">
-
-        <div *ngIf="submitted && loginFormGroup.get('password')?.errors" class="invalid-feedback">
-          <div *ngIf="loginFormGroup.get('password')!.errors?.['required']">
-            Password is required.
-          </div>
-          <div *ngIf="loginFormGroup.get('password')!.errors?.['minlength']">
-            Password must be at least 6 characters.
-          </div>
-        </div>
+      <div class="app-description">
+        <h2>Ghidul tău personal pentru o sănătate mai bună</h2>
+        <p>Conectează-te pentru a accesa sfaturi personalizate, scheme de tratament și monitorizare în timp real a sănătății tale.</p>
       </div>
 
-    </div>
-    <div class="card-footer">
-      <button type="button" (click)="onLogin()" class="btn btn-sm btn-primary">Login</button>
-    </div>
-  </form>
+      <div class="illustration">
+        <svg viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="250" cy="250" r="200" fill="rgba(255,255,255,0.1)"/>
+          <path d="M340 185H295V140C295 129 286 120 275 120H225C214 120 205 129 205 140V185H160C149 185 140 194 140 205V255C140 266 149 275 160 275H205V320C205 331 214 340 225 340H275C286 340 295 331 295 320V275H340C351 275 360 266 360 255V205C360 194 351 185 340 185Z" fill="white"/>
+        </svg>
+      </div>
 
-  <ng-container *ngIf="errorMessage">
-    <div class="alert alert-danger">
-      {{errorMessage}}
+      <!-- Added extra decorative elements -->
+      <div class="decorative-shape shape-1"></div>
+      <div class="decorative-shape shape-2"></div>
+      <div class="decorative-shape shape-3"></div>
     </div>
-  </ng-container>
+
+    <!-- Right panel - Changes based on login/signup state -->
+    <div class="right-panel">
+      <!-- Login Form -->
+      <div *ngIf="showLoginForm; else signupFormTemplate">
+        <div class="login-header">
+          <h2>Bun venit!</h2>
+          <p>Te rugăm să introduci datele tale pentru a continua</p>
+        </div>
+
+        <form [formGroup]="loginFormGroup" method="post" class="login-form">
+          <div class="form-group">
+            <label for="email">Email</label>
+            <div class="input-with-icon">
+              <i class="input-icon email-icon"></i>
+              <input
+                type="email"
+                id="email"
+                placeholder="Adresa ta de email"
+                [ngClass]="{'is-invalid': submitted && loginFormGroup.controls['username'].errors}"
+                formControlName="username">
+            </div>
+            <div *ngIf="submitted && loginFormGroup.get('username')?.errors" class="invalid-feedback">
+              <div *ngIf="loginFormGroup.get('username')!.errors?.['required']">
+                Email is required.
+              </div>
+              <div *ngIf="loginFormGroup.get('username')!.errors?.['pattern']">
+                Please enter a valid email.
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="password">Parolă</label>
+            <div class="input-with-icon">
+              <i class="input-icon password-icon"></i>
+              <input
+                type="password"
+                id="password"
+                placeholder="Parola ta"
+                [ngClass]="{'is-invalid': submitted && loginFormGroup.controls['password'].errors}"
+                formControlName="password">
+            </div>
+            <div *ngIf="submitted && loginFormGroup.get('password')?.errors" class="invalid-feedback">
+              <div *ngIf="loginFormGroup.get('password')!.errors?.['required']">
+                Password is required.
+              </div>
+              <div *ngIf="loginFormGroup.get('password')!.errors?.['minlength']">
+                Password must be at least 6 characters.
+              </div>
+            </div>
+          </div>
+
+          <div class="remember-forgot">
+            <div class="remember">
+              <input type="checkbox" id="remember">
+              <label for="remember">Ține-mă minte</label>
+            </div>
+            <div class="forgot">
+              <a href="#">Ai uitat parola?</a>
+            </div>
+          </div>
+
+          <button type="button" (click)="onLogin()" class="login-button">
+            <span>Conectare</span>
+            <i class="button-icon arrow-icon"></i>
+          </button>
+
+          <div class="signup-link">
+            Nu ai cont?
+            <button class="link-button" (click)="toggleForm()">Înregistrează-te acum</button>
+          </div>
+        </form>
+
+        <ng-container *ngIf="errorMessage">
+          <div class="alert-error">
+            {{errorMessage}}
+          </div>
+        </ng-container>
+      </div>
+
+      <!-- Signup Form Template -->
+      <ng-template #signupFormTemplate>
+        <div class="login-header">
+          <h2>Creează un cont nou</h2>
+          <p>Completează datele tale pentru a te înregistra</p>
+        </div>
+
+        <form [formGroup]="signUpForm" (ngSubmit)="onSubmit()" class="login-form">
+          <div class="form-group">
+            <label for="firstName">Prenume</label>
+            <div class="input-with-icon">
+              <i class="input-icon user-icon"></i>
+              <input
+                type="text"
+                id="firstName"
+                placeholder="Prenumele tău"
+                formControlName="firstName"
+                [ngClass]="{'is-invalid': firstName?.invalid && ($any(firstName)?.touched)}" />
+            </div>
+            <div *ngIf="firstName?.invalid && ($any(firstName)?.touched)" class="invalid-feedback">
+              <div *ngIf="firstName?.errors?.['required']">Prenumele este obligatoriu</div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="lastName">Nume</label>
+            <div class="input-with-icon">
+              <i class="input-icon user-icon"></i>
+              <input
+                type="text"
+                id="lastName"
+                placeholder="Numele tău"
+                formControlName="lastName"
+                [ngClass]="{'is-invalid': lastName?.invalid && ($any(lastName)?.touched)}" />
+            </div>
+            <div *ngIf="lastName?.invalid && ($any(lastName)?.touched)" class="invalid-feedback">
+              <div *ngIf="lastName?.errors?.['required']">Numele este obligatoriu</div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="signupEmail">Email</label>
+            <div class="input-with-icon">
+              <i class="input-icon email-icon"></i>
+              <input
+                type="email"
+                id="signupEmail"
+                placeholder="Adresa ta de email"
+                formControlName="email"
+                [ngClass]="{'is-invalid': email?.invalid && ($any(email)?.touched)}" />
+            </div>
+            <div *ngIf="email?.invalid && ($any(email)?.touched)" class="invalid-feedback">
+              <div *ngIf="email?.errors?.['required']">Email-ul este obligatoriu</div>
+              <div *ngIf="email?.errors?.['email']">Format de email invalid</div>
+              <div *ngIf="email?.errors?.['emailAlreadyExists']">Acest email este deja folosit</div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="signupPassword">Parolă</label>
+            <div class="input-with-icon">
+              <i class="input-icon password-icon"></i>
+              <input
+                type="password"
+                id="signupPassword"
+                placeholder="Parola ta"
+                formControlName="password"
+                [ngClass]="{'is-invalid': password?.invalid && ($any(password)?.touched)}" />
+            </div>
+            <div *ngIf="password?.invalid && ($any(password)?.touched)" class="invalid-feedback">
+              <div *ngIf="password?.errors?.['required']">Parola este obligatorie</div>
+              <div *ngIf="password?.errors?.['minlength']">Parola trebuie să aibă cel puțin 6 caractere</div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="confirmPassword">Confirmă parola</label>
+            <div class="input-with-icon">
+              <i class="input-icon password-icon"></i>
+              <input
+                type="password"
+                id="confirmPassword"
+                placeholder="Confirmă parola"
+                formControlName="confirmPassword"
+                [ngClass]="{'is-invalid': (confirmPassword?.invalid && ($any(confirmPassword)?.touched)) || (signUpForm.hasError('passwordsMismatch') && confirmPassword?.touched)}" />
+            </div>
+            <div *ngIf="confirmPassword?.invalid && ($any(confirmPassword)?.touched)" class="invalid-feedback">
+              <div *ngIf="confirmPassword?.errors?.['required']">Confirmarea parolei este obligatorie</div>
+            </div>
+            <div *ngIf="signUpForm.hasError('passwordsMismatch') && confirmPassword?.touched" class="invalid-feedback">
+              <div>Parolele nu coincid</div>
+            </div>
+          </div>
+
+          <button type="submit" class="login-button" [disabled]="signUpForm.invalid || loading">
+            <span>{{ loading ? 'Se procesează...' : 'Înregistrare' }}</span>
+            <i class="button-icon arrow-icon"></i>
+          </button>
+
+          <div class="signup-link">
+            Ai deja un cont?
+            <button type="button" class="link-button" (click)="toggleForm()">Conectează-te</button>
+          </div>
+        </form>
+      </ng-template>
+    </div>
+  </div>
 </div>

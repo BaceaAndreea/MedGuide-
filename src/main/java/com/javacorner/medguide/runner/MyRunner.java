@@ -52,7 +52,7 @@ public class MyRunner implements CommandLineRunner {
     }
 
     private void createAdmin() {
-        userService.createUser("admin@gmail.com", "1234");
+        userService.createUser("admin@gmail.com", "parola1234");
         userService.assignRoleToUser("admin@gmail.com", "admin");
     }
 
@@ -97,7 +97,7 @@ public class MyRunner implements CommandLineRunner {
             doctorDTO.setSpecialization(specializationDTO);
             UserDTO userDTO = new UserDTO();
             userDTO.setEmail("doctor" + i + "@gmail.com");
-            userDTO.setPassword("1234");
+            userDTO.setPassword("parola1234");
             doctorDTO.setUser(userDTO);
 
             doctorService.createDoctor(doctorDTO);
@@ -112,7 +112,7 @@ public class MyRunner implements CommandLineRunner {
             // Creăm un utilizator asociat pacientului
             UserDTO userDTO = new UserDTO();
             userDTO.setEmail("patient" + i + "@gmail.com");
-            userDTO.setPassword("1234");
+            userDTO.setPassword("parola1234");
             patientDTO.setUser(userDTO);
 
             // Apelează serviciul pentru a salva pacientul

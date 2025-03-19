@@ -31,7 +31,7 @@ public class UserRestController {
     }
 
     @GetMapping("/users")
-    @PreAuthorize("hasAuthority('Admin')")
+    @PreAuthorize("permitAll()")
     public boolean checkIfEmailExists(@RequestParam(name = "email", defaultValue = "") String email) {
         return userService.loadUserByEmail(email) != null;
     }

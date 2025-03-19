@@ -533,3 +533,12 @@ header {
   background-color: #f1f1f1;
 }
 
+.auth-page .sidebar {
+  display: none !important;
+}
+
+.auth-page .main-container {
+  margin-left: 0 !important; /* Elimină spațiul rezervat sidebar-ului */
+}
+
+
