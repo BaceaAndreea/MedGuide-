@@ -1,0 +1,846 @@
+/* Host styling - utilizam variabilele globale din styles.scss */
+:host {
+  display: block;
+  min-height: 100vh;
+  padding-top: 1rem;
+  position: relative;
+  overflow: hidden;
+
+  /* Nu mai definim background aici deoarece este setat la nivel de body */
+  /* Vom adauga doar overlays suplimentare peste fundalul global */
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+    background:
+      radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.07) 0%, transparent 30%),
+      radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.05) 0%, transparent 30%),
+      radial-gradient(circle at 80% 10%, rgba(255, 255, 255, 0.07) 0%, transparent 20%),
+      radial-gradient(circle at 40% 70%, rgba(255, 255, 255, 0.05) 0%, transparent 30%);
+  }
+}
+
+/* Eliminăm elementele duplicate care sunt deja în styles.scss */
+/* Astfel, nu vom include:
+   - .background-dots
+   - .floating-elements și .floating-circle
+   - .light-streak
+   - .glow-point
+   - .wave-bottom
+   deoarece acestea sunt deja definite global
+*/
+
+/* Page container */
+.appointments-container {
+  padding: 1.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 2;
+}
+
+/* Page header */
+.page-header-container {
+  margin-bottom: 1rem;
+}
+
+.page-title-container {
+  margin-bottom: 2.5rem;
+
+  .page-title {
+    font-size: 2.5rem;
+    color:  #ffffff;
+    margin: 0;
+    font-weight: 600;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+    letter-spacing: 0.5px;
+    position: relative;
+
+    &::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: -5px;
+      width: 80px;
+      height: 3px;
+      background: linear-gradient(90deg, rgba(255,255,255,0.8), rgba(255,255,255,0.2));
+      border-radius: 3px;
+    }
+  }
+}
+
+/* Page Header */
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+/* Dashboard Summary */
+.dashboard-summary {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  width: 100%;
+
+  @media (max-width: 1200px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (max-width: 576px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.summary-card {
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 1.25rem;
+  display: flex;
+  align-items: center;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+  }
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 6px;
+    height: 100%;
+    opacity: 0.7;
+  }
+
+  .summary-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    margin-right: 1rem;
+
+    i {
+      font-size: 1.5rem;
+    }
+  }
+
+  .summary-content {
+    flex: 1;
+
+    .summary-value {
+      font-size: 1.75rem;
+      font-weight: 700;
+      margin: 0 0 0.25rem 0;
+      transition: all 0.3s ease;
+    }
+
+    .summary-label {
+      font-size: 0.875rem;
+      color: #4a5568;
+      margin: 0;
+    }
+  }
+}
+
+/* Card-specific styling */
+.total-appointments {
+  &::before {
+    background-color: #5649b9;
+  }
+
+  .summary-icon {
+    background-color: rgba(86, 73, 185, 0.1);
+    color: #5649b9;
+  }
+
+  .summary-value {
+    color: #5649b9;
+  }
+}
+
+.upcoming-appointments {
+  &::before {
+    background-color: #4299e1;
+  }
+
+  .summary-icon {
+    background-color: rgba(66, 153, 225, 0.1);
+    color: #4299e1;
+  }
+
+  .summary-value {
+    color: #4299e1;
+  }
+}
+
+.completed-appointments {
+  &::before {
+    background-color: #38a169;
+  }
+
+  .summary-icon {
+    background-color: rgba(56, 161, 105, 0.1);
+    color: #38a169;
+  }
+
+  .summary-value {
+    color: #38a169;
+  }
+}
+
+.cancelled-appointments {
+  &::before {
+    background-color: #e53e3e;
+  }
+
+  .summary-icon {
+    background-color: rgba(229, 62, 62, 0.1);
+    color: #e53e3e;
+  }
+
+  .summary-value {
+    color: #e53e3e;
+  }
+}
+
+/* Appointments card */
+.appointments-card {
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+
+  .error-message {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: #e53e3e;
+    padding: 1rem;
+    border-radius: 8px;
+    background-color: rgba(229, 62, 62, 0.1);
+
+    i {
+      font-size: 1.25rem;
+    }
+  }
+
+  .loading-indicator {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 2rem;
+    color: #5649b9;
+
+    .spin {
+      animation: spin 1s linear infinite;
+      font-size: 1.5rem;
+    }
+  }
+}
+
+/* Table styles */
+.appointments-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin-bottom: 1.5rem;
+
+  th {
+    text-align: left;
+    padding: 1rem;
+    border-bottom: 2px solid #e2e8f0;
+    color: #4a5568;
+    font-weight: 600;
+    font-size: 0.875rem;
+  }
+
+  td {
+    padding: 1rem;
+    border-bottom: 1px solid #e2e8f0;
+    color: #4a5568;
+  }
+
+  .appointment-row {
+    transition: all 0.2s;
+
+    &:hover {
+      background-color: #f7f8fa;
+    }
+  }
+
+  .actions-cell {
+    width: 50px;
+    text-align: center;
+  }
+
+  .btn-edit, .btn-delete, .btn-complete {
+    background: transparent;
+    border: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-edit {
+    color: #5649b9;
+
+    &:hover {
+      background-color: rgba(86, 73, 185, 0.1);
+    }
+  }
+
+  .btn-delete {
+    color: #e53e3e;
+
+    &:hover {
+      background-color: rgba(229, 62, 62, 0.1);
+    }
+  }
+
+  .btn-complete {
+    color: #38a169;
+
+    &:hover {
+      background-color: rgba(56, 161, 105, 0.1);
+    }
+  }
+
+  /* Stilizare pentru coloana de motiv */
+  td:nth-child(5) {
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* Adaugă tooltip la hover pentru a vedea textul complet */
+  td:nth-child(5):hover {
+    position: relative;
+    overflow: visible;
+    z-index: 5;
+  }
+
+  td:nth-child(5):hover::before {
+    content: attr(title);
+    position: absolute;
+    top: -30px;
+    left: 0;
+    background-color: #333;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    white-space: nowrap;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  }
+}
+
+/* Status badge styles */
+.status-badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+
+  &.status-scheduled {
+    background-color: rgba(236, 201, 75, 0.15) !important;
+    color: darken(#ecc94b, 20%) !important; /* Galben pentru Programată */
+  }
+
+  &.status-confirmata {
+    background-color: rgba(66, 153, 225, 0.15) !important;
+    color: #4299e1 !important; /* Albastru pentru Confirmată */
+  }
+
+  &.status-finalizata {
+    background-color: rgba(56, 161, 105, 0.15) !important;
+    color: #38a169 !important; /* Verde pentru Finalizată */
+  }
+
+  &.status-anulata {
+    background-color: rgba(229, 62, 62, 0.15) !important;
+    color: #e53e3e !important; /* Roșu pentru Anulată */
+  }
+
+  &.status-pending {
+    background-color: rgba(236, 201, 75, 0.15);
+    color: darken(#ecc94b, 20%);
+  }
+}
+
+/* Pagination controls */
+.pagination-controls {
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+
+  .pagination {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+
+    .page-item {
+      margin: 0 0.25rem;
+
+      .page-link {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background-color: #f7f8fa;
+        color: #4a5568;
+        cursor: pointer;
+        transition: all 0.2s;
+
+        &:hover {
+          background-color: rgba(86, 73, 185, 0.1);
+          color: #5649b9;
+        }
+      }
+
+      &.active .page-link {
+        background-color: #5649b9;
+        color: #ffffff;
+        box-shadow: 0 2px 5px rgba(86, 73, 185, 0.3);
+      }
+
+      &.disabled .page-link {
+        opacity: 0.5;
+        cursor: not-allowed;
+
+        &:hover {
+          background-color: #f7f8fa;
+          color: #4a5568;
+        }
+      }
+    }
+  }
+}
+
+/* Succes notification */
+.success-notification {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background-color: rgba(56, 161, 105, 0.1);
+  color: #38a169;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  position: relative;
+
+  i {
+    font-size: 1.25rem;
+  }
+
+  .close-notification {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    color: #38a169;
+    font-size: 1.25rem;
+    cursor: pointer;
+    opacity: 0.7;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+}
+
+/* Update Modal styles */
+.modal-container {
+  animation: fadeIn 0.3s ease-out;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1.25rem;
+  border-bottom: 1px solid #e2e8f0;
+  position: relative;
+
+  .modal-title {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #7569d6;
+
+    i {
+      font-size: 1.4rem;
+    }
+  }
+
+  .btn-close {
+    background: transparent;
+    border: none;
+    font-size: 1.5rem;
+    color: #4a5568;
+    cursor: pointer;
+    transition: all 0.3s;
+
+    &:hover {
+      color: #7569d6;
+      transform: rotate(90deg);
+    }
+  }
+}
+
+.modal-body {
+  padding: 1rem;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  padding: 0.75rem 1.25rem;
+  border-top: 1px solid #e2e8f0;
+  gap: 0.5rem;
+}
+
+.modal-form {
+  .form-group {
+    margin-bottom: 0.75rem;
+
+    label {
+      display: block;
+      margin-bottom: 0.35rem;
+      color: #4a5568;
+      font-weight: 500;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 0.5rem 0.75rem;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      transition: all 0.3s;
+
+      &:focus {
+        outline: none;
+        border-color: #7569d6;
+        box-shadow: 0 0 0 3px rgba(117, 105, 214, 0.1);
+      }
+
+      &.is-invalid {
+        border-color: #e53e3e;
+      }
+
+      &.form-control-readonly {
+        background-color: #f8f9fa;
+        opacity: 0.7;
+        cursor: not-allowed;
+      }
+    }
+
+    .invalid-feedback {
+      color: #e53e3e;
+      font-size: 0.85rem;
+      margin-top: 0.35rem;
+    }
+  }
+}
+
+.btn-cancel {
+  background-color: rgba(74, 85, 104, 0.08);
+  color: #4a5568;
+  border: none;
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s;
+
+  &:hover {
+    background-color: #4a5568;
+    color: #ffffff;
+  }
+}
+
+.btn-save {
+  background-color: #7569d6;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s;
+
+  &:hover {
+    background-color: darken(#7569d6, 10%);
+  }
+
+  &:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+}
+
+.modal-error,
+.modal-loading {
+  padding: 2rem;
+  text-align: center;
+
+  i {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    display: block;
+  }
+}
+
+.modal-error {
+  color: #e53e3e;
+}
+
+.modal-loading {
+  color: #7569d6;
+
+  .spin {
+    animation: spin 1s linear infinite;
+  }
+}
+
+/* NgBootstrap modal styles */
+::ng-deep .modal-content {
+  border: none !important;
+  border-radius: 14px !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15) !important;
+  overflow: hidden !important;
+}
+
+::ng-deep .modal-dialog-centered {
+  display: flex;
+  align-items: center;
+  min-height: calc(100% - 3.5rem);
+}
+
+::ng-deep .modal-lg {
+  max-width: 800px;
+}
+
+/* Table highlighting for completed row */
+.completed-row {
+  background-color: rgba(56, 161, 105, 0.05);
+}
+
+.highlight-row {
+  animation: highlightRow 2s;
+}
+
+/* Styling pentru consultation modal */
+.consultation-info {
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid #e2e8f0;
+
+  .info-item {
+    display: flex;
+    margin-bottom: 0.35rem;
+
+    .info-label {
+      font-weight: 600;
+      color: #4a5568;
+      width: 90px;
+    }
+
+    .info-value {
+      color: #333;
+      font-weight: 500;
+    }
+  }
+}
+
+.section-title {
+  color: #7569d6;
+  margin-bottom: 0.75rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  position: relative;
+  display: inline-block;
+  margin-top: 0.5rem;
+
+  &::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -4px;
+    width: 35px;
+    height: 2px;
+    background: #7569d6;
+    border-radius: 2px;
+  }
+}
+
+.result-section {
+  margin-bottom: 0.75rem;
+  background-color: #f7f8fa;
+  border-radius: 10px;
+  padding: 0.75rem;
+  transition: all 0.3s;
+
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.05);
+  }
+
+  .result-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.5rem;
+
+    i {
+      color: #7569d6;
+      margin-right: 0.5rem;
+      font-size: 1rem;
+    }
+
+    h5 {
+      margin: 0;
+      color: #7569d6;
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+  }
+
+  .result-content {
+    color: #333;
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+}
+
+.no-data {
+  color: #4a5568;
+  font-style: italic;
+  opacity: 0.7;
+  padding: 0.5rem 0;
+}
+
+/* Form controls */
+.form-control {
+  padding: 0.5rem 0.75rem;
+  font-size: 0.9rem;
+}
+
+textarea.form-control {
+  min-height: 60px;
+  resize: vertical;
+}
+
+.invalid-feedback {
+  font-size: 0.8rem;
+  margin-top: 0.35rem;
+}
+
+/* For DateTimePicker */
+input[type="datetime-local"] {
+  &::-webkit-calendar-picker-indicator {
+    opacity: 0.7;
+    cursor: pointer;
+  }
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes highlightRow {
+  from { background-color: rgba(117, 105, 214, 0.2); }
+  to { background-color: transparent; }
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .page-header-container {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .appointments-table {
+    display: block;
+    overflow-x: auto;
+
+    th, td {
+      padding: 0.75rem 0.5rem;
+    }
+  }
+
+  .modal-container {
+    width: 95%;
+    margin: 0 auto;
+
+    .modal-body {
+      padding: 0.75rem;
+    }
+
+    .modal-footer {
+      flex-direction: column;
+
+      .btn-cancel, .btn-save {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+  }
+
+  .consultation-info {
+    .info-item {
+      flex-direction: column;
+
+      .info-label {
+        width: 100%;
+        margin-bottom: 0.25rem;
+      }
+    }
+  }
+
+  .result-section {
+    padding: 0.75rem;
+  }
+}

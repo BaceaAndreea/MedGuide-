@@ -1,289 +1,419 @@
-<div class="main-container">
-  <header class="top-bar">
-    <div class="top-bar-left">Hello</div>
-    <div class="top-bar-right">
-      <span>Admin</span> | <a href="#">Signout</a>
-    </div>
-  </header>
-
-  <div class="content-section">
-    <div class="box">
-      <div class="box-header">
-        <div class="box-header-title">Patients</div>
-        <div class="box-header-button">
-          <button class="btn btn-primary-gradient" (click)="openModal(content)">New Patient</button>
-        </div>
-      </div>
-      <div class="box-content">
-        <ng-container *ngIf="pagePatients | async as listPatients; else failureOrLoading">
-          <div *ngIf="searchFormGroup" class="mb-2">
-            <form [formGroup]="searchFormGroup" (ngSubmit)="handleSearchPatients()">
-              <div class="input-group w-25">
-                <input type="search" formControlName="keyword" class="form-control rounded mx-2" placeholder="Search" aria-label="Search">
-                <button type="submit" class="btn btn-outline-primary">Search</button>
-              </div>
-            </form>
-          </div>
-          <table class="table table-bordered table-hover">
-            <thead>
-            <tr>
-              <th>Patient ID</th>
-              <th>First Name</th>
-              <th>Last Name</th>
-              <th>Medical History</th>
-              <th>Allergies</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr *ngFor="let p of listPatients.content">
-              <td>{{ p.patientId }}</td>
-              <td>{{ p.firstName }}</td>
-              <td>{{ p.lastName }}</td>
-              <td>{{ p.medicalHistory.join(', ') || 'None' }}</td>
-              <td>{{ p.allergies.join(', ') || 'None' }}</td>
-              <td>
-                <button (click)="handleDeletePatients(p)" class="btn btn-danger">
-                  <i class="bi bi-trash"></i>
-                </button>
-              </td>
-              <td>
-                <button (click)="getAppointmentModal(p, appointmentContent)" class="btn btn-info">
-                  Appointments
-                </button>
-              </td>
-              <td>
-                <button (click)="getUpdatePatientModal(p, updateContent)" class="btn btn-success">
-                  <i class="bi bi-pencil-square"></i>
-                </button>
-              </td>
-            </tr>
-            </tbody>
-          </table>
-          <ul class="pagination justify-content-center">
-            <li *ngFor="let item of [].constructor(listPatients.totalPages); let page=index" class="page-item"
-                [ngClass]="{'active': page === currentPage}">
-              <a (click)="gotoPage(page)" class="page-link">{{page}}</a>
-            </li>
-          </ul>
-        </ng-container>
-        <ng-template #failureOrLoading>
-          <ng-container *ngIf="errorMessage; else loading">
-            <div class="text-danger">
-              {{ errorMessage }}
-            </div>
-          </ng-container>
-          <ng-template #loading>
-            <div class="loader shadow-sm text-muted">
-              <span><i class="fa-solid fa-rotate fa-spin"></i></span> &nbsp; <span>Processing...</span>
-            </div>
-          </ng-template>
-        </ng-template>
-      </div>
-    </div>
-  </div>
+<!-- Added decorative elements to match appointment design -->
+<div class="background-dots"></div>
+<div class="floating-elements">
+  <div class="floating-circle"></div>
+  <div class="floating-circle"></div>
+  <div class="floating-circle"></div>
+  <div class="floating-circle"></div>
 </div>
 
-<ng-template #content let-modal>
-  <div class="modal-header">
-    <div class="modal-title text-muted"><i class="fa-regular fa-circle-dot"></i>&nbsp; Patient Form</div>
-    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+<div class="patients-container">
+  <div class="page-header-container">
+    <div class="page-title-container">
+      <h1 class="page-title">Pacienți</h1>
+    </div>
+
+    <div class="controls-container">
+      <button class="btn-new-patient" (click)="openModal(content)">
+        <i class="bi bi-plus-circle"></i> Pacient Nou
+      </button>
+    </div>
   </div>
 
-  <form [formGroup]="patientFormGroup" method="post">
-    <div class="modal-body">
-      <div class="row">
-
-        <div class="col-md-4">
-          <div class="form-group">
-            <label class="text-muted">First Name</label>
-            <input type="text" class="form-control form-font rounded-0 mt-1 mb-3"
-                   [ngClass]="{'is-invalid': submitted && patientFormGroup.controls['firstName'].errors}"
-                   formControlName="firstName">
-            <div *ngIf="submitted && patientFormGroup.get('firstName')?.invalid" class="invalid-feedback d-block">
-              <div *ngIf="patientFormGroup.get('firstName')?.errors?.['required']">First Name is Required</div>
-            </div>
-          </div>
+  <!-- Added summary cards similar to appointments -->
+  <div class="page-header">
+    <div class="dashboard-summary">
+      <div class="summary-card total-patients">
+        <div class="summary-icon">
+          <i class="bi bi-people"></i>
         </div>
-
-        <div class="col-md-4">
-          <div class="form-group">
-            <label class="text-muted">Last Name</label>
-            <input type="text" class="form-control form-font rounded-0 mt-1 mb-3"
-                   [ngClass]="{'is-invalid': submitted && patientFormGroup.controls['lastName'].errors}"
-                   formControlName="lastName">
-            <div *ngIf="submitted && patientFormGroup.get('lastName')?.invalid" class="invalid-feedback d-block">
-              <div *ngIf="patientFormGroup.get('lastName')?.errors?.['required']">Last Name is Required</div>
-            </div>
-          </div>
+        <div class="summary-content">
+          <h3 class="summary-value">{{ totalPatients }}</h3>
+          <p class="summary-label">Total Pacienți</p>
         </div>
+      </div>
 
-        <div class="col-md-4">
-          <div class="form-group">
-            <label class="text-muted">Medical History</label>
-            <textarea class="form-control form-font rounded-0 mt-1 mb-3"
-                      [ngClass]="{'is-invalid': submitted && patientFormGroup.controls['medicalHistory'].errors}"
-                      formControlName="medicalHistory" rows="2"></textarea>
-          </div>
+      <div class="summary-card active-patients">
+        <div class="summary-icon">
+          <i class="bi bi-person-check"></i>
         </div>
-
-        <div class="col-md-4">
-          <div class="form-group">
-            <label class="text-muted">Allergies</label>
-            <textarea class="form-control form-font rounded-0 mt-1 mb-3"
-                      formControlName="allergies" rows="2"></textarea>
-          </div>
+        <div class="summary-content">
+          <h3 class="summary-value">{{ totalPatients }}</h3>
+          <p class="summary-label">Pacienți Activi</p>
         </div>
+      </div>
 
-        <div formGroupName="user">
-          <div class="col-md-4">
-            <div class="form-group">
-              <label class="text-muted">Email</label>
-              <input type="email" class="form-control form-font rounded-0 mt-1 mb-3"
-                     [ngClass]="{'is-invalid': submitted && patientFormGroup.get('user.email')?.invalid}"
-                     formControlName="email">
-              <div *ngIf="submitted && patientFormGroup.get('user.email')?.invalid" class="invalid-feedback d-block">
-                <div *ngIf="patientFormGroup.get('user.email')?.errors?.['required']">Email is required</div>
-                <div *ngIf="patientFormGroup.get('user.email')?.errors?.['email']">Invalid email format</div>
-              </div>
-            </div>
-          </div>
+      <div class="summary-card appointments-needed">
+        <div class="summary-icon">
+          <i class="bi bi-calendar-plus"></i>
+        </div>
+        <div class="summary-content">
+          <h3 class="summary-value">0</h3>
+          <p class="summary-label">Necesită Programare</p>
+        </div>
+      </div>
 
-          <div class="col-md-4">
-            <div class="form-group">
-              <label class="text-muted">Password</label>
-              <input type="password" class="form-control form-font rounded-0 mt-1 mb-3"
-                     [ngClass]="{'is-invalid': submitted && patientFormGroup.get('user.password')?.errors}"
-                     formControlName="password">
-              <div *ngIf="submitted && patientFormGroup.get('user.password')?.invalid" class="invalid-feedback d-block">
-                <div *ngIf="patientFormGroup.get('user.password')?.errors?.['required']">Password is required</div>
-                <div *ngIf="patientFormGroup.get('user.password')?.errors?.['minlength']">Password must be at least 6 characters long</div>
-              </div>
-            </div>
-          </div>
+      <div class="summary-card new-patients">
+        <div class="summary-icon">
+          <i class="bi bi-person-plus"></i>
+        </div>
+        <div class="summary-content">
+          <h3 class="summary-value">0</h3>
+          <p class="summary-label">Pacienți Noi (Luna)</p>
         </div>
       </div>
     </div>
-    <div class="modal-footer">
-      <button type="button" class="btn btn-secondary" (click)="onCloseModal(modal)">Close</button>
-      <button type="button" class="btn btn-sm btn-primary" (click)="onSavePatient(modal)">Save changes</button>
-    </div>
-  </form>
-</ng-template>
-
-
-<ng-template  #appointmentContent let-appointmentModal>>
-  <div class="modal-header">
-    <div class="modal-title text-muted"><i class="fa-regular fa-circle-dot"></i>&nbsp; Patient Appointments</div>
-    <button type="button" class="btn-close" aria-label="Close" (click)="appointmentModal.dismiss('Cross click')"></button>
   </div>
-  <div class="modal-body">
-    <div class="box-content">
-      <ng-container *ngIf="pageAppointment$ | async as listAppointments; else failureOrLoading">
-        <table class="table table-bordered table-hover">
+
+  <div class="patients-card">
+    <ng-container *ngIf="pagePatients | async as listPatients; else failureOrLoading">
+      <div *ngIf="searchFormGroup" class="search-container">
+        <form [formGroup]="searchFormGroup" (ngSubmit)="handleSearchPatients()">
+          <div class="search-input-group">
+            <div class="search-input-wrapper">
+              <i class="bi bi-search search-icon"></i>
+              <input type="search" formControlName="keyword" class="search-input" placeholder="Caută pacient..." aria-label="Search">
+            </div>
+            <button type="submit" class="btn-search">Caută</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="patient-list">
+        <table class="patients-table">
           <thead>
           <tr>
-            <th>Appointment Id</th>
-            <th>Appointment Status</th>
-            <th>Appointment Date</th>
-            <th>Doctor</th>
-            <th>Patient</th>
+            <th>ID Pacient</th>
+            <th>Prenume</th>
+            <th>Nume</th>
+            <th>Istoric Medical</th>
+            <th>Alergii</th>
+            <th colspan="3">Acțiuni</th>
           </tr>
           </thead>
           <tbody>
-          <tr *ngFor="let a of listAppointments.content">
+          <tr *ngFor="let p of listPatients.content" class="patient-row">
+            <td>{{ p.patientId }}</td>
+            <td>{{ p.firstName }}</td>
+            <td>{{ p.lastName }}</td>
+            <td>{{ p.medicalHistory.join(', ') || 'Niciunul' }}</td>
+            <td>{{ p.allergies.join(', ') || 'Niciuna' }}</td>
+            <td class="actions-cell">
+              <button (click)="handleDeletePatients(p)" class="btn-delete" aria-label="Delete patient">
+                <i class="bi bi-trash"></i>
+              </button>
+            </td>
+            <td class="actions-cell">
+              <button (click)="getAppointmentModal(p, appointmentContent)" class="btn-view-appointments" aria-label="View appointments">
+                <i class="bi bi-calendar-check"></i>
+              </button>
+            </td>
+            <td class="actions-cell">
+              <button (click)="getUpdatePatientModal(p, updateContent)" class="btn-edit" aria-label="Edit patient">
+                <i class="bi bi-pencil-square"></i>
+              </button>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+
+        <div class="pagination-controls" *ngIf="listPatients.totalPages > 1">
+          <ul class="pagination">
+            <li class="page-item" [ngClass]="{'disabled': currentPage === 0}">
+              <a class="page-link" (click)="gotoPage(currentPage - 1)" aria-label="Înapoi">
+                <i class="bi bi-chevron-left"></i>
+              </a>
+            </li>
+            <li *ngFor="let item of [].constructor(listPatients.totalPages); let page = index"
+                class="page-item"
+                [ngClass]="{'active': page === currentPage}">
+              <a (click)="gotoPage(page)" class="page-link">{{ page + 1 }}</a>
+            </li>
+            <li class="page-item" [ngClass]="{'disabled': currentPage === listPatients.totalPages - 1}">
+              <a class="page-link" (click)="gotoPage(currentPage + 1)" aria-label="Înainte">
+                <i class="bi bi-chevron-right"></i>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </ng-container>
+
+    <ng-template #failureOrLoading>
+      <ng-container *ngIf="errorMessage; else loading">
+        <div class="error-message">
+          <i class="bi bi-exclamation-triangle"></i>
+          {{ errorMessage }}
+        </div>
+      </ng-container>
+      <ng-template #loading>
+        <div class="loading-indicator">
+          <i class="bi bi-arrow-repeat spin"></i>
+          <span>Se încarcă pacienții...</span>
+        </div>
+      </ng-template>
+    </ng-template>
+  </div>
+</div>
+
+<!-- New Patient Modal - Redesigned -->
+<ng-template #content let-modal>
+  <div class="modal-container">
+    <div class="modal-header">
+      <div class="modal-title">
+        <i class="bi bi-person-plus"></i> Adăugare Pacient Nou
+      </div>
+      <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')">×</button>
+    </div>
+
+    <form [formGroup]="patientFormGroup" method="post" class="modal-form">
+      <div class="modal-body">
+        <div class="form-fields">
+          <div class="form-row">
+            <div class="form-group">
+              <label>Prenume</label>
+              <input
+                type="text"
+                class="form-control"
+                [ngClass]="{'is-invalid': submitted && patientFormGroup.controls['firstName'].errors}"
+                formControlName="firstName"
+              >
+              <div *ngIf="submitted && patientFormGroup.get('firstName')?.invalid" class="invalid-feedback">
+                <div *ngIf="patientFormGroup.get('firstName')?.errors?.['required']">Prenumele este obligatoriu</div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>Nume</label>
+              <input
+                type="text"
+                class="form-control"
+                [ngClass]="{'is-invalid': submitted && patientFormGroup.controls['lastName'].errors}"
+                formControlName="lastName"
+              >
+              <div *ngIf="submitted && patientFormGroup.get('lastName')?.invalid" class="invalid-feedback">
+                <div *ngIf="patientFormGroup.get('lastName')?.errors?.['required']">Numele este obligatoriu</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Istoric Medical</label>
+              <textarea
+                class="form-control"
+                formControlName="medicalHistory"
+                rows="2"
+              ></textarea>
+            </div>
+
+            <div class="form-group">
+              <label>Alergii</label>
+              <textarea
+                class="form-control"
+                formControlName="allergies"
+                rows="2"
+              ></textarea>
+            </div>
+          </div>
+
+          <div formGroupName="user" class="form-row">
+            <div class="form-group">
+              <label>Email</label>
+              <input
+                type="email"
+                class="form-control"
+                [ngClass]="{'is-invalid': submitted && patientFormGroup.get('user.email')?.invalid}"
+                formControlName="email"
+              >
+              <div *ngIf="submitted && patientFormGroup.get('user.email')?.invalid" class="invalid-feedback">
+                <div *ngIf="patientFormGroup.get('user.email')?.errors?.['required']">Email-ul este obligatoriu</div>
+                <div *ngIf="patientFormGroup.get('user.email')?.errors?.['email']">Format email invalid</div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>Parolă</label>
+              <input
+                type="password"
+                class="form-control"
+                [ngClass]="{'is-invalid': submitted && patientFormGroup.get('user.password')?.errors}"
+                formControlName="password"
+              >
+              <div *ngIf="submitted && patientFormGroup.get('user.password')?.invalid" class="invalid-feedback">
+                <div *ngIf="patientFormGroup.get('user.password')?.errors?.['required']">Parola este obligatorie</div>
+                <div *ngIf="patientFormGroup.get('user.password')?.errors?.['minlength']">Parola trebuie să aibă minim 6 caractere</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn-cancel" (click)="onCloseModal(modal)">
+          <i class="bi bi-x-circle"></i> Anulează
+        </button>
+        <button type="button" class="btn-save" (click)="onSavePatient(modal)">
+          <i class="bi bi-check-circle"></i> Salvează
+        </button>
+      </div>
+    </form>
+  </div>
+</ng-template>
+
+<!-- Patient Appointments Modal - Redesigned -->
+<ng-template #appointmentContent let-appointmentModal>
+  <div class="modal-container">
+    <div class="modal-header">
+      <div class="modal-title">
+        <i class="bi bi-calendar-check"></i> Programările Pacientului
+      </div>
+      <button type="button" class="btn-close" aria-label="Close" (click)="appointmentModal.dismiss('Cross click')">×</button>
+    </div>
+
+    <div class="modal-body">
+      <ng-container *ngIf="pageAppointment$ | async as listAppointments; else appointmentFailureOrLoading">
+        <table class="appointments-table modal-table">
+          <thead>
+          <tr>
+            <th>ID Programare</th>
+            <th>Status</th>
+            <th>Data & Ora</th>
+            <th>Doctor</th>
+            <th>Pacient</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let a of listAppointments.content" class="appointment-row">
             <td>{{a.appointmentId}}</td>
-            <td>{{a.status}}</td>
-            <td>{{a.appointmentDate}}</td>
-            <td>{{a.doctor.firstName }} {{ a.doctor.lastName }}</td>
+            <td>
+                <span class="status-badge" [ngClass]="'status-' + a.status.toLowerCase()">
+                  {{a.status}}
+                </span>
+            </td>
+            <td>{{a.appointmentDate | date:'EEE, MMM d, y, h:mm a'}}</td>
+            <td>Dr. {{a.doctor.firstName}} {{a.doctor.lastName}}</td>
             <td>{{a.patient.firstName}} {{a.patient.lastName}}</td>
           </tr>
           </tbody>
         </table>
-        <ul class="nav nav-pills">
-          <li *ngFor="let item of [].constructor(listAppointments.totalPages); let page = index">
-            <a [ngClass]="page==appointmentCurrentPage?'btn-info':'btn-outline-info'" (click)="gotoAppointmentsPage(page)"
-               class="btn mb-1 ms-1 mt-1">{{ page }}</a>
-          </li>
-        </ul>
 
+        <div class="pagination-controls" *ngIf="listAppointments.totalPages > 1">
+          <ul class="pagination">
+            <li class="page-item" [ngClass]="{'disabled': appointmentCurrentPage === 0}">
+              <a class="page-link" (click)="gotoAppointmentsPage(appointmentCurrentPage - 1)" aria-label="Înapoi">
+                <i class="bi bi-chevron-left"></i>
+              </a>
+            </li>
+            <li *ngFor="let item of [].constructor(listAppointments.totalPages); let page = index"
+                class="page-item"
+                [ngClass]="{'active': page === appointmentCurrentPage}">
+              <a (click)="gotoAppointmentsPage(page)" class="page-link">{{ page + 1 }}</a>
+            </li>
+            <li class="page-item" [ngClass]="{'disabled': appointmentCurrentPage === listAppointments.totalPages - 1}">
+              <a class="page-link" (click)="gotoAppointmentsPage(appointmentCurrentPage + 1)" aria-label="Înainte">
+                <i class="bi bi-chevron-right"></i>
+              </a>
+            </li>
+          </ul>
+        </div>
       </ng-container>
-      <ng-template #failureOrLoading>
-        <ng-container *ngIf="errorMessage; else loading">
-          <div class="text-danger">
+
+      <ng-template #appointmentFailureOrLoading>
+        <ng-container *ngIf="errorMessage; else appointmentLoading">
+          <div class="error-message">
+            <i class="bi bi-exclamation-triangle"></i>
             {{errorMessage}}
           </div>
         </ng-container>
-        <ng-template #loading>
-          <div class="loader shadow-sm text-muted">
-            <span><i class="fa-solid fa-rotate fa-spin"></i> </span> &nbsp; <span>Processing...</span>
+        <ng-template #appointmentLoading>
+          <div class="loading-indicator">
+            <i class="bi bi-arrow-repeat spin"></i>
+            <span>Se încarcă programările...</span>
           </div>
         </ng-template>
       </ng-template>
     </div>
-  </div>
-</ng-template>
 
-<ng-template #updateContent let-updateModal>
-  <div class="modal-header">
-    <div class="modal-title text-muted">
-      <i class="fa-regular fa-circle-dot"></i>&nbsp; Update Patient Form
-    </div>
-    <button type="button" class="btn-close" aria-label="Close" (click)="updateModal.dismiss('Cross click')"></button>
-  </div>
-
-  <form [formGroup]="updatePatientFormGroup" method="post">
-    <div class="modal-body">
-      <div class="row">
-        <div class="col-md-4">
-          <div class="form-group">
-            <label class="text-muted">First Name</label>
-            <input type="text" class="form-control form-font rounded-0 mt-1 mb-3"
-                   [ngClass]="{'is-invalid': submitted && updatePatientFormGroup.controls['firstName'].errors}"
-                   formControlName="firstName">
-            <div *ngIf="submitted && updatePatientFormGroup.get('firstName')?.invalid" class="invalid-feedback d-block">
-              <div *ngIf="updatePatientFormGroup.get('firstName')?.errors?.['required']">First Name is Required</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-md-4">
-          <div class="form-group">
-            <label class="text-muted">Last Name</label>
-            <input type="text" class="form-control form-font rounded-0 mt-1 mb-3"
-                   [ngClass]="{'is-invalid': submitted && updatePatientFormGroup.controls['lastName'].errors}"
-                   formControlName="lastName">
-            <div *ngIf="submitted && updatePatientFormGroup.get('lastName')?.invalid" class="invalid-feedback d-block">
-              <div *ngIf="updatePatientFormGroup.get('lastName')?.errors?.['required']">Last Name is Required</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-md-4">
-          <div class="form-group">
-            <label class="text-muted">Medical History</label>
-            <textarea class="form-control form-font rounded-0 mt-1 mb-3"
-                      formControlName="medicalHistory"
-                      [value]="updatePatientFormGroup.get('medicalHistory')?.value"
-                      rows="2"></textarea>
-          </div>
-        </div>
-
-        <div class="col-md-4">
-          <div class="form-group">
-            <label class="text-muted">Allergies</label>
-            <textarea class="form-control form-font rounded-0 mt-1 mb-3"
-                      formControlName="allergies"
-                      [value]="updatePatientFormGroup.get('allergies')?.value"
-                      rows="2"></textarea>
-          </div>
-        </div>
-
-      </div>
-    </div>
     <div class="modal-footer">
-      <button type="button" class="btn btn-secondary" (click)="onCloseModal(updateModal)">Close</button>
-      <button type="button" class="btn btn-sm btn-primary" (click)="onUpdatePatient(updateModal)">Save changes</button>
+      <button type="button" class="btn-cancel" (click)="appointmentModal.dismiss('Close')">
+        <i class="bi bi-x-circle"></i> Închide
+      </button>
     </div>
-  </form>
+  </div>
 </ng-template>
 
+<!-- Update Patient Modal - Redesigned -->
+<ng-template #updateContent let-updateModal>
+  <div class="modal-container">
+    <div class="modal-header">
+      <div class="modal-title">
+        <i class="bi bi-pencil-square"></i> Actualizare Pacient
+      </div>
+      <button type="button" class="btn-close" aria-label="Close" (click)="updateModal.dismiss('Cross click')">×</button>
+    </div>
+
+    <form [formGroup]="updatePatientFormGroup" method="post" class="modal-form">
+      <div class="modal-body">
+        <div class="form-fields">
+          <div class="form-row">
+            <div class="form-group">
+              <label>Prenume</label>
+              <input
+                type="text"
+                class="form-control"
+                [ngClass]="{'is-invalid': submitted && updatePatientFormGroup.controls['firstName'].errors}"
+                formControlName="firstName">
+              <div *ngIf="submitted && updatePatientFormGroup.get('firstName')?.invalid" class="invalid-feedback">
+                <div *ngIf="updatePatientFormGroup.get('firstName')?.errors?.['required']">Prenumele este obligatoriu</div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>Nume</label>
+              <input
+                type="text"
+                class="form-control"
+                [ngClass]="{'is-invalid': submitted && updatePatientFormGroup.controls['lastName'].errors}"
+                formControlName="lastName">
+              <div *ngIf="submitted && updatePatientFormGroup.get('lastName')?.invalid" class="invalid-feedback">
+                <div *ngIf="updatePatientFormGroup.get('lastName')?.errors?.['required']">Numele este obligatoriu</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Istoric Medical</label>
+              <textarea
+                class="form-control"
+                formControlName="medicalHistory"
+                [value]="updatePatientFormGroup.get('medicalHistory')?.value"
+                rows="2"
+              ></textarea>
+            </div>
+
+            <div class="form-group">
+              <label>Alergii</label>
+              <textarea
+                class="form-control"
+                formControlName="allergies"
+                [value]="updatePatientFormGroup.get('allergies')?.value"
+                rows="2"
+              ></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn-cancel" (click)="onCloseModal(updateModal)">
+          <i class="bi bi-x-circle"></i> Anulează
+        </button>
+        <button type="button" class="btn-save" (click)="onUpdatePatient(updateModal)">
+          <i class="bi bi-check-circle"></i> Salvează
+        </button>
+      </div>
+    </form>
+  </div>
+</ng-template>

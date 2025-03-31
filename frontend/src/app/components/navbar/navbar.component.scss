@@ -1,0 +1,449 @@
+:host {
+  display: block;
+  height: 100%;
+}
+
+/* Stiluri pentru Sidebar */
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(135deg, #f5f7fa 0%, #e4ecf7 100%);
+  color: #2c3e50;
+  height: 100vh;
+  overflow-x: hidden;
+  transition: width 0.3s ease;
+  width: 260px;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
+}
+
+.sidebar-collapsed {
+  width: 70px !important;
+}
+
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  padding: 20px 15px;
+  border-bottom: 1px solid rgba(99, 88, 180, 0.2);
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+  flex-grow: 1;
+}
+
+.full-logo {
+  display: flex;
+  align-items: center;
+}
+
+.logo-img {
+  height: 28px;
+  width: 28px;
+  margin-right: 10px;
+}
+
+.logo-small {
+  width: 38px;
+  height: 38px;
+  background-color: white;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+
+  i {
+    color: #6c5dd3;
+    font-size: 20px;
+  }
+}
+
+.sidebar-title {
+  font-size: 30px;
+  font-weight: 700;
+  white-space: nowrap;
+  margin: 0;
+  line-height: 1;
+  color: #2c3e50;
+}
+
+.toggle-btn {
+  background: transparent;
+  border: none;
+  color: #2c3e50;
+  cursor: pointer;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  transition: background-color 0.3s;
+
+  &:hover {
+    background: rgba(99, 88, 180, 0.1);
+  }
+}
+
+.sidebar-content {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding: 10px 0;
+}
+
+.sidebar-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.menu-item {
+  margin: 5px 0;
+
+  a {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: #34495e;
+    padding: 12px 20px;
+    border-radius: 8px;
+    margin: 0 10px;
+    transition: all 0.3s;
+
+    &:hover, &.active {
+      background: rgba(99, 88, 180, 0.15);
+      color: #6c5dd3;
+    }
+  }
+
+  &.active-link a {
+    background: rgba(99, 88, 180, 0.2);
+    color: #6c5dd3;
+    font-weight: 500;
+  }
+}
+
+.menu-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  margin-right: 12px;
+  font-size: 16px;
+  color: #6c5dd3;
+}
+
+.menu-text {
+  white-space: nowrap;
+}
+
+.sidebar-footer {
+  border-top: 1px solid rgba(99, 88, 180, 0.2);
+  padding: 15px;
+  position: relative;
+}
+
+.user-profile {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 8px;
+
+  &:hover {
+    background: rgba(99, 88, 180, 0.1);
+  }
+}
+
+.avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(99, 88, 180, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 10px;
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.username {
+  font-weight: 500;
+  font-size: 14px;
+  color: #2c3e50;
+}
+
+.role {
+  font-size: 12px;
+  opacity: 0.7;
+  color: #34495e;
+}
+
+.user-menu {
+  position: absolute;
+  bottom: 70px;
+  left: 15px;
+  right: 15px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+
+    li {
+      padding: 12px 15px;
+      color: #333;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+
+      i {
+        margin-right: 10px;
+        color: #6c5dd3;
+      }
+
+      &:hover {
+        background: #f5f5f5;
+      }
+
+      &:first-child {
+        border-radius: 8px 8px 0 0;
+      }
+
+      &:last-child {
+        border-radius: 0 0 8px 8px;
+      }
+    }
+  }
+}
+
+.icon {
+  height: 35px;
+  width: 40px;
+  margin-right: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon svg {
+  width: 100%;
+  height: 100%;
+  fill: #6c5dd3;
+}
+
+.icon-only .icon {
+  width: 38px;
+  height: 38px;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.icon-only .icon svg {
+  fill: #6c5dd3;
+}
+
+/* Stiluri pentru Modale - DESIGN NOU (stil similar cu interfața din imagine) */
+.modal-dialog {
+  max-width: 280px !important; /* Lățime mai îngustă */
+  margin: 1.75rem auto;
+}
+
+.modal-content {
+  border-radius: 8px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  border: none;
+  overflow: hidden;
+}
+
+/* Header modal */
+.modal-header {
+  background: #7069D1;
+  color: white;
+  border-radius: 0;
+  align-items: center;
+  padding: 0.6rem 1rem;
+  border-bottom: none;
+}
+
+.modal-header .modal-title {
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.95rem;
+}
+
+.modal-header .modal-title i {
+  font-size: 1rem;
+}
+
+.modal-header .btn-close {
+  filter: brightness(0) invert(1);
+  opacity: 0.8;
+  transition: opacity 0.2s;
+  padding: 0.3rem;
+  font-size: 0.8rem;
+}
+
+.modal-header .btn-close:hover {
+  opacity: 1;
+}
+
+/* Body modal */
+.modal-body {
+  padding: 1rem;
+  background-color: white;
+}
+
+/* Stiluri pentru avatar */
+.profile-avatar-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 1.2rem;
+}
+
+.profile-avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: #7069D1;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  margin-bottom: 0.4rem;
+  box-shadow: 0 4px 10px rgba(108, 93, 211, 0.3);
+}
+
+.profile-role {
+  background-color: #e7e5f6;
+  color: #7069D1;
+  padding: 0.15rem 0.6rem;
+  border-radius: 12px;
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+
+/* Câmpuri de formular */
+.mb-3 {
+  margin-bottom: 0.75rem !important;
+  position: relative;
+}
+
+/* Afișează iconițele */
+.input-icon {
+  position: absolute;
+  left: 0.5rem;
+  top: 2.1rem;
+  color: #7069D1;
+  font-size: 0.9rem;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 0.25rem;
+  font-size: 0.8rem;
+  color: #6c757d;
+}
+
+.form-control, .form-select {
+  border-radius: 5px;
+  border: 1px solid #ced4da;
+  padding: 0.4rem 0.5rem 0.4rem 2rem; /* Padding pentru iconiță */
+  font-size: 0.85rem;
+  height: 2.4rem;
+  width: 100%;
+}
+
+.form-control:focus, .form-select:focus {
+  border-color: #7069D1;
+  box-shadow: 0 0 0 0.2rem rgba(108, 93, 211, 0.25);
+}
+
+.custom-textarea {
+  height: 4rem;
+  resize: none;
+}
+
+.form-text {
+  margin-top: 0.2rem;
+  font-size: 0.7rem;
+  color: #6c757d;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.form-text i {
+  color: #7069D1;
+}
+
+/* Butoane */
+.modal-footer {
+  background-color: white;
+  border-top: 1px solid #e9ecef;
+  padding: 0.75rem 1rem;
+  justify-content: space-between;
+}
+
+.btn {
+  border-radius: 6px;
+  padding: 0.3rem 0.6rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s;
+  font-size: 0.75rem;
+}
+
+.btn-primary {
+  background: #7069D1;
+  border-color: #7069D1;
+}
+
+.btn-primary:hover {
+  background: #5f59bb;
+  border-color: #5f59bb;
+}
+
+.btn-outline-secondary {
+  color: #6c757d;
+  border-color: #6c757d;
+}
+
+.btn-outline-secondary:hover {
+  background-color: #f1f3f5;
+  color: #495057;
+}
+
+/* Validare */
+.invalid-feedback {
+  font-size: 0.7rem;
+  color: #dc3545;
+  margin-top: 0.2rem;
+}
+
+.is-invalid {
+  border-color: #dc3545 !important;
+}
+
+.is-invalid:focus {
+  box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25) !important;
+}

@@ -1,60 +1,158 @@
-<div class="main-container">
-  <header class="top-bar">
-    <div class="top-bar-left">Hello</div>
-    <div class="top-bar-right">
-      <span>Admin</span> | <a href="#">Signout</a>
+<!-- consultations-patient.component.html -->
+<div class="background-dots"></div>
+<div class="floating-elements">
+  <div class="floating-circle"></div>
+  <div class="floating-circle"></div>
+  <div class="floating-circle"></div>
+  <div class="floating-circle"></div>
+</div>
+<div class="consultations-container">
+  <div class="page-header-container">
+    <div class="page-title-container">
+      <h1 class="page-title">Consultațiile tale</h1>
     </div>
-  </header>
+  </div>
 
-  <div class="content-section">
-    <div class="box">
-      <div class="box-header">
-        <div class="box-header-title">These are your current consultations</div>
-      </div>
-      <div class="box-content">
-        <ng-container *ngIf="pageConsultations$ | async as listConsultations; else failureOrLoading">
-          <table class="table table-bordered table-hover" style="width: 100%">
-            <thead>
-            <tr>
-              <th>Doctor</th>
-              <th>Date</th>
-              <th>Location</th>
-              <th>Details</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr *ngFor="let consultation of listConsultations.content">
-              <td>{{ consultation.doctorFirstName }} {{ consultation.doctorLastName }}</td>
-              <td>{{ consultation.appointmentDate }}</td>
-              <td>{{ consultation.hospitalAddress }}</td>
-              <td>
-                <button (click)="viewDetails(consultation)" class="btn btn-info">View Details</button>
-              </td>
-            </tr>
-            </tbody>
-          </table>
-          <ul class="pagination justify-content-center">
+  <div class="consultations-card">
+    <ng-container *ngIf="pageConsultations$ | async as listConsultations; else failureOrLoading">
+      <div class="consultation-list">
+        <table class="consultations-table">
+          <thead>
+          <tr>
+            <th>Doctor</th>
+            <th>Data</th>
+            <th>Locație</th>
+            <th>Detalii</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let consultation of listConsultations.content" class="consultation-row">
+            <td>Dr. {{ consultation.doctorFirstName }} {{ consultation.doctorLastName }}</td>
+            <td>{{ consultation.appointmentDate | date:'EEE, MMM d, y, h:mm a' }}</td>
+            <td>{{ consultation.hospitalAddress }}</td>
+            <td>
+              <button (click)="openDetailsModal(consultation, detailsModal)" class="btn-view">
+                <i class="bi bi-eye"></i> Vezi Detalii
+              </button>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+
+        <div class="pagination-controls" *ngIf="listConsultations.totalPages > 1">
+          <ul class="pagination">
+            <li class="page-item" [ngClass]="{'disabled': currentPage === 0}">
+              <a class="page-link" (click)="gotoPage(currentPage - 1)" aria-label="Înapoi">
+                <i class="bi bi-chevron-left"></i>
+              </a>
+            </li>
             <li *ngFor="let item of [].constructor(listConsultations.totalPages); let page = index"
                 class="page-item"
                 [ngClass]="{'active': page === currentPage}">
-              <a (click)="gotoPage(page)" class="page-link">{{ page }}</a>
+              <a (click)="gotoPage(page)" class="page-link">{{ page + 1 }}</a>
+            </li>
+            <li class="page-item" [ngClass]="{'disabled': currentPage === listConsultations.totalPages - 1}">
+              <a class="page-link" (click)="gotoPage(currentPage + 1)" aria-label="Înainte">
+                <i class="bi bi-chevron-right"></i>
+              </a>
             </li>
           </ul>
-
-        </ng-container>
-        <ng-template #failureOrLoading>
-          <ng-container *ngIf="errorMessage; else loading">
-            <div class="text-danger">
-              {{errorMessage}}
-            </div>
-          </ng-container>
-          <ng-template #loading >
-            <div class="loader shadow-sm text-muted">
-              <span><i class="fa-solid fa-rotate fa-spin"></i></span> &nbsp; <span>Processing...</span>
-            </div>
-          </ng-template>
-        </ng-template>
+        </div>
       </div>
-    </div>
+    </ng-container>
+
+    <ng-template #failureOrLoading>
+      <ng-container *ngIf="errorMessage; else loading">
+        <div class="error-message">
+          <i class="bi bi-exclamation-triangle"></i>
+          {{errorMessage}}
+        </div>
+      </ng-container>
+      <ng-template #loading>
+        <div class="loading-indicator">
+          <i class="bi bi-arrow-repeat spin"></i>
+          <span>Se încarcă consultațiile...</span>
+        </div>
+      </ng-template>
+    </ng-template>
   </div>
 </div>
+
+<!-- Modal Template for Consultation Details -->
+<ng-template #detailsModal let-modal>
+  <div class="modal-container">
+    <div class="modal-header">
+      <div class="modal-title">
+        <i class="bi bi-clipboard-pulse"></i> Detalii Consultație
+      </div>
+      <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()">×</button>
+    </div>
+
+    <div class="modal-body">
+      <div class="consultation-info">
+        <div class="info-item">
+          <span class="info-label">Doctor:</span>
+          <span class="info-value">Dr. {{ selectedConsultation?.doctorFirstName }} {{ selectedConsultation?.doctorLastName }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Data:</span>
+          <span class="info-value">{{ selectedConsultation?.appointmentDate | date:'EEE, d MMM y, HH:mm' }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Locație:</span>
+          <span class="info-value">{{ selectedConsultation?.hospitalAddress }}</span>
+        </div>
+      </div>
+
+      <div class="consultation-results">
+        <h4 class="section-title">Rezultatele consultației</h4>
+
+        <div class="result-section">
+          <div class="result-header">
+            <i class="bi bi-clipboard-pulse"></i>
+            <h5>Diagnostic</h5>
+          </div>
+          <div class="result-content">
+            {{ selectedConsultation?.diagnosis || 'Nu a fost adăugat un diagnostic încă.' }}
+          </div>
+        </div>
+
+        <div class="result-section">
+          <div class="result-header">
+            <i class="bi bi-activity"></i>
+            <h5>Simptome</h5>
+          </div>
+          <div class="result-content">
+            {{ selectedConsultation?.symptoms || 'Nu au fost înregistrate simptome.' }}
+          </div>
+        </div>
+
+        <div class="result-section">
+          <div class="result-header">
+            <i class="bi bi-card-checklist"></i>
+            <h5>Recomandări</h5>
+          </div>
+          <div class="result-content">
+            {{ selectedConsultation?.recommendations || 'Nu există recomandări momentan.' }}
+          </div>
+        </div>
+
+        <div class="result-section">
+          <div class="result-header">
+            <i class="bi bi-capsule"></i>
+            <h5>Medicamente prescrise</h5>
+          </div>
+          <div class="result-content">
+            {{ selectedConsultation?.prescriptions || 'Nu au fost prescrise medicamente.' }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button type="button" class="btn-cancel" (click)="modal.dismiss()">
+        <i class="bi bi-x-circle"></i> Închide
+      </button>
+    </div>
+  </div>
+</ng-template>

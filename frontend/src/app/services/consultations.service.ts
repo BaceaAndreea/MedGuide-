@@ -2,13 +2,33 @@ import { Injectable } from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {environment} from '../../environments/environment';
 import {Consultation} from '../model/consultation.model';
-import {Observable} from 'rxjs';
+import {catchError, map, Observable, of, pipe, tap, throwError} from 'rxjs';
 import {PageRespone} from '../model/page.response.model';
+import {ConsultationsDoctorComponent} from '../components/consultations-doctor/consultations-doctor.component';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ConsultationsService {
+  normalizeConsultationData(consultation: any): any {
+    // Pentru debugging
+    console.log('All properties in consultation object:', Object.keys(consultation));
+
+    return {
+      ...consultation,
+      diagnosis: consultation.diagnosis || '',
+      symptoms: consultation.symptoms || consultation.symptom ||
+        consultation.symptomsText || consultation.symptomsList || '',
+      recommendations: consultation.recommendations || consultation.recommendation ||
+        consultation.recommendationsText || consultation.recommendationsList || '',
+      prescriptions: consultation.prescriptions || consultation.prescription ||
+        consultation.medicationsList || consultation.medications || '',
+      patientFirstName: consultation.patientFirstName || '',
+      patientLastName: consultation.patientLastName || '',
+      appointmentDate: consultation.appointmentDate || new Date(),
+      hospitalAddress: consultation.hospitalAddress || ''
+    };
+  }
 
   constructor(private http : HttpClient) { }
 
@@ -19,9 +39,14 @@ export class ConsultationsService {
   getConsultationsByPatient(patientId: number, page: number, size: number): Observable<PageRespone<Consultation>> {
     return this.http.get<PageRespone<Consultation>>(
       `${environment.backendHost}/patients/${patientId}/consultations?page=${page}&size=${size}`
+    ).pipe(
+      tap(response => console.log('Consultations response:', response)),
+      catchError((error) => {
+        console.error('Error fetching consultations:', error);
+        return throwError(() => error);
+      })
     );
   }
-
 
   getConsultationsByDoctor(doctorId: number, page: number, size: number): Observable<PageRespone<Consultation>> {
     return this.http.get<PageRespone<Consultation>>(
@@ -29,18 +54,63 @@ export class ConsultationsService {
     );
   }
 
+  createConsultation(consultationData: any): Observable<any> {
+    console.log('Creating consultation with data:', consultationData);
 
-  createConsultation(consultation: Consultation): Observable<Consultation> {
-    return this.http.post<Consultation>(`${environment.backendHost}/consultations`, consultation);
+    // Asigură-te că toate câmpurile sunt trimise explicit, chiar dacă sunt null
+    const consultation = {
+      appointmentId: consultationData.appointmentId,
+      diagnosis: consultationData.diagnosis || '',
+      symptoms: consultationData.symptoms || '',
+      recommendations: consultationData.recommendations || '',
+      prescriptions: consultationData.prescriptions || ''
+    };
+    return this.http.post<any>(`${environment.backendHost}/consultations`, consultation);
   }
-
-
-  updateConsultation(consultationId: number, consultation: Consultation): Observable<Consultation> {
-    return this.http.put<Consultation>(`${environment.backendHost}/consultations/${consultationId}`, consultation);
-  }
-
 
   deleteConsultation(consultationId: number): Observable<void> {
     return this.http.delete<void>(`${environment.backendHost}/consultations/${consultationId}`);
   }
+
+  getConsultationByAppointmentId(appointmentId: number): Observable<Consultation> {
+    return this.http.get<Consultation>(`${environment.backendHost}/consultations/appointment/${appointmentId}`)
+      .pipe(
+        map(response => {
+          // Verifică dacă răspunsul este un obiect cu proprietatea content (array)
+          if (response && (response as any).content && Array.isArray((response as any).content)) {
+            return {
+              ...response,
+              content: (response as any).content.map((consultation: any) =>
+                this.normalizeConsultationData(consultation)
+              )
+            };
+          }
+          // Dacă nu, este un singur obiect de consultație
+          return this.normalizeConsultationData(response);
+        }),
+        catchError(error => {
+          console.error('Error fetching consultation by appointment:', error);
+          return throwError(() => error);
+        })
+      );
+  }
+
+  updateConsultation(consultationId: number, consultationData: any): Observable<any> {
+    return this.http.put<any>(`${environment.backendHost}/consultations/${consultationId}`, consultationData);
+  }
+
+  getConsultationById(id: number): Observable<Consultation> {
+    return this.http.get<Consultation>(`${environment.backendHost}/consultations/${id}`)
+      .pipe(
+        tap(consultation => console.log('Raw consultation details:', consultation)),
+        map(consultation => this.normalizeConsultationData(consultation)),
+        tap(normalizedConsultation => console.log('Normalized consultation details:', normalizedConsultation)),
+        catchError((error) => {
+          console.error('Error fetching consultations:', error);
+          return throwError(() => error);
+        })
+      );
+  }
+
+
 }

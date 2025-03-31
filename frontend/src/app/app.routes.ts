@@ -3,7 +3,6 @@ import {PatientsComponent} from './components/patients/patients.component';
 import {NavbarComponent} from './components/navbar/navbar.component';
 import {AppointmentsComponent} from './components/appointments/appointments.component';
 import {DoctorsComponent} from './components/doctors/doctors.component';
-import {HeaderComponent} from './components/header/header.component';
 import {HospitalsComponent} from './components/hospitals/hospitals.component';
 import {SpecializationsComponent} from './components/specializations/specializations.component';
 import {AppointmentsPatientComponent} from './components/appointments-patient/appointments-patient.component';
@@ -14,7 +13,7 @@ import {AuthenticationComponent} from './components/authentication/authenticatio
 import {AuthGardService} from './services/auth.gard.service';
 import {DoctorPatientGuardService} from './services/doctor-patient.guard.service';
 import {HomeComponent} from './components/home/home.component';
-import {SignupComponent} from './components/signup/signup.component';
+
 
 
 export const routes: Routes = [
@@ -30,7 +29,5 @@ export const routes: Routes = [
   { path: 'doctor-consultations/:id', component: ConsultationsDoctorComponent, canActivate: [AuthGardService, DoctorPatientGuardService], data: {role : 'Doctor'}},
   { path: 'auth', component: AuthenticationComponent},
   { path: 'navbar', component: NavbarComponent },
-  { path: 'header', component: HeaderComponent},
-  { path: 'home', component: HomeComponent},
-  { path: 'signup', component: SignupComponent}
+  { path: 'home', component: HomeComponent}
 ];

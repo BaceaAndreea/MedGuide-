@@ -33,16 +33,22 @@ public class Appointment {
     @OneToOne(mappedBy = "appointment", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Consultation consultation;
 
+    @Column(name = "reason", nullable = false, length = 50)
+    private String reason;
+
+
 
     public Appointment() {
     }
 
-    public Appointment(Date appointmentDate, String status, Patient patient, Doctor doctor, Consultation consultation) {
+    public Appointment(Date appointmentDate, String status, Patient patient, Doctor doctor, Consultation consultation, String reason) {
         this.appointmentDate = appointmentDate;
         this.status = status;
         this.patient = patient;
         this.doctor = doctor;
         this.consultation = consultation;
+        this.reason = reason;
+
     }
 
     @Override
@@ -131,7 +137,13 @@ public class Appointment {
         System.out.println("Doctor has been removed from the appointment.");
     }
 
+    public String getReason() {
+        return reason;
+    }
 
+    public void setReason(String reason) {
+        this.reason = reason;
+    }
 
     @Override
     public String toString() {

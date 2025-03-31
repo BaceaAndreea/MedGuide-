@@ -11,4 +11,8 @@ export interface Consultation {
   patientFirstName: string;
   patientLastName: string;
   hospitalAddress: string;
+  symptoms: string;
+  recommendations: string;
+  prescriptions: string;
 }
+

@@ -1,0 +1,824 @@
+/* Host styling - uniformizat cu appointment-doctor */
+:host {
+  display: block;
+  min-height: 100vh;
+  padding-top: 1rem;
+  position: relative;
+  overflow: hidden;
+
+  /* Nu mai definim background aici deoarece este setat la nivel de body */
+  /* Vom adauga doar overlays suplimentare peste fundalul global */
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+    background:
+      radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.07) 0%, transparent 30%),
+      radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.05) 0%, transparent 30%),
+      radial-gradient(circle at 80% 10%, rgba(255, 255, 255, 0.07) 0%, transparent 20%),
+      radial-gradient(circle at 40% 70%, rgba(255, 255, 255, 0.05) 0%, transparent 30%);
+  }
+
+  /* Eliminăm &::after care crea valul de la partea de jos */
+  /* pentru a păstra aspectul identic cu appointment-doctor */
+
+  /* Adăugăm cercurile mari decorative direct în host pentru a fi vizibile */
+  .background-circle {
+    position: absolute;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .background-circle-1 {
+    width: 300px;
+    height: 300px;
+    top: 10%;
+    left: -5%;
+    animation: simpleFloat 20s infinite ease-in-out;
+  }
+
+  .background-circle-2 {
+    width: 400px;
+    height: 400px;
+    bottom: -10%;
+    right: -5%;
+    animation: simpleFloat 25s infinite ease-in-out reverse;
+  }
+
+  .background-circle-3 {
+    width: 250px;
+    height: 250px;
+    top: 50%;
+    left: 15%;
+    animation: simpleFloat 18s infinite ease-in-out;
+  }
+
+  .background-circle-4 {
+    width: 150px;
+    height: 150px;
+    top: 15%;
+    right: 10%;
+    animation: simpleFloat 15s infinite ease-in-out;
+  }
+}
+
+/* Variabile pe care le utilizăm local (complementare la cele globale) */
+$primary-color: #5649b9;
+$primary-light: #6c5dd3;
+$secondary-color: #7952c7; /* Mai închis */
+$accent-color: #4e40a1;
+$white: #ffffff;
+$light-gray: #f7f8fa;
+$medium-gray: #e2e8f0;
+$dark-gray: #4a5568;
+$text-color: #333;
+$error-color: #e53e3e;
+$success-color: #308a5a;
+$warning-color: #ecc94b;
+$info-color: #4299e1;
+$border-radius: 8px;
+$border-radius-lg: 12px;
+$box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+/* Page container */
+.appointments-container {
+  padding: 1.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 2;
+}
+
+/* Page header */
+.page-header-container {
+  margin-bottom: 1.5rem;
+}
+
+.page-title-container {
+  margin-bottom: 1rem;
+
+  .page-title {
+    font-size: 2.35rem;
+    color: $white;
+    margin: 0;
+    font-weight: 600;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+    letter-spacing: 0.5px;
+    position: relative;
+    padding-bottom: 15px;
+
+    &::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 80px;
+      height: 3px;
+      background: linear-gradient(90deg, rgba(255,255,255,0.8), rgba(255,255,255,0.2));
+      border-radius: 3px;
+    }
+  }
+}
+
+/* Controls Container */
+.controls-container {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1.5rem;
+  position: relative;
+  z-index: 2;
+
+  .btn-new-appointment {
+    background-color: $white;
+    color: $primary-color;
+    border: none;
+    border-radius: $border-radius;
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.3s;
+    box-shadow: $box-shadow;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    i {
+      font-size: 1rem;
+    }
+  }
+}
+
+/* Dashboard Summary */
+.dashboard-summary {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.25rem;
+  margin-bottom: 1.5rem;
+  width: 100%;
+  position: relative;
+  z-index: 2;
+
+  @media (max-width: 992px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (max-width: 576px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.summary-card {
+  background-color: $white;
+  border-radius: $border-radius;
+  box-shadow: $box-shadow;
+  padding: 1.25rem;
+  display: flex;
+  align-items: center;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(86, 73, 185, 0.15);
+  }
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 6px;
+    height: 100%;
+    opacity: 0.7;
+  }
+
+  .summary-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    margin-right: 1rem;
+
+    i {
+      font-size: 1.5rem;
+    }
+  }
+
+  .summary-content {
+    flex: 1;
+
+    .summary-value {
+      font-size: 1.75rem;
+      font-weight: 700;
+      margin: 0 0 0.25rem 0;
+    }
+
+    .summary-label {
+      font-size: 0.875rem;
+      color: $dark-gray;
+      margin: 0;
+    }
+  }
+}
+
+/* Card-specific styling */
+.total-appointments {
+  &::before {
+    background-color: #4A2C8F;
+  }
+
+  .summary-icon {
+    background-color: rgba(74, 44, 143, 0.1);
+    color: #4A2C8F;
+  }
+
+  .summary-value {
+    color: #4A2C8F;
+  }
+}
+
+.upcoming-appointments {
+  &::before {
+    background-color: $info-color;
+  }
+
+  .summary-icon {
+    background-color: rgba($info-color, 0.1);
+    color: $info-color;
+  }
+
+  .summary-value {
+    color: $info-color;
+  }
+}
+
+.completed-appointments {
+  &::before {
+    background-color: $success-color;
+  }
+
+  .summary-icon {
+    background-color: rgba($success-color, 0.1);
+    color: $success-color;
+  }
+
+  .summary-value {
+    color: $success-color;
+  }
+}
+
+.canceled-appointments {
+  &::before {
+    background-color: $error-color;
+  }
+
+  .summary-icon {
+    background-color: rgba($error-color, 0.1);
+    color: $error-color;
+  }
+
+  .summary-value {
+    color: $error-color;
+  }
+}
+
+/* Appointments card */
+.appointments-card {
+  background-color: $white;
+  border-radius: $border-radius-lg;
+  box-shadow: $box-shadow;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  position: relative;
+  z-index: 2;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(86, 73, 185, 0.15);
+  }
+
+  .error-message {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: $error-color;
+    padding: 1rem;
+    border-radius: $border-radius;
+    background-color: rgba($error-color, 0.1);
+
+    i {
+      font-size: 1.25rem;
+    }
+  }
+
+  .loading-indicator {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 2rem;
+    color: $primary-color;
+
+    .spin {
+      animation: spin 1s linear infinite;
+      font-size: 1.5rem;
+    }
+  }
+}
+
+/* Table styles */
+.appointments-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin-bottom: 1.5rem;
+
+  th {
+    text-align: left;
+    padding: 1rem;
+    border-bottom: 2px solid $medium-gray;
+    color: $dark-gray;
+    font-weight: 600;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  td {
+    padding: 1rem;
+    border-bottom: 1px solid $medium-gray;
+    color: $dark-gray;
+  }
+
+  .appointment-row {
+    transition: all 0.2s;
+
+    &:hover {
+      background-color: $light-gray;
+    }
+  }
+
+  .actions-cell {
+    width: 50px;
+    text-align: center;
+  }
+
+  .btn-edit, .btn-delete {
+    background: transparent;
+    border: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-edit {
+    color: $primary-color;
+
+    &:hover {
+      background-color: rgba($primary-color, 0.1);
+    }
+  }
+
+  .btn-delete {
+    color: $error-color;
+
+    &:hover {
+      background-color: rgba($error-color, 0.1);
+    }
+  }
+
+  .status-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+
+    &.status-scheduled {
+      background-color: rgba($success-color, 0.15);
+      color: $success-color;
+    }
+
+    &.status-confirmed {
+      background-color: rgba($info-color, 0.15);
+      color: $info-color;
+    }
+
+    &.status-completed {
+      background-color: rgba($primary-color, 0.15);
+      color: $primary-color;
+    }
+
+    &.status-cancelled {
+      background-color: rgba($error-color, 0.15);
+      color: $error-color;
+    }
+
+    &.status-pending {
+      background-color: rgba($warning-color, 0.15);
+      color: darken($warning-color, 20%);
+    }
+  }
+}
+
+
+/* Pagination controls */
+.pagination-controls {
+  display: flex;
+  justify-content: center;
+  margin-top: 1.5rem;
+
+  .pagination {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+
+    .page-item {
+      margin: 0 0.25rem;
+
+      .page-link {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background-color: $light-gray;
+        color: $dark-gray;
+        cursor: pointer;
+        transition: all 0.2s;
+
+        &:hover {
+          background-color: rgba($primary-color, 0.1);
+          color: $primary-color;
+        }
+      }
+
+      &.active .page-link {
+        background-color: $primary-color;
+        color: $white;
+        box-shadow: 0 2px 5px rgba($primary-color, 0.3);
+      }
+
+      &.disabled .page-link {
+        opacity: 0.5;
+        cursor: not-allowed;
+
+        &:hover {
+          background-color: $light-gray;
+          color: $dark-gray;
+        }
+      }
+    }
+  }
+}
+
+/* Restul stilurilor rămân neschimbate - modal, form, etc. */
+.modal-container {
+  animation: fadeIn 0.3s;
+
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid $light-gray;
+
+    .modal-title {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 1.1rem;
+      color: $primary-color;
+      font-weight: 500;
+
+      i {
+        color: $primary-color;
+        font-size: 1.1rem;
+      }
+    }
+
+    .btn-close {
+      background: transparent;
+      border: none;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      cursor: pointer;
+      color: #9aa0ac;
+      padding: 0;
+      line-height: 1;
+      font-weight: 300;
+      transition: all 0.2s;
+
+      &:hover {
+        background-color: $light-gray;
+      }
+    }
+  }
+
+  .modal-body {
+    padding: 1.5rem;
+
+    .form-fields {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+
+    .form-group {
+      margin-bottom: 0.75rem;
+
+      label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: #65676b;
+        font-weight: 500;
+        font-size: 0.875rem;
+      }
+
+      .form-control {
+        width: 100%;
+        padding: 0.7rem 0.9rem;
+        border: 1px solid $medium-gray;
+        border-radius: 0.5rem;
+        font-size: 0.95rem;
+        transition: all 0.2s;
+        color: $text-color;
+        background-color: $white;
+
+        &:focus {
+          outline: none;
+          border-color: $primary-color;
+          box-shadow: 0 0 0 3px rgba($primary-color, 0.1);
+        }
+
+        &.is-invalid {
+          border-color: $error-color;
+        }
+
+        &.form-control-readonly {
+          background-color: $light-gray;
+          opacity: 0.7;
+          cursor: not-allowed;
+        }
+
+        &::placeholder {
+          color: #adb5bd;
+        }
+      }
+
+      select.form-control {
+        appearance: none;
+        background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23444' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right 0.7rem center;
+        background-size: 1em;
+        padding-right: 2.5rem;
+      }
+
+      .invalid-feedback {
+        color: $error-color;
+        font-size: 0.75rem;
+        margin-top: 0.35rem;
+      }
+    }
+  }
+
+  .modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    padding: 1rem 1.5rem;
+    border-top: 1px solid $light-gray;
+    gap: 0.75rem;
+
+    .btn-cancel {
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 0.375rem;
+      background-color: $light-gray;
+      color: #6c757d;
+      font-size: 0.875rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+
+      &:hover {
+        background-color: darken($light-gray, 5%);
+      }
+    }
+
+    .btn-save {
+      padding: 0.5rem 1.25rem;
+      border: none;
+      border-radius: 0.375rem;
+      background-color: $primary-color;
+      color: $white;
+      font-size: 0.875rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+
+      &:hover {
+        background-color: darken($primary-color, 5%);
+      }
+
+      i {
+        margin-right: 0.35rem;
+      }
+    }
+  }
+
+  .modal-error,
+  .modal-loading {
+    padding: 2rem;
+    text-align: center;
+
+    i {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      display: block;
+    }
+  }
+
+  .modal-error {
+    color: $error-color;
+  }
+
+  .modal-loading {
+    color: $primary-color;
+
+    .spin {
+      animation: spin 1s linear infinite;
+    }
+  }
+}
+
+/* Make form elements look more like the image */
+::ng-deep .modal-content {
+  border: none !important;
+  border-radius: $border-radius-lg !important;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1) !important;
+}
+
+::ng-deep .modal-dialog {
+  max-width: 500px !important;
+}
+
+/* For DateTimePicker */
+input[type="datetime-local"] {
+  &::-webkit-calendar-picker-indicator {
+    opacity: 0.7;
+    cursor: pointer;
+  }
+}
+
+/* Special styling to match the image exactly */
+:host ::ng-deep {
+  .modal-header .modal-title {
+    display: flex;
+    align-items: center;
+    color: $primary-color;
+    font-size: 1.1rem;
+
+    i {
+      color: $primary-color;
+      margin-right: 0.5rem;
+    }
+  }
+
+  .modal-body {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+  }
+}
+
+/* Stilizare pentru data curentă în calendarul NgBootstrap */
+::ng-deep .ngb-dp-today {
+  .btn-light {
+    background-color: rgba($primary-color, 0.15) !important;
+    border-radius: 50% !important;
+    border: 2px solid $primary-color !important;
+    font-weight: bold !important;
+    color: $primary-color !important;
+    position: relative;
+
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: 2px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 4px;
+      height: 4px;
+      background-color: $primary-color;
+      border-radius: 50%;
+    }
+  }
+}
+
+/* Stilizare pentru zilele din trecut - le facem mai pale */
+::ng-deep .ngb-dp-day.disabled .btn-light {
+  opacity: 0.5;
+  text-decoration: line-through;
+  color: #999 !important;
+}
+
+/* Stilizare pentru datepicker mai mare */
+::ng-deep ngb-datepicker {
+  border: none !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+  border-radius: $border-radius !important;
+  padding: 0.5rem !important;
+
+  .ngb-dp-header {
+    background-color: $light-gray !important;
+    border-radius: $border-radius $border-radius 0 0 !important;
+    padding: 0.5rem 0 !important;
+
+    .ngb-dp-navigation-select {
+      .custom-select {
+        background-color: white !important;
+        border: 1px solid $medium-gray !important;
+        border-radius: $border-radius !important;
+      }
+    }
+  }
+
+  .ngb-dp-day {
+    width: 2.5rem !important;
+    height: 2.5rem !important;
+
+    .btn-light {
+      width: 2rem !important;
+      height: 2rem !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      border-radius: 50% !important;
+
+      &:hover:not(.disabled) {
+        background-color: rgba($primary-color, 0.1) !important;
+      }
+    }
+  }
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .page-header-container {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .appointments-table {
+    display: block;
+    overflow-x: auto;
+
+    th, td {
+      padding: 0.75rem 0.5rem;
+    }
+  }
+
+  .modal-container .modal-footer {
+    flex-direction: column;
+
+    .btn-cancel, .btn-save {
+      width: 100%;
+    }
+  }
+}
+
+

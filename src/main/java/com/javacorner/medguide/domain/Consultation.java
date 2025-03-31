@@ -19,11 +19,23 @@ public class Consultation {
     @Column(name = "diagnosis", length = 255)
     private String diagnosis;
 
+    @Column(name = "symptoms", nullable = false, length = 255)
+    private String symptoms;
+    @Column(name = "recommendations",nullable = false, length = 255)
+    private String recommendations;
+    @Column(name = "prescriptions",nullable = false, length = 255)
+    private String prescriptions;
+
+
 
     public Consultation() {}
 
-    public Consultation( String diagnosis) {
+    public Consultation( String diagnosis, String symptoms, String recommendations, String prescriptions) {
         this.diagnosis = diagnosis;
+        this.symptoms = symptoms;
+        this.recommendations = recommendations;
+        this.prescriptions = prescriptions;
+
     }
 
     @Override
@@ -73,11 +85,39 @@ public class Consultation {
         }
     }
 
+    public String getSymptoms() {
+        return symptoms;
+    }
+
+    public void setSymptoms(String symptoms) {
+        this.symptoms = symptoms;
+    }
+
+    public String getRecommendations() {
+        return recommendations;
+    }
+
+    public void setRecommendations(String recommendations) {
+        this.recommendations = recommendations;
+    }
+
+    public String getPrescriptions() {
+        return prescriptions;
+    }
+
+    public void setPrescriptions(String prescriptions) {
+        this.prescriptions = prescriptions;
+    }
+
     @Override
     public String toString() {
         return "Consultation{" +
                 "consultationId=" + consultationId +
+                ", appointment=" + appointment +
                 ", diagnosis='" + diagnosis + '\'' +
+                ", symptoms='" + symptoms + '\'' +
+                ", recommendations='" + recommendations + '\'' +
+                ", prescriptions='" + prescriptions + '\'' +
                 '}';
     }
 }

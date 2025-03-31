@@ -1,10 +1,10 @@
 import {Component, inject, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import { PatientsService } from '../../services/patients.service';
-import { catchError, Observable, throwError } from 'rxjs';
+import {catchError, Observable, tap, throwError} from 'rxjs';
 import { PageRespone } from '../../model/page.response.model';
 import { Patient } from '../../model/patient.model';
-import {AsyncPipe, NgClass, NgForOf, NgIf} from '@angular/common';
+import {AsyncPipe, DatePipe, NgClass, NgForOf, NgIf} from '@angular/common';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {AppointmentsService} from '../../services/appointments.service';
 import {Appointment} from '../../model/appointment.model';
@@ -19,7 +19,8 @@ import {Appointment} from '../../model/appointment.model';
     NgIf,
     AsyncPipe,
     NgForOf,
-    NgClass
+    NgClass,
+    DatePipe
   ],
   styleUrl: './patients.component.scss'
 })
@@ -33,10 +34,18 @@ export class PatientsComponent implements OnInit {
   submitted : boolean = false;
   patientFormGroup !: FormGroup;
   updatePatientFormGroup!: FormGroup;
-  appointmentCurrentPage: number =0;
-  pageAppointment$!:Observable<PageRespone<Appointment>>;
-  appointmentPageSize: number =5;
-  appointmentErrorMessage!:string;
+  appointmentCurrentPage: number = 0;
+  pageAppointment$!: Observable<PageRespone<Appointment>>;
+  appointmentPageSize: number = 5;
+  appointmentErrorMessage!: string;
+
+  // Proprietăți noi pentru statistici
+  patientsData: PageRespone<Patient> | null = null;
+  totalPatients: number = 0;
+  activePatients: number = 0;
+  newPatients: number = 0;
+  appointmentsNeeded: number = 0;
+  originalPatient: Patient | null = null;
 
   private patientsService = inject(PatientsService); // Injectare Lazy
   private appointmentService = inject(AppointmentsService);
@@ -66,7 +75,7 @@ export class PatientsComponent implements OnInit {
 
   // Deschide modalul
   openModal(content:any){
-    this.submitted=false;
+    this.submitted = false;
     this.modalService.open(content, {size : 'xl'})
   }
 
@@ -79,10 +88,16 @@ export class PatientsComponent implements OnInit {
   handleSearchPatients() {
     let keyword = this.searchFormGroup.value.keyword;
     this.pagePatients = this.patientsService.searchPatients(keyword, this.currentPage, this.pageSize).pipe(
+      tap(data => {
+        this.patientsData = data;
+        this.totalPatients = data.totalElements;
+        this.activePatients = data.totalElements; // Asumăm că toți pacienții sunt activi pentru moment
+        // În implementarea reală ai putea să calculezi aceste valori din date reale
+      }),
       catchError(err => {
         console.error("Error fetching patients:", err);
         this.errorMessage = "Failed to load patients!";
-        return throwError(err);
+        return throwError(() => err);
       })
     );
   }
@@ -94,7 +109,7 @@ export class PatientsComponent implements OnInit {
   }
 
   handleDeletePatients(p:Patient) {
-    let conf = confirm("Are you sure?");
+    let conf = confirm("Ești sigur că vrei să ștergi acest pacient?");
     if(!conf) return;
     this.patientsService.deletePatient(p.patientId).subscribe({
       next:() => {
@@ -132,14 +147,14 @@ export class PatientsComponent implements OnInit {
 
     this.patientsService.savePatient(patient).subscribe({
       next: () => {
-        alert("Patient saved successfully");
+        alert("Pacient salvat cu succes");
         this.handleSearchPatients();
         this.submitted = false;
         this.patientFormGroup.reset();
         modal.close();
       },
       error: err => {
-        alert("Error saving patient: " + err.message);
+        alert("Eroare la salvarea pacientului: " + err.message);
         console.error("Save error:", err);
       }
     });
@@ -200,25 +215,35 @@ export class PatientsComponent implements OnInit {
   }
 
   getAppointmentModal(p: Patient, appointmentContent: any) {
-    this.appointmentCurrentPage =0 ;
+    this.appointmentCurrentPage = 0;
     this.modalPatient = p;
     this.handleSearchAppointments(p);
     this.modalService.open(appointmentContent, {size:'xl'});
-
   }
 
   handleSearchAppointments(p: Patient) {
     this.pageAppointment$ = this.appointmentService.getAppointmentsByPatient(p.patientId, this.appointmentCurrentPage, this.appointmentPageSize).pipe(
-      catchError( err => {
+      catchError(err => {
         this.appointmentErrorMessage = err.message;
-        return throwError(err);
+        return throwError(() => err);
       })
-    )
+    );
   }
 
   gotoAppointmentsPage(page: number) {
     this.appointmentCurrentPage = page;
     this.handleSearchAppointments(this.modalPatient);
+  }
 
+  // Metode pentru statusuri programări (folosite în template-ul de programări)
+  getStatusClass(status: string): string {
+    switch (status.toLowerCase()) {
+      case 'scheduled': return 'status-scheduled';
+      case 'confirmed': return 'status-confirmed';
+      case 'completed': return 'status-completed';
+      case 'cancelled': return 'status-cancelled';
+      case 'pending': return 'status-pending';
+      default: return '';
+    }
   }
 }

@@ -1,6 +1,5 @@
 import {Component, OnInit} from '@angular/core';
 import {Router, RouterModule} from '@angular/router';
-import {HeaderComponent} from './components/header/header.component';
 import {NavbarComponent} from './components/navbar/navbar.component';
 import {ReactiveFormsModule} from '@angular/forms';
 import {AuthService} from './services/auth.service';
@@ -11,7 +10,7 @@ import {NgIf} from '@angular/common';
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
   standalone: true,
-  imports: [RouterModule, HeaderComponent, NavbarComponent, ReactiveFormsModule, NgIf]
+  imports: [RouterModule, NavbarComponent, ReactiveFormsModule, NgIf]
 })
 export class AppComponent implements OnInit{
 
@@ -20,7 +19,7 @@ export class AppComponent implements OnInit{
   constructor(private authService : AuthService, private router : Router) {
     this.router.events.subscribe(() => {
       // Listează rutele unde vrei să ascunzi sidebar-ul
-      const hiddenRoutes = [ '/home', '/auth', '/signup'];
+      const hiddenRoutes = [ '/home', '/auth', '/patient-appointments'];
       this.showNavbar = !hiddenRoutes.includes(this.router.url);
     });
   }

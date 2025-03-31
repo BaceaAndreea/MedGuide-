@@ -1,7 +1,7 @@
 import {inject, Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {environment} from '../../environments/environment';
-import {catchError, Observable, throwError} from 'rxjs';
+import {catchError, Observable, tap, throwError} from 'rxjs';
 import {PageRespone} from '../model/page.response.model';
 import {Appointment} from '../model/appointment.model';
 import {AppointmentsComponent} from '../components/appointments/appointments.component';
@@ -32,8 +32,7 @@ export class AppointmentsService {
   }
 
   public saveAppointment(appointment: any): Observable<any> {
-    return this.http.post(environment.backendHost + "/appointments", appointment, {
-      headers: new HttpHeaders({ "Content-Type": "application/json" }) //Aceasta asigură că Angular trimite corect Content-Type: application/json, la fel ca Postman.
+    return this.http.post(environment.backendHost + '/appointments', appointment, {
     });
   }
   public updateAppointment(appointment: any, appointmentId: number): Observable<any> {
@@ -48,10 +47,42 @@ export class AppointmentsService {
   );
   }
 
+
   public getAppointmentsByPatient(patientId: number, page: number, size: number): Observable<PageRespone<Appointment>> {
     return this.http.get<PageRespone<Appointment>>(
       `${environment.backendHost}/patients/${patientId}/appointments?page=${page}&size=${size}`
     );
+  }
+
+  getAppointmentById(appointmentId: number): Observable<any> {
+    return this.http.get<any>(`${environment.backendHost}/appointments/${appointmentId}`);
+  }
+
+  completeAppointment(id: number, appointmentData?: any): Observable<any> {
+    console.log(`Completing appointment ${id}`);
+
+    // Dacă nu avem date despre programare, trimitem doar statusul
+    const data = appointmentData || { status: 'COMPLETED' };
+
+    return this.http.patch<any>(`${environment.backendHost}/appointments/${id}/complete`, data)
+      .pipe(
+        tap(response => console.log('Appointment completion response:', response)),
+        catchError(error => {
+          console.error(`Error completing appointment ${id}:`, error);
+
+          // Ultimă încercare - folosim doar endpoint-ul de bază cu o cerere simplificată
+          if (error.status === 403 || error.status === 404) {
+            console.log('Final attempt with simplified payload');
+            const minimalData = {
+              appointmentId: id,
+              status: 'COMPLETED'
+            };
+            return this.http.put<any>(`${environment.backendHost}/appointments/${id}`, minimalData);
+          }
+
+          throw error;
+        })
+      );
   }
 
 }

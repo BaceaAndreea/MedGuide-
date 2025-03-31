@@ -1,228 +1,350 @@
-<div class="main-container">
-  <header class="top-bar">
-    <div class="top-bar-left">Hello</div>
-    <div class="top-bar-right">
-      <span>Admin</span> | <a href="#">Signout</a>
+<!-- appointments-patient.component.html -->
+<div class="background-dots"></div>
+<div class="floating-elements">
+  <div class="floating-circle"></div>
+  <div class="floating-circle"></div>
+  <div class="floating-circle"></div>
+  <div class="floating-circle"></div>
+</div>
+<div class="appointments-container">
+  <div class="page-header-container">
+    <div class="page-title-container">
+      <h1 class="page-title">Programările tale</h1>
     </div>
-  </header>
 
-  <div class="content-section">
-    <div class="box">
-      <div class="box-header">
-        <div class="box-header-title">These are your current appointments</div>
-        <div class="box-header-button">
-          <button class="btn btn-primary-gradient" (click)="getModal(content)">New Appointment</button>
+
+    <div class="controls-container">
+      <button class="btn-new-appointment" (click)="getModal(content)">
+        <i class="bi bi-plus-circle"></i> Programare Nouă
+      </button>
+    </div>
+  </div>
+  <div class="page-header">
+    <div class="dashboard-summary">
+      <div class="summary-card total-appointments">
+        <div class="summary-icon">
+          <i class="bi bi-calendar-check"></i>
+        </div>
+        <div class="summary-content">
+          <h3 class="summary-value">{{ totalAppointments }}</h3>
+          <p class="summary-label">Total Programări</p>
         </div>
       </div>
-    <div class="box-content">
-      <ng-container *ngIf="pageAppointments$ | async as listAppointments; else failureOrLoading">
-        <table class="table table-bordered table-hover" style="width: 100%">
+
+      <div class="summary-card upcoming-appointments">
+        <div class="summary-icon">
+          <i class="bi bi-calendar-date"></i>
+        </div>
+        <div class="summary-content">
+          <h3 class="summary-value">{{ upcomingAppointments }}</h3>
+          <p class="summary-label">Programări Viitoare</p>
+        </div>
+      </div>
+
+      <div class="summary-card completed-appointments">
+        <div class="summary-icon">
+          <i class="bi bi-check-circle"></i>
+        </div>
+        <div class="summary-content">
+          <h3 class="summary-value">{{ completedAppointments }}</h3>
+          <p class="summary-label">Programări Finalizate</p>
+        </div>
+      </div>
+
+      <div class="summary-card canceled-appointments">
+        <div class="summary-icon">
+          <i class="bi bi-x-circle"></i>
+        </div>
+        <div class="summary-content">
+          <h3 class="summary-value">{{ canceledAppointments }}</h3>
+          <p class="summary-label">Programări Anulate</p>
+        </div>
+      </div>
+    </div>
+
+
+  </div>
+
+  <div class="appointments-card">
+    <ng-container *ngIf="pageAppointments$ | async as listAppointments; else failureOrLoading">
+      <div class="appointment-list">
+        <table class="appointments-table">
           <thead>
           <tr>
-            <th>Appointment Id</th>
-            <th>Appointment Status</th>
-            <th>Appointment Date</th>
+            <th>ID Programare</th>
+            <th>Status</th>
+            <th>Data & Ora</th>
             <th>Doctor</th>
+            <th>Descriere</th>
+            <th colspan="2">Acțiuni</th>
           </tr>
           </thead>
           <tbody>
-          <tr *ngFor="let a of listAppointments.content">
+          <tr *ngFor="let a of listAppointments.content" class="appointment-row">
             <td>{{a.appointmentId}}</td>
-            <td>{{a.status}}</td>
-            <td>{{a.appointmentDate}}</td>
-            <td>{{a.doctor.firstName }} {{ a.doctor.lastName }}</td>
             <td>
-              <button (click)="handleDeleteAppointment(a)" class="btn btn-danger">
-                <i class="bi-trash"></i>
+              <span class="status-badge" [ngClass]="getStatusClass(a.status)">
+                {{getFormattedStatus(a.status)}}
+            </span>
+            </td>
+            <td>{{ a.appointmentDate | date:'EEE, MMM d, y, h:mm a' }}</td>
+            <td>Dr. {{a.doctor.firstName}} {{a.doctor.lastName}}</td>
+            <td>{{a.reason || '-'}}</td>
+            <td class="actions-cell">
+              <button (click)="getUpdateModal(a, updateContent)" class="btn-edit" aria-label="Edit appointment">
+                <i class="bi bi-pencil-square"></i>
               </button>
             </td>
-            <td>
-              <button (click)="getUpdateModal(a, updateContent)" class="btn btn-success">
-                <i class="bi bi-pencil-square"></i>
+            <td class="actions-cell">
+              <button (click)="handleDeleteAppointment(a)" class="btn-delete" aria-label="Delete appointment">
+                <i class="bi bi-trash"></i>
               </button>
             </td>
           </tr>
           </tbody>
         </table>
-        <ul class="pagination justify-content-center">
-          <li *ngFor="let item of [].constructor(listAppointments.totalPages); let page = index"
-              class="page-item"
-              [ngClass]="{'active': page === currentPage}">
-            <a (click)="gotoPage(page)" class="page-link">{{ page }}</a>
-          </li>
-        </ul>
 
-      </ng-container>
+        <div class="pagination-controls" *ngIf="listAppointments.totalPages > 1">
+          <ul class="pagination">
+            <li class="page-item" [ngClass]="{'disabled': currentPage === 0}">
+              <a class="page-link" (click)="gotoPage(currentPage - 1)" aria-label="Înapoi">
+                <i class="bi bi-chevron-left"></i>
+              </a>
+            </li>
+            <li *ngFor="let item of [].constructor(listAppointments.totalPages); let page = index"
+                class="page-item"
+                [ngClass]="{'active': page === currentPage}">
+              <a (click)="gotoPage(page)" class="page-link">{{ page + 1 }}</a>
+            </li>
+            <li class="page-item" [ngClass]="{'disabled': currentPage === listAppointments.totalPages - 1}">
+              <a class="page-link" (click)="gotoPage(currentPage + 1)" aria-label="Înainte">
+                <i class="bi bi-chevron-right"></i>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </ng-container>
+
     <ng-template #failureOrLoading>
       <ng-container *ngIf="errorMessage; else loading">
-        <div class="text-danger">
+        <div class="error-message">
+          <i class="bi bi-exclamation-triangle"></i>
           {{errorMessage}}
         </div>
       </ng-container>
-      <ng-template #loading >
-        <div class="loader shadow-sm text-muted">
-          <span><i class="fa-solid fa-rotate fa-spin"></i></span> &nbsp; <span>Processing...</span>
+      <ng-template #loading>
+        <div class="loading-indicator">
+          <i class="bi bi-arrow-repeat spin"></i>
+          <span>Se încarcă programările...</span>
         </div>
       </ng-template>
     </ng-template>
-    </div>
-    </div>
   </div>
 </div>
 
+<!-- New Appointment Modal -->
 <ng-template #content let-modal>
-  <div class="modal-header">
-    <div class="modal-title text-muted"><i class="fa-regular fa-circle-dot"></i> Appointment Form </div>
-    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross Click')"></button>
-  </div>
-  <ng-container *ngIf="doctors$ | async as listDoctors; else modalFailureOrLoading">
-  <form [formGroup]="appointmentFormGroup" method="post">
-    <div class="modal-body">
-      <div class="row">
-
-        <div class="col-md-4">
-          <div class="form-group">
-            <label class="text-muted">Appointment Status</label>
-            <input type="text" class="form-control form-font rounded-0 mt-1 mb-3"
-                   [ngClass]="{'is-invalid' : submitted && appointmentFormGroup.controls['appointmentStatus'].errors}"
-                   formControlName="appointmentStatus">
-            <div *ngIf="submitted && appointmentFormGroup.get('appointmentStatus')?.invalid" class="invalid-feedback d-block">
-              <div *ngIf="appointmentFormGroup.get('appointmentStatus')?.errors?.['required']">
-                Appointment Status is Required
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-md-4">
-          <div class="form-group">
-            <label class="text-muted">Appointment Date</label>
-            <input
-              type="date"
-              class="form-control form-font rounded-0 mt-1 mb-3" [ngClass]="{'is-invalid' : submitted && appointmentFormGroup.controls['appointmentDate'].errors}"
-              formControlName="appointmentDate"/>
-            <div *ngIf="submitted && appointmentFormGroup.controls['appointmentDate'].errors" class="invalid-feedback">
-              <div *ngIf="appointmentFormGroup.controls['appointmentDate'].errors?.['required']">Appointment Date is Required</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-md-4">
-          <div class="form-group">
-            <label class="text-muted">Doctor</label>
-            <select class="form-control form-font rounded-0 mt-1 mb-3"
-                    [ngClass]="{'is-invalid' : submitted && appointmentFormGroup.get('doctor')?.invalid}"
-                    formControlName="doctor">
-              <option [ngValue]="null" disabled> Choose Doctor </option>
-              <option *ngFor="let i of listDoctors" [ngValue]="i">{{i.firstName}} {{i.lastName}}</option>
-            </select>
-            <div *ngIf="submitted && appointmentFormGroup.get('doctor')?.invalid" class="invalid-feedback">
-              <div *ngIf="appointmentFormGroup.get('doctor')?.errors?.['required']">Doctor is Required</div>
-            </div>
-          </div>
-        </div>
+  <div class="modal-container">
+    <div class="modal-header">
+      <div class="modal-title">
+        <i class="bi bi-calendar-plus"></i> Programare Nouă
       </div>
+      <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross Click')">×</button>
     </div>
-    <div class="modal-footer">
-      <button type="button" class="btn btn-sm btn-secondary" (click)="onCloseModal(modal)">Close</button>
-      <button type="button" class="btn btn-sm btn-primary" (click)="onSaveAppointment(modal)">Save Appointment</button>
-    </div>
-  </form>
-  </ng-container>
-  <ng-template #modalFailureOrLoading>
-    <ng-container *ngIf="errorMessageDoctor ; else modalLoading">
-      <div class="text-danger">
-        {{ errorMessageDoctor  }}
-      </div>
-    </ng-container>
-    <ng-template #modalLoading>
-      <div class="loader shadow-sm text-muted">
-        <span><i class="fa-solid fa-rotate fa-spin"></i> </span> &nbsp; <span>Processing...</span>
-      </div>
-    </ng-template>
-  </ng-template>
-</ng-template>
 
-
-<ng-template #updateContent let-updateModal>
-  <div class="modal-header">
-    <div class="modal-title text-muted">
-      <i class="fa-regular fa-circle-dot"></i>&nbsp; Update Appointment Form
-    </div>
-    <button type="button" class="btn-close" aria-label="Close" (click)="updateModal.dismiss('Cross click')"></button>
-  </div>
-
-  <ng-container *ngIf="doctors$ | async as listDoctors; else modalFailureOrLoading">
-      <form [formGroup]="updateAppointmentFormGroup" method="post">
+    <ng-container *ngIf="doctors$ | async as listDoctors; else modalFailureOrLoading">
+      <form [formGroup]="appointmentFormGroup" method="post" class="modal-form">
         <div class="modal-body">
-          <div class="row">
-            <div class="col-md-4">
-              <div class="form-group">
-                <label class="text-muted"> Appointment Id</label>
-                <input type="text" class="form-control form-font rounded-0 mt-1 mb-3" formControlName="appointmentId" readonly>
-              </div>
-            </div>
-            <div class="col-md-4">
-              <div class="form-group">
-                <label class="text-muted">Appointment Status</label>
-                <input type="text" class="form-control form-font rounded-0 mt-1 mb-3"
-                       [ngClass]="{'is-invalid' : submitted && updateAppointmentFormGroup.controls['appointmentStatus'].errors}"
-                       formControlName="appointmentStatus">
-                <div *ngIf="submitted && updateAppointmentFormGroup.get('appointmentStatus')?.invalid" class="invalid-feedback d-block">
-                  <div *ngIf="updateAppointmentFormGroup.get('appointmentStatus')?.errors?.['required']">
-                    Appointment Status is Required
-                  </div>
-                </div>
+          <div class="form-fields">
+
+            <!-- Date & Time Field -->
+            <div class="form-group">
+              <label>Data și Ora Programării</label>
+              <input
+                type="datetime-local"
+                class="form-control"
+                [ngClass]="{'is-invalid': submitted && (appointmentFormGroup.controls['appointmentDate'].errors)}"
+                formControlName="appointmentDate"
+                [min]="minDate"
+              />
+              <div *ngIf="submitted && appointmentFormGroup.controls['appointmentDate'].errors" class="invalid-feedback">
+                {{ getDateErrorMessage() }}
               </div>
             </div>
 
-            <div class="col-md-4">
-              <div class="form-group">
-                <label class="text-muted">Appointment Date</label>
-                <input
-                  type="date"
-                  class="form-control form-font rounded-0 mt-1 mb-3" [ngClass]="{'is-invalid' : submitted && updateAppointmentFormGroup.controls['appointmentDate'].errors}"
-                  formControlName="appointmentDate"/>
-                <div *ngIf="submitted && updateAppointmentFormGroup.controls['appointmentDate'].errors" class="invalid-feedback">
-                  <div *ngIf="updateAppointmentFormGroup.controls['appointmentDate'].errors?.['required']">Appointment Date is Required</div>
-                </div>
+            <!-- Doctor Selection Field -->
+            <div class="form-group">
+              <label>Doctor</label>
+              <select
+                class="form-control"
+                [ngClass]="{'is-invalid': submitted && appointmentFormGroup.get('doctor')?.invalid}"
+                formControlName="doctor"
+              >
+                <option [ngValue]="null" disabled>Alege un Doctor</option>
+                <option *ngFor="let doctor of listDoctors" [ngValue]="doctor">
+                  Dr. {{doctor.firstName}} {{doctor.lastName}}
+                </option>
+              </select>
+              <div *ngIf="submitted && appointmentFormGroup.get('doctor')?.invalid" class="invalid-feedback">
+                Selectarea doctorului este obligatorie
               </div>
             </div>
 
-            <!-- Doctor Field -->
-            <div class="col-md-4">
-              <div class="form-group">
-                <label class="text-muted">Doctor</label>
-                <select class="form-control form-font rounded-0 mt-1 mb-3"
-                        [ngClass]="{'is-invalid' : submitted && updateAppointmentFormGroup.get('doctor')?.invalid}"
-                        formControlName="doctor">
-                  <option [defaultSelected]="true" [ngValue]="defaultDoctor" > {{defaultDoctor.firstName}} {{defaultDoctor.lastName}} </option>
-                  <option *ngFor="let i of listDoctors" [ngValue]="i">{{i.firstName}} {{i.lastName}}</option>
-                </select>
-                <div *ngIf="submitted && updateAppointmentFormGroup.get('doctor')?.invalid" class="invalid-feedback">
-                  <div *ngIf="updateAppointmentFormGroup.get('doctor')?.errors?.['required']">Doctor is Required</div>
-                </div>
+            <div class="form-group">
+              <label>Motivul Programării</label>
+              <input
+                type="text"
+                class="form-control"
+                [ngClass]="{'is-invalid': submitted && appointmentFormGroup.controls['reason'].errors}"
+                formControlName="reason"
+                placeholder="Consultație generală, Control periodic, etc."
+              >
+              <div *ngIf="submitted && appointmentFormGroup.get('reason')?.invalid" class="invalid-feedback">
+                Motivul programării este obligatoriu
               </div>
             </div>
-
           </div>
         </div>
+
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" (click)="onCloseModal(updateModal)">Close</button>
-          <button type="button" class="btn btn-sm btn-primary" (click)="onUpdateAppointment(updateModal)">Save changes</button>
+          <button type="button" class="btn-cancel" (click)="onCloseModal(modal)">
+            <i class="bi bi-x-circle"></i> Anulează
+          </button>
+          <button type="button" class="btn-save" (click)="onSaveAppointment(modal)">
+            <i class="bi bi-check-circle"></i> Creează Programare
+          </button>
         </div>
       </form>
-  </ng-container>
-  <ng-template #modalFailureOrLoading>
-    <ng-container *ngIf="errorMessageDoctor; else modalLoading">
-      <div class="text-danger">
-        {{ errorMessageDoctor }}
-      </div>
     </ng-container>
-    <ng-template #modalLoading>
-      <div class="loader shadow-sm text-muted">
-        <span><i class="fa-solid fa-rotate fa-spin"></i> </span> &nbsp; <span>Processing...</span>
-      </div>
+
+    <ng-template #modalFailureOrLoading>
+      <ng-container *ngIf="errorMessageDoctor; else modalLoading">
+        <div class="error-message modal-error">
+          <i class="bi bi-exclamation-triangle"></i>
+          {{ errorMessageDoctor }}
+        </div>
+      </ng-container>
+      <ng-template #modalLoading>
+        <div class="loading-indicator modal-loading">
+          <i class="bi bi-arrow-repeat spin"></i>
+          <span>Se încarcă informațiile despre doctori...</span>
+        </div>
+      </ng-template>
     </ng-template>
-  </ng-template>
+  </div>
+</ng-template>
+
+<!-- Update Appointment Modal -->
+<ng-template #updateContent let-updateModal>
+  <div class="modal-container">
+    <div class="modal-header">
+      <div class="modal-title">
+        <i class="bi bi-calendar-check"></i> Actualizare Programare
+      </div>
+      <button type="button" class="btn-close" aria-label="Close" (click)="updateModal.dismiss('Cross click')">×</button>
+    </div>
+
+    <ng-container *ngIf="doctors$ | async as listDoctors; else modalFailureOrLoading">
+      <form [formGroup]="updateAppointmentFormGroup" method="post" class="modal-form">
+        <div class="modal-body">
+          <div class="form-fields">
+            <!-- ID Field (Read-only) -->
+            <div class="form-group">
+              <label>ID Programare</label>
+              <input
+                type="text"
+                class="form-control form-control-readonly"
+                formControlName="appointmentId"
+                readonly
+              >
+            </div>
+
+
+            <div class="form-group">
+              <label>Data Programării</label>
+              <input
+                type="datetime-local"
+                class="form-control"
+                [ngClass]="{'is-invalid': submitted && updateAppointmentFormGroup.controls['appointmentDate'].errors}"
+                formControlName="appointmentDate"
+                [min]="minDate"
+              />
+              <div *ngIf="submitted && updateAppointmentFormGroup.controls['appointmentDate'].errors" class="invalid-feedback">
+                {{ getUpdateDateErrorMessage() }}
+              </div>
+            </div>
+
+            <!-- Doctor Selection Field -->
+            <div class="form-group">
+              <label>Doctor</label>
+              <select
+                class="form-control"
+                [ngClass]="{'is-invalid': submitted && updateAppointmentFormGroup.get('doctor')?.invalid}"
+                formControlName="doctor"
+              >
+                <option [defaultSelected]="true" [ngValue]="defaultDoctor">
+                  Dr. {{defaultDoctor.firstName}} {{defaultDoctor.lastName}}
+                </option>
+                <option *ngFor="let doctor of listDoctors" [ngValue]="doctor">
+                  Dr. {{doctor.firstName}} {{doctor.lastName}}
+                </option>
+              </select>
+              <div *ngIf="submitted && updateAppointmentFormGroup.get('doctor')?.invalid" class="invalid-feedback">
+                Selectarea doctorului este obligatorie
+              </div>
+            </div>
+
+
+            <div class="form-group">
+              <label>Motivul Programării</label>
+              <input
+                type="text"
+                class="form-control"
+                [ngClass]="{'is-invalid': submitted && updateAppointmentFormGroup.controls['reason'].errors}"
+                formControlName="reason"
+              >
+              <div *ngIf="submitted && updateAppointmentFormGroup.get('reason')?.invalid" class="invalid-feedback">
+                Motivul programării este obligatoriu
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>Status Curent</label>
+              <input
+                type="text"
+                class="form-control form-control-readonly"
+                formControlName="status"
+                readonly
+              >
+            </div>
+
+
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-cancel" (click)="onCloseModal(updateModal)">Anulează</button>
+          <button type="button" class="btn-save" (click)="onUpdateAppointment(updateModal)">
+            Salvează Modificările
+          </button>
+        </div>
+      </form>
+    </ng-container>
+
+    <ng-template #modalFailureOrLoading>
+      <ng-container *ngIf="errorMessageDoctor; else modalLoading">
+        <div class="error-message modal-error">
+          <i class="bi bi-exclamation-triangle"></i>
+          {{ errorMessageDoctor }}
+        </div>
+      </ng-container>
+      <ng-template #modalLoading>
+        <div class="loading-indicator modal-loading">
+          <i class="bi bi-arrow-repeat spin"></i>
+          <span>Se încarcă informațiile despre doctori...</span>
+        </div>
+      </ng-template>
+    </ng-template>
+  </div>
 </ng-template>

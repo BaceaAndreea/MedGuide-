@@ -1,134 +1,158 @@
-<div class="main-container">
-  <header class="top-bar">
-    <div class="top-bar-left">Hello</div>
-    <div class="top-bar-right">
-      <span>Admin</span> | <a href="#">Signout</a>
-    </div>
-  </header>
+<div class="background-dots"></div>
+<div class="floating-elements">
+  <div class="floating-circle"></div>
+  <div class="floating-circle"></div>
+  <div class="floating-circle"></div>
+  <div class="floating-circle"></div>
+</div>
 
-  <div class="content-section">
-    <div class="box">
-      <div class="box-header">
-        <div class="box-header-title">Specializations</div>
-        <div class="box-header-button">
-          <button class="btn btn-primary-gradient" (click)="openModal(content)">New Specialization</button>
+<div class="specializations-container">
+  <div class="title-section">
+    <h1 class="main-title">Specializări</h1>
+    <div class="underline"></div>
+  </div>
+
+  <div class="add-button-container">
+    <button class="btn-add-specialization" (click)="openModal(content)">
+      <i class="bi bi-plus-circle"></i> Adaugă specializare
+    </button>
+  </div>
+
+  <div class="specializations-card">
+    <div *ngIf="searchFormGroup" class="search-container">
+      <form [formGroup]="searchFormGroup" (ngSubmit)="handleSearchSpecializations()">
+        <div class="search-input-group">
+          <input type="search" formControlName="keyword" class="search-input" placeholder="Caută specializare..." aria-label="Search">
+          <button type="submit" class="search-button">
+            Caută
+          </button>
         </div>
-      </div>
-      <div class="box-content">
-        <ng-container *ngIf="pageSpecializations | async as listSpecializations; else failureOrLoading">
-          <div *ngIf="searchFormGroup" class="mb-2">
-            <form [formGroup]="searchFormGroup" (ngSubmit)="handleSearchSpecializations()">
-              <div class="input-group w-25">
-                <input type="search" formControlName="keyword" class="form-control rounded mx-2" placeholder="Search" aria-label="Search">
-                <button type="submit" class="btn btn-outline-primary">Search</button>
-              </div>
-            </form>
-          </div>
-          <table class="table table-bordered table-hover">
-            <thead>
-            <tr>
-              <th>Specialization ID</th>
-              <th>Specialization Description</th>
-              <th></th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr *ngFor="let spec of listSpecializations.content">
-              <td>{{spec.specializationId}}</td>
-              <td>{{spec.description}}</td>
-              <td>
-                <button (click)="handleDeleteSpecialization(spec)" class="btn btn-danger">
-                  <i class="bi bi-trash"></i>
-                </button>
-              </td>
-              <td>
-                <button (click)="getUpdateSpecializationModal(spec, updateContent)" class="btn btn-success">
-                  <i class="bi bi-pencil-square"></i>
-                </button>
-              </td>
-            </tr>
-            </tbody>
-          </table>
-          <ul class="pagination justify-content-center">
-            <li *ngFor="let item of [].constructor(listSpecializations.totalPages); let page=index" class="page-item"
-                [ngClass]="{'active': page === currentPage}">
-              <a (click)="gotoPage(page)" class="page-link">{{page}}</a>
-            </li>
-          </ul>
-        </ng-container>
-        <ng-template #failureOrLoading>
-          <ng-container *ngIf="errorMessage; else loading">
-            <div class="text-danger">
-              {{errorMessage}}
-            </div>
-          </ng-container>
-          <ng-template #loading>
-            <div class="loader shadow-sm text-muted">
-              <span><i class="fa-solid fa-rotate fa-spin"></i></span> &nbsp; <span>Processing...</span>
-            </div>
-          </ng-template>
-        </ng-template>
-      </div>
+      </form>
     </div>
+
+    <ng-container *ngIf="pageSpecializations | async as listSpecializations; else failureOrLoading">
+      <table class="specializations-table">
+        <thead>
+        <tr>
+          <th>ID</th>
+          <th>DESCRIERE</th>
+          <th>ACȚIUNI</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let spec of listSpecializations.content">
+          <td>{{spec.specializationId}}</td>
+          <td>{{spec.description}}</td>
+          <td class="actions-cell">
+            <button (click)="getUpdateSpecializationModal(spec, updateContent)" class="btn-edit">
+              <i class="bi bi-pencil-square"></i>
+            </button>
+            <button (click)="handleDeleteSpecialization(spec)" class="btn-delete">
+              <i class="bi bi-trash"></i>
+            </button>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+
+      <div class="pagination-controls" *ngIf="listSpecializations.totalPages > 1">
+        <ul class="pagination">
+          <li *ngFor="let item of [].constructor(listSpecializations.totalPages); let page = index"
+              class="page-item"
+              [ngClass]="{'active': page === currentPage}">
+            <a (click)="gotoPage(page)" class="page-link">{{page}}</a>
+          </li>
+        </ul>
+      </div>
+    </ng-container>
+
+    <ng-template #failureOrLoading>
+      <ng-container *ngIf="errorMessage; else loading">
+        <div class="error-message">
+          <i class="bi bi-exclamation-triangle"></i>
+          {{errorMessage}}
+        </div>
+      </ng-container>
+      <ng-template #loading>
+        <div class="loading-indicator">
+          <i class="bi bi-arrow-repeat spin"></i>
+          <span>Se încarcă specializările...</span>
+        </div>
+      </ng-template>
+    </ng-template>
   </div>
 </div>
 
+<!-- Modal Template pentru Adăugare Specializare -->
 <ng-template #content let-modal>
-  <div class="modal-header">
-    <div class="modal-title text-muted">
-      <i class="fa-regular fa-circle-dot"></i>&nbsp; Specialization Registration Form
+  <div class="modal-container">
+    <div class="modal-header">
+      <div class="modal-title">
+        <i class="bi bi-clipboard-plus"></i> Adăugare Specializare Nouă
+      </div>
+      <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')">×</button>
     </div>
-    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
-  </div>
-  <form [formGroup]="specializationFormGroup" method="post">
-    <div class="modal-body">
-      <div class="row">
-        <div class="col-md-12">
+
+    <form [formGroup]="specializationFormGroup" method="post">
+      <div class="modal-body">
+        <div class="form-row">
           <div class="form-group">
-            <label class="text-muted">Description</label>
-            <textarea class="form-control form-font rounded-0 mt-1 mb-3"
+            <label>Descriere</label>
+            <textarea class="form-input"
                       [ngClass]="{'is-invalid': submitted && specializationFormGroup.controls['description'].errors}"
-                      formControlName="description" rows="2"></textarea>
-            <div *ngIf="submitted && specializationFormGroup.get('description')?.invalid" class="invalid-feedback d-block">
-              <div *ngIf="specializationFormGroup.get('description')?.errors?.['required']">Description is required</div>
+                      formControlName="description" rows="3"></textarea>
+            <div *ngIf="submitted && specializationFormGroup.get('description')?.invalid" class="invalid-feedback">
+              <div *ngIf="specializationFormGroup.get('description')?.errors?.['required']">Descrierea este obligatorie</div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-    <div class="modal-footer">
-      <button type="button" class="btn btn-secondary" (click)="onCloseModal(modal)">Close</button>
-      <button type="button" class="btn btn-sm btn-primary" (click)="onSaveSpecialization(modal)">Save changes</button>
-    </div>
-  </form>
+
+      <div class="modal-footer">
+        <button type="button" class="btn-cancel" (click)="onCloseModal(modal)">
+          <i class="bi bi-x-circle"></i> Închide
+        </button>
+        <button type="button" class="btn-save" (click)="onSaveSpecialization(modal)">
+          <i class="bi bi-check-circle"></i> Salvează
+        </button>
+      </div>
+    </form>
+  </div>
 </ng-template>
 
+<!-- Modal Template pentru Actualizare Specializare -->
 <ng-template #updateContent let-updateModal>
-  <div class="modal-header">
-    <div class="modal-title text-muted">
-      <i class="fa-regular fa-circle-dot"></i> Update Specialization Form
+  <div class="modal-container">
+    <div class="modal-header">
+      <div class="modal-title">
+        <i class="bi bi-clipboard-check"></i> Actualizare Specializare
+      </div>
+      <button type="button" class="btn-close" aria-label="Close" (click)="updateModal.dismiss('Cross click')">×</button>
     </div>
-    <button type="button" class="btn-close" aria-label="Close" (click)="updateModal.dismiss('Cross click')"></button>
-  </div>
-  <form [formGroup]="updateSpecializationFormGroup" method="post">
-    <div class="modal-body">
-      <div class="row">
-        <div class="col-md-4">
+
+    <form [formGroup]="updateSpecializationFormGroup" method="post">
+      <div class="modal-body">
+        <div class="form-row">
           <div class="form-group">
-            <label class="text-muted">Description</label>
-            <textarea class="form-control form-font rounded-0 mt-1 mb-3"
+            <label>Descriere</label>
+            <textarea class="form-input"
                       [ngClass]="{'is-invalid': submitted && updateSpecializationFormGroup.controls['description'].errors}"
-                      formControlName="description" rows="2"></textarea>
-            <div *ngIf="submitted && updateSpecializationFormGroup.get('description')?.invalid" class="invalid-feedback d-block">
-              <div *ngIf="updateSpecializationFormGroup.get('description')?.errors?.['required']">Description is required</div>
+                      formControlName="description" rows="3"></textarea>
+            <div *ngIf="submitted && updateSpecializationFormGroup.get('description')?.invalid" class="invalid-feedback">
+              <div *ngIf="updateSpecializationFormGroup.get('description')?.errors?.['required']">Descrierea este obligatorie</div>
             </div>
-        </div>
+          </div>
         </div>
       </div>
-    </div>
-    <div class="modal-footer">
-      <button type="button" class="btn btn-secondary" (click)="onCloseModal(updateModal)">Close</button>
-      <button type="button" class="btn btn-sm btn-primary" (click)="onUpdateSpecialization(updateModal)">Save changes</button>
-    </div>
-  </form>
+
+      <div class="modal-footer">
+        <button type="button" class="btn-cancel" (click)="onCloseModal(updateModal)">
+          <i class="bi bi-x-circle"></i> Închide
+        </button>
+        <button type="button" class="btn-save" (click)="onUpdateSpecialization(updateModal)">
+          <i class="bi bi-check-circle"></i> Salvează
+        </button>
+      </div>
+    </form>
+  </div>
 </ng-template>

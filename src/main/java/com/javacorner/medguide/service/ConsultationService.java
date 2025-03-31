@@ -1,10 +1,8 @@
 package com.javacorner.medguide.service;
 
 import com.javacorner.medguide.domain.Consultation;
-import com.javacorner.medguide.dto.AppointmentDTO;
 import com.javacorner.medguide.dto.ConsultationDTO;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
