@@ -29,13 +29,21 @@ public class Hospital {
     @OneToMany(mappedBy = "hospital", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Set<Doctor> doctors = new HashSet<>(); // Relație Unu-la-Multe
 
+    @Column(name = "lat")
+    private Double lat;
+
+    @Column(name = "lng")
+    private Double lng;
+
     public Hospital() {
     }
 
-    public Hospital(String name, String address, String city) {
+    public Hospital(String name, String address, String city, Double lat, Double lng) {
         this.name = name;
         this.address = address;
         this.city = city;
+        this.lat = lat;
+        this.lng = lng;
     }
 
     @Override
@@ -91,6 +99,22 @@ public class Hospital {
         this.doctors = doctors;
     }
 
+    public Double getLat() {
+        return lat;
+    }
+
+    public void setLat(Double lat) {
+        this.lat = lat;
+    }
+
+    public Double getLng() {
+        return lng;
+    }
+
+    public void setLng(Double lng) {
+        this.lng = lng;
+    }
+
     @Override
     public String toString() {
         return "Hospital{" +
@@ -98,6 +122,9 @@ public class Hospital {
                 ", name='" + name + '\'' +
                 ", address='" + address + '\'' +
                 ", city='" + city + '\'' +
+                ", doctors=" + doctors +
+                ", lat=" + lat +
+                ", lng=" + lng +
                 '}';
     }
 }

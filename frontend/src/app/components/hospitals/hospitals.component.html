@@ -92,7 +92,7 @@
   <div class="modal-container">
     <div class="modal-header">
       <div class="modal-title">
-        <i class="bi bi-hospital-add"></i> Adăugare Spital Nou
+        <i class="bi bi-hospital"></i> Adăugare Spital Nou
       </div>
       <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')">×</button>
     </div>
@@ -112,9 +112,9 @@
 
           <div class="form-group">
             <label>Adresă</label>
-            <textarea class="form-input"
-                      [ngClass]="{'is-invalid': submitted && hospitalFormGroup.controls['address'].errors}"
-                      formControlName="address" rows="3"></textarea>
+            <input #addressInput type="text" class="form-input"
+                   [ngClass]="{'is-invalid': submitted && hospitalFormGroup.controls['address'].errors}"
+                   formControlName="address" placeholder="Începe să scrii adresa...">
             <div *ngIf="submitted && hospitalFormGroup.get('address')?.invalid" class="invalid-feedback">
               <div *ngIf="hospitalFormGroup.get('address')?.errors?.['required']">Adresa este obligatorie</div>
             </div>
@@ -129,6 +129,24 @@
               <div *ngIf="hospitalFormGroup.get('city')?.errors?.['required']">Orașul este obligatoriu</div>
             </div>
           </div>
+
+          <!-- Adaugă Google Maps în modal -->
+          <div class="map-container">
+            <google-map height="300px"
+                        width="100%"
+                        [center]="center"
+                        [zoom]="zoom"
+                        (mapClick)="mapClick($event)">
+              <map-marker *ngIf="markerPosition"
+                          [position]="markerPosition"
+                          [options]="{ draggable: true }">
+              </map-marker>
+            </google-map>
+          </div>
+
+          <!-- Câmpuri ascunse pentru lat și lng -->
+          <input type="hidden" formControlName="lat">
+          <input type="hidden" formControlName="lng">
         </div>
       </div>
 
@@ -169,9 +187,9 @@
 
           <div class="form-group">
             <label>Adresă</label>
-            <textarea class="form-input"
-                      [ngClass]="{'is-invalid': submitted && updateHospitalFormGroup.controls['address'].errors}"
-                      formControlName="address" rows="3"></textarea>
+            <input #updateAddressInput type="text" class="form-input"
+                   [ngClass]="{'is-invalid': submitted && updateHospitalFormGroup.controls['address'].errors}"
+                   formControlName="address" placeholder="Începe să scrii adresa...">
             <div *ngIf="submitted && updateHospitalFormGroup.get('address')?.invalid" class="invalid-feedback">
               <div *ngIf="updateHospitalFormGroup.get('address')?.errors?.['required']">Adresa este obligatorie</div>
             </div>
@@ -186,6 +204,24 @@
               <div *ngIf="updateHospitalFormGroup.get('city')?.errors?.['required']">Orașul este obligatoriu</div>
             </div>
           </div>
+
+          <!-- Adaugă Google Maps în modal pentru actualizare -->
+          <div class="map-container">
+            <google-map height="300px"
+                        width="100%"
+                        [center]="center"
+                        [zoom]="zoom"
+                        (mapClick)="mapClick($event)">
+              <map-marker *ngIf="markerPosition"
+                          [position]="markerPosition"
+                          [options]="{ draggable: true }">
+              </map-marker>
+            </google-map>
+          </div>
+
+          <!-- Câmpuri ascunse pentru lat și lng -->
+          <input type="hidden" formControlName="lat">
+          <input type="hidden" formControlName="lng">
         </div>
       </div>
 
