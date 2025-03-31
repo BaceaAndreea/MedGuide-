@@ -44,6 +44,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public AppointmentDTO createAppointment(AppointmentDTO appointmentDTO) {
+        System.out.println("IN CREATE APPOINTMENT");
         Appointment appointment = appointmentMapper.fromAppointmentDTO(appointmentDTO);
         Doctor doctor = doctorDao.findById(appointmentDTO.getDoctor().getDoctorId())
                 .orElseThrow(() -> new EntityNotFoundException("Doctor with ID " + appointmentDTO.getDoctor().getDoctorId() + " not found!"));

@@ -1,13 +1,21 @@
 package com.javacorner.medguide.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.util.Date;
 
 public class AppointmentDTO {
     private Long appointmentId;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     private Date appointmentDate;
     private String status;
     private DoctorDTO doctor;
     private PatientDTO patient;
+    private String reason;
+
+    public String getReason() {return reason;}
+
+    public void setReason(String reason) {this.reason = reason;}
 
     public Long getAppointmentId() {
         return appointmentId;

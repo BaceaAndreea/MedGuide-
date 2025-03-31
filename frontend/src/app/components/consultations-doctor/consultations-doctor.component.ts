@@ -1,10 +1,11 @@
 import {Component, OnInit} from '@angular/core';
-import {AsyncPipe, NgClass, NgForOf, NgIf} from '@angular/common';
+import {AsyncPipe, DatePipe, NgClass, NgForOf, NgIf} from '@angular/common';
 import {catchError, Observable, of} from 'rxjs';
 import {PageRespone} from '../../model/page.response.model';
 import {Consultation} from '../../model/consultation.model';
 import {ActivatedRoute} from '@angular/router';
 import {ConsultationsService} from '../../services/consultations.service';
+import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-consultations-doctor',
@@ -13,27 +14,31 @@ import {ConsultationsService} from '../../services/consultations.service';
     AsyncPipe,
     NgForOf,
     NgIf,
-    NgClass
+    NgClass,
+    DatePipe
   ],
   templateUrl: './consultations-doctor.component.html',
   styleUrl: './consultations-doctor.component.scss'
 })
 export class ConsultationsDoctorComponent implements OnInit{
-
-  private doctorId!:number;
+  private doctorId!: number;
   pageConsultations$!: Observable<PageRespone<Consultation>>;
-  currentPage:number=0;
-  pageSize:number=5;
+  currentPage: number = 0;
+  pageSize: number = 5;
   errorMessage: string = '';
+  selectedConsultation: Consultation | null = null;
+  loadingDetails: boolean = false;
 
-  constructor(private route: ActivatedRoute, private consultationService: ConsultationsService) {
-  }
+  constructor(
+    private route: ActivatedRoute,
+    private consultationService: ConsultationsService,
+    private modalService: NgbModal
+  ) {}
 
   ngOnInit(): void {
     this.doctorId = this.route.snapshot.params['id'];
     this.loadConsultations();
   }
-
 
   loadConsultations() {
     this.pageConsultations$ = this.consultationService.getConsultationsByDoctor(
@@ -56,5 +61,25 @@ export class ConsultationsDoctorComponent implements OnInit{
   gotoPage(page: number) {
     this.currentPage = page;
     this.loadConsultations();
+  }
+
+  openDetailsModal(consultation: Consultation, modal: any) {
+    this.loadingDetails = true;
+    console.log('Opening details for consultation:', consultation);
+
+    // Folosește direct consultația existentă fără să încerci să obții mai multe detalii
+    setTimeout(() => {
+      this.loadingDetails = false;
+      this.selectedConsultation = this.consultationService.normalizeConsultationData(consultation);
+
+      this.modalService.open(modal, {
+        centered: true,
+        size: 'lg'
+      });
+    }, 300);
+  }
+  // Metode helper pentru template
+  hasContent(value: string | null | undefined): boolean {
+    return !!value && value.trim().length > 0;
   }
 }

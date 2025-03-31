@@ -1,5 +1,24 @@
-<app-header *ngIf="showNavbar"></app-header>
+<!-- Elementele de fundal trebuie să apară înaintea conținutului principal -->
+<div class="background-dots"></div>
 
+<!-- Cercuri flotante simplificate -->
+<div class="floating-elements">
+  <div class="floating-circle"></div>
+  <div class="floating-circle"></div>
+  <div class="floating-circle"></div>
+  <div class="floating-circle"></div>
+</div>
+
+<!-- Streaks de lumină simplificate -->
+<div class="light-streak"></div>
+<div class="light-streak"></div>
+<div class="light-streak"></div>
+
+<!-- Puncte strălucitoare simplificate -->
+<div class="glow-point"></div>
+<div class="glow-point"></div>
+<div class="glow-point"></div>
+<div class="glow-point"></div>
 <app-navbar *ngIf="showNavbar"></app-navbar>
 <div class="content">
   <router-outlet></router-outlet>

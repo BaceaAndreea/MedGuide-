@@ -82,31 +82,6 @@ header {
   opacity: .6;
 }
 
-.invalid-feedback {
-  display: block !important;
-  color: red;
-}
-
-
-.aside nav ul li a.active,
-.aside nav ul li a.active:hover{
-  background: linear-gradient(195deg,#ec407a,#d81b60);
-  opacity: 1;
-}
-
-
-.aside nav ul li a:hover{
-  transition: .35s ease-in;
-  background: rgba(255, 255, 255, 0.253);
-  opacity: 1;
-}
-
-.aside nav ul li a span {
-  width: 17px;
-  display: inline-block;
-}
-
-
 
 
 .dataTables_length {
@@ -127,194 +102,6 @@ header {
 .pagination{
   padding-right: 10px;
   padding-bottom: 10px;
-}
-
-
-
-.paginate_button,
-
-
-
-.page-item .page-link{
-  background-color: blue !important;
-  color: white !important;
-  border-radius: 5px;
-}
-
-
-.box-header-grid {
-  display: flex;
-  justify-content:flex-end;
-  align-items: center;
-}
-
-.box-header-title {
-  margin-right:auto;
-}
-
-.btn-primary-gradient {
-  background: linear-gradient(195deg,#49a3f1,#1a73e8);
-  color:rgb(255, 255, 255);
-  border: none;
-}
-
-
-.btn-primary-gradient:hover {
-  background: linear-gradient(-195deg,#49a3f1,#1a73e8);
-  color:rgb(255, 255, 255);
-}
-
-
-.btn-success-gradient {
-  background: linear-gradient(195deg,#66bb6a,#43a047);
-  color:rgb(255, 255, 255);
-  border: none;
-}
-
-
-.btn-success-gradient:hover {
-  background: linear-gradient(-195deg,#66bb6a,#43a047);
-  color:rgb(255, 255, 255);
-}
-
-
-
-.btn-danger-gradient {
-  background: linear-gradient(195deg,#ec407a,#d81b60);
-  color:rgb(255, 255, 255);
-  border: none;
-}
-
-
-.btn-danger-gradient:hover {
-  background: linear-gradient(-195deg,#ec407a,#d81b60);
-  color:rgb(255, 255, 255);
-}
-
-
-
-
-.btn-dark-gradient {
-  background: linear-gradient(195deg,#42424a,#191919);
-  color:rgb(255, 255, 255);
-  border: none;
-}
-
-
-.btn-dark-gradient:hover {
-  background: linear-gradient(-195deg,#42424a,#191919);
-  color:rgb(255, 255, 255);
-}
-
-
-.box-footer {
-  padding: 10px;
-}
-
-
-.dash {
-  background-color: #FFF;
-  border-radius: 4px;
-}
-
-.dash-content {
-  display: grid;
-  grid-template-columns: 50px auto;
-  align-items: center;
-  gap: 20px;
-}
-
-.dash-icon {
-  width: 50px;
-  height: 50px;
-  font-size: 20px;
-  text-align: center;
-  line-height: 50px;
-  border-radius: 4px;
-}
-
-.dash-content {
-  border-bottom: 1px solid #eee;
-  padding: 20px;
-}
-
-.dash-description {
-  padding: 10px 20px;
-}
-
-.dash-info-number {
-  font-size: 20px;
-  color: #2c3e50;
-  font-weight: 600;
-}
-
-
-.main-header-menu {
-  display: grid;
-  grid-template-columns: 300px auto;
-  align-items: center;
-}
-
-
-.top-menu {
-  text-align: right;
-}
-
-.top-menu ul li {
-  display: inline-block;
-  padding-left: 20px;
-  color: rgba(0, 0, 0, 0.644);
-  font-size: 13px;
-}
-
-.top-menu ul li a {
-  text-decoration: none;
-  color:inherit;
-}
-
-.bread a {
-  text-decoration: none;
-  font: 13px Arial;
-}
-
-.form-font {
-  font-size: 13px;
-}
-
-.loader {
-  background: white;
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%,-50%);
-  padding: 5px 10px;
-  border-radius: 100px;
-  user-select: none;
-  cursor: pointer;
-  z-index: 9000;
-}
-
-#fileLabel:hover {
-  color: rgba(0, 0, 0, 1);
-}
-
-#fileLabel {
-  cursor: pointer;
-  display: inline-block;
-  color: rgba(0, 0, 0, 0.5);
-}
-
-
-.table-blue {
-  background-color: #F1EAF2;
-  border-bottom: #F1EAF2;;
-  color: #FFF;
-}
-
-.table-blue tr,
-.table-blue tr td {
-  background-color: #F1EAF2;
-  color: #FFF;
 }
 
 
@@ -399,32 +186,6 @@ header {
   margin-bottom: 15px;
 }
 
-.sidebar-list a {
-  text-decoration: none;
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 1.1em;
-  padding: 10px;
-  display: block;
-  border-radius: 5px;
-  transition: background-color 0.3s, color 0.3s;
-}
-
-.sidebar-list a.active {
-  background-color: rgba(255, 255, 255, 0.2);
-  color: white;
-}
-
-.sidebar-list a:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-  color: white;
-}
-.main-container {
-  margin-left: 200px; /* Spațiu pentru sidebar */
-  margin-top: 60px; /* Spațiu pentru top-bar */
-  padding: 20px;
-  background: linear-gradient(45deg, #F21A2B, #E787F2);
-  min-height: 100vh;
-}
 
 
 
@@ -541,4 +302,189 @@ header {
   margin-left: 0 !important; /* Elimină spațiul rezervat sidebar-ului */
 }
 
+/* de aici incepem cu cele bune ------------------------------------------------------------------------------*/
+/* Variables */
+/* Variabile pentru efectele de fundal */
+$gradient-start: #3a317c;
+$gradient-middle: #5f4dc2;
+$gradient-end: #6c59d4;
+$accent-glow: rgba(164, 151, 236, 0.15);
+$light-accent: rgba(255, 255, 255, 0.1);
 
+/* Animații pentru elementele de fundal */
+@keyframes simpleFloat {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-20px); }
+  100% { transform: translateY(0); }
+}
+
+@keyframes pulse {
+  0% { opacity: 0.3; }
+  50% { opacity: 0.8; }
+  100% { opacity: 0.3; }
+}
+
+@keyframes streak {
+  0% { left: -100px; opacity: 0; }
+  30% { opacity: 0.6; }
+  100% { left: 100%; opacity: 0; }
+}
+
+/* Fond aplicație cu gradient elegant */
+body {
+  background: linear-gradient(
+      135deg,
+      $gradient-start 0%,
+      $gradient-middle 45%,
+      $gradient-end 100%
+  );
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+}
+
+/* Puncte de fundal */
+.background-dots {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: radial-gradient($light-accent 1px, transparent 1.5px);
+  background-size: 30px 30px;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.6;
+}
+
+/* Cercuri flotante */
+.floating-elements {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.floating-circle {
+  position: absolute;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.floating-circle:nth-child(1) {
+  width: 300px;
+  height: 300px;
+  top: 10%;
+  left: -5%;
+  animation: simpleFloat 20s infinite ease-in-out;
+}
+
+.floating-circle:nth-child(2) {
+  width: 400px;
+  height: 400px;
+  bottom: -10%;
+  right: -5%;
+  animation: simpleFloat 25s infinite ease-in-out reverse;
+}
+
+.floating-circle:nth-child(3) {
+  width: 250px;
+  height: 250px;
+  top: 50%;
+  left: 15%;
+  animation: simpleFloat 18s infinite ease-in-out;
+}
+
+.floating-circle:nth-child(4) {
+  width: 150px;
+  height: 150px;
+  top: 15%;
+  right: 10%;
+  animation: simpleFloat 15s infinite ease-in-out;
+}
+
+/* Streaks de lumină */
+.light-streak {
+  position: fixed;
+  width: 200px;
+  height: 2px;
+  background-color: rgba(255, 255, 255, 0.2);
+  z-index: 1;
+  pointer-events: none;
+  top: 30%;
+  left: -100px;
+  animation: streak 8s linear infinite;
+}
+
+.light-streak:nth-child(1) {
+  top: 25%;
+  animation-delay: 0s;
+}
+
+.light-streak:nth-child(2) {
+  top: 45%;
+  width: 150px;
+  animation-delay: 3s;
+}
+
+.light-streak:nth-child(3) {
+  top: 65%;
+  width: 180px;
+  animation-delay: 6s;
+}
+
+/* Puncte strălucitoare */
+.glow-point {
+  position: fixed;
+  width: 6px;
+  height: 6px;
+  background-color: rgba(255, 255, 255, 0.6);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 1;
+  animation: pulse 4s infinite ease-in-out;
+}
+
+.glow-point:nth-child(1) {
+  top: 30%;
+  left: 20%;
+  animation-delay: 0s;
+}
+
+.glow-point:nth-child(2) {
+  top: 60%;
+  left: 70%;
+  animation-delay: 1s;
+}
+
+.glow-point:nth-child(3) {
+  top: 25%;
+  left: 60%;
+  animation-delay: 2s;
+}
+
+.glow-point:nth-child(4) {
+  top: 70%;
+  left: 40%;
+  animation-delay: 3s;
+}
+
+/* Val la baza paginii */
+.wave-bottom {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 20vh;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320'%3E%3Cpath fill='%23ffffff' fill-opacity='0.08' d='M0,160L48,149.3C96,139,192,117,288,117.3C384,117,480,139,576,170.7C672,203,768,245,864,250.7C960,256,1056,224,1152,197.3C1248,171,1344,149,1392,138.7L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z'%3E%3C/path%3E%3C/svg%3E");
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.8;
+}

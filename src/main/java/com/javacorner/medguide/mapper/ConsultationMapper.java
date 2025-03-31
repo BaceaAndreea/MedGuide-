@@ -11,6 +11,10 @@ public class ConsultationMapper {
         ConsultationDTO consultationDTO = new ConsultationDTO();
         consultationDTO.setConsultationId(consultation.getConsultationId());
         consultationDTO.setDiagnosis(consultation.getDiagnosis());
+        consultationDTO.setSymptoms(consultation.getSymptoms());
+        consultationDTO.setRecommendations(consultation.getRecommendations());
+        consultationDTO.setPrescriptions(consultation.getPrescriptions());
+
 
         if (consultation.getAppointment() != null) {
             consultationDTO.setAppointmentId(consultation.getAppointment().getAppointmentId());
@@ -45,6 +49,9 @@ public class ConsultationMapper {
         Consultation consultation = new Consultation();
         consultation.setConsultationId(consultationDTO.getConsultationId());
         consultation.setDiagnosis(consultationDTO.getDiagnosis());
+        consultation.setSymptoms(consultationDTO.getSymptoms());
+        consultation.setPrescriptions(consultationDTO.getPrescriptions());
+        consultation.setRecommendations(consultationDTO.getRecommendations());
         // Appointment va fi setat separat în service
         return consultation;
     }

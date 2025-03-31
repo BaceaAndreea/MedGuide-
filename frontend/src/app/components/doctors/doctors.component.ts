@@ -2,10 +2,10 @@ import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {DoctorsService} from '../../services/doctors.service';
-import {catchError, Observable, throwError} from 'rxjs';
+import {catchError, map, Observable, throwError} from 'rxjs';
 import {PageRespone} from '../../model/page.response.model';
 import {Doctor} from '../../model/doctor.model';
-import {AsyncPipe, NgClass, NgForOf, NgIf} from '@angular/common';
+import {AsyncPipe, DatePipe, NgClass, NgForOf, NgIf} from '@angular/common';
 import {Hospital} from '../../model/hospital.model';
 import {Specialization} from '../../model/specialization.model';
 import {HospitalsService} from '../../services/hospitals.service';
@@ -25,7 +25,8 @@ import {Appointment} from '../../model/appointment.model';
     AsyncPipe,
     NgForOf,
     NgIf,
-    NgClass
+    NgClass,
+    DatePipe
   ],
   styleUrls: ['./doctors.component.scss']
 })
@@ -50,42 +51,109 @@ export class DoctorsComponent implements OnInit{
   defaultSpecialization!: Specialization;
   modalDoctor!:Doctor;
 
+  totalDoctors: number = 0;
+  totalSpecializations: number = 0;
+  totalHospitals: number = 0;
 
-  constructor(private modalService : NgbModal, private fb:FormBuilder, private doctorService : DoctorsService, private hospitalService : HospitalsService ,
-              private specializationService : SpecializationsService, private userService : UsersService, private appointmentService : AppointmentsService) {}
+
+  constructor(
+    private modalService: NgbModal,
+    private fb: FormBuilder,
+    private doctorService: DoctorsService,
+    private hospitalService: HospitalsService,
+    private specializationService: SpecializationsService,
+    private userService: UsersService,
+    private appointmentService: AppointmentsService
+  ) {}
+
   ngOnInit(): void {
+    // Inițializăm formularul de căutare
     this.searchFormGroup = this.fb.group({
-      keyword : this.fb.control('')
-    })
+      keyword: this.fb.control('')
+    });
 
+    // Inițializăm formularul pentru adăugare doctor
     this.doctorFormGroup = this.fb.group({
-      firstName:["", Validators.required],
-      lastName:["", Validators.required],
-      birthDate:[null, Validators.required],
-      hospital:[null, Validators.required],
-      specialization:[null, Validators.required],
+      firstName: ["", Validators.required],
+      lastName: ["", Validators.required],
+      birthDate: [null, Validators.required],
+      hospital: [null, Validators.required],
+      specialization: [null, Validators.required],
       user: this.fb.group({
-        email:["",
+        email: [
+          "",
           [Validators.required, Validators.email],
-          [EmailExistsValidators.validate(this.userService)] // Mută validatorul asincron într-un array separat
+          [EmailExistsValidators.validate(this.userService)]
         ],
-        password:["", [Validators.required, Validators.minLength(6)]]
+        password: ["", [Validators.required, Validators.minLength(6)]]
       })
-    })
+    });
 
+    // Încărcăm datele inițiale
     this.handleSearchDoctors();
+    this.loadDashboardData();
   }
 
-  getModal(content : any){
-    this.submitted=false;
+  // Returneazp clasa pentru status badge în modală
+  getStatusClass(status: string): string {
+    if (status === 'Confirmată') return 'status-confirmed';
+    if (status === 'Finalizată') return 'status-completed';
+    if (status === 'Anulată') return 'status-cancelled';
+    if (status === 'Programată') return 'status-scheduled';
+    return 'status-pending';
+  }
+
+  // Încarcă datele sumare pentru dashboard
+  loadDashboardData(): void {
+    // Obținem numărul total de doctori
+    this.doctorService.searchDoctors("", 0, 1000).pipe(
+      map(page => {
+        this.totalDoctors = page.totalElements;
+        return page;
+      }),
+      catchError(err => {
+        console.error('Eroare la încărcarea numărului de doctori', err);
+        return throwError(err);
+      })
+    ).subscribe();
+
+    // Obținem numărul total de specializări
+    this.specializationService.findAllSpecializations().pipe(
+      map(specializations => {
+        this.totalSpecializations = specializations.length;
+        return specializations;
+      }),
+      catchError(err => {
+        console.error('Eroare la încărcarea specializărilor', err);
+        return throwError(err);
+      })
+    ).subscribe();
+
+    // Obținem numărul total de spitale
+    this.hospitalService.findAllHospitals().pipe(
+      map(hospitals => {
+        this.totalHospitals = hospitals.length;
+        return hospitals;
+      }),
+      catchError(err => {
+        console.error('Eroare la încărcarea spitalelor', err);
+        return throwError(err);
+      })
+    ).subscribe();
+
+  }
+
+  // Deschide modalul pentru adăugare doctor
+  getModal(content: any): void {
+    this.submitted = false;
     this.fetchHospitals();
     this.fetchSpecializations();
-    this.modalService.open(content, {size: 'xl'})
-
+    this.modalService.open(content, {size: 'xl'});
   }
 
-  handleSearchDoctors() {
-    let keyword = this.searchFormGroup.value.keyword
+  // Caută doctori
+  handleSearchDoctors(): void {
+    const keyword = this.searchFormGroup.value.keyword;
     this.pageDoctors = this.doctorService.searchDoctors(keyword, this.currentPage, this.pageSize).pipe(
       catchError(err => {
         this.errorMessage = err.message;
@@ -94,56 +162,61 @@ export class DoctorsComponent implements OnInit{
     );
   }
 
-  gotoPage(page: number) {
+  // Navigare paginare
+  gotoPage(page: number): void {
     this.currentPage = page;
     this.handleSearchDoctors();
-
   }
 
-  fetchHospitals() {
+  // Încarcă lista de spitale
+  fetchHospitals(): void {
     this.hospitals$ = this.hospitalService.findAllHospitals().pipe(
       catchError(err => {
         this.errorMessageHospital = err.message;
         return throwError(err);
       })
-    )
+    );
   }
 
-  fetchSpecializations() {
+  // Încarcă lista de specializări
+  fetchSpecializations(): void {
     this.specializations$ = this.specializationService.findAllSpecializations().pipe(
       catchError(err => {
         this.errorMessageSpecialization = err.message;
         return throwError(err);
       })
-    )
+    );
   }
 
+  // Șterge un doctor
+  handleDeleteDoctor(d: Doctor): void {
+    const conf = confirm("Sunteți sigur că doriți să ștergeți acest doctor?");
+    if (!conf) return;
 
-  handleDeleteDoctor(d: Doctor) {
-    let conf = confirm("Are you sure?");
-    if(!conf) return;
     this.doctorService.deleteDoctor(d.doctorId).subscribe({
-      next:() => {
+      next: () => {
         this.handleSearchDoctors();
+        this.loadDashboardData(); // Actualizează sumarul
+        alert("Doctorul a fost șters cu succes!");
       },
       error: err => {
-        alert(err.message);
-        console.log(err);
+        alert("Eroare la ștergerea doctorului: " + err.message);
+        console.error(err);
       }
-    })
+    });
   }
 
-  onCloseModal(modal: any) {
+  // Închide modalul
+  onCloseModal(modal: any): void {
     modal.close();
     this.doctorFormGroup.reset();
   }
 
-  onSaveDoctor(modal: any) {
-    this.submitted = true; // Marchează formularul ca fiind trimis
+  onSaveDoctor(modal: any): void {
+    this.submitted = true;
 
     if (this.doctorFormGroup.invalid) {
-      console.log("Form is invalid", this.doctorFormGroup.errors);
-      return; // Oprește execuția dacă formularul are erori
+      return;
     }
 
     // Construim obiectul Doctor pentru a-l trimite către backend
@@ -159,29 +232,29 @@ export class DoctorsComponent implements OnInit{
       }
     };
 
-    console.log("Submitting doctor:", doctor);
-
     this.doctorService.saveDoctor(doctor).subscribe({
       next: () => {
-        alert("Doctor saved successfully");
-        this.handleSearchDoctors(); // Reîncarcă lista doctorilor
-        this.submitted = false; // Resetăm starea formularului
-        this.doctorFormGroup.reset(); // Resetăm formularul
-        modal.close(); // Închidem modalul
+        alert("Doctor salvat cu succes!");
+        this.handleSearchDoctors();
+        this.loadDashboardData(); // Actualizează sumarul
+        this.submitted = false;
+        this.doctorFormGroup.reset();
+        modal.close();
       },
       error: err => {
-        alert("Error saving doctor: " + err.message);
-        console.error("Save error:", err);
+        alert("Eroare la salvarea doctorului: " + err.message);
+        console.error("Eroare salvare:", err);
       }
     });
   }
 
-
-  getUpdateDoctorModal(d: Doctor, updateContent: any) {
+  // Deschide modalul pentru actualizare doctor
+  getUpdateDoctorModal(d: Doctor, updateContent: any): void {
     this.fetchHospitals();
     this.fetchSpecializations();
+    this.submitted = false;
 
-    // Populăm formularul cu datele existente ale doctorului (fără email și parolă)
+    // Populăm formularul cu datele existente ale doctorului
     this.updateDoctorFormGroup = this.fb.group({
       doctorId: [d.doctorId, Validators.required],
       firstName: [d.firstName, Validators.required],
@@ -191,14 +264,11 @@ export class DoctorsComponent implements OnInit{
       specialization: [d.specialization?.specializationId, Validators.required] // Doar ID-ul
     });
 
-    this.defaultHospital = this.updateDoctorFormGroup.controls['hospital'].value;
-    this.defaultSpecialization = this.updateDoctorFormGroup.controls['specialization'].value;
-
     this.modalService.open(updateContent, { size: 'xl' });
   }
 
-
-  onUpdateDoctor(updateModal: any) {
+  // Actualizează un doctor
+  onUpdateDoctor(updateModal: any): void {
     this.submitted = true;
     if (this.updateDoctorFormGroup.invalid) return;
 
@@ -213,39 +283,39 @@ export class DoctorsComponent implements OnInit{
 
     this.doctorService.updateDoctor(doctor, doctor.doctorId).subscribe({
       next: () => {
-        alert("Success updating Doctor");
-        this.handleSearchDoctors(); // Reîncarcă lista doctorilor
+        alert("Doctor actualizat cu succes!");
+        this.handleSearchDoctors();
+        this.loadDashboardData(); // Actualizează sumarul
         this.submitted = false;
-        updateModal.close(); // Închide modalul
+        updateModal.close();
       },
       error: err => {
-        alert("Error updating doctor: " + err.message);
+        alert("Eroare la actualizarea doctorului: " + err.message);
       }
     });
   }
 
-
-
-  getAppointmentModal(d: Doctor, appointmentContent: any) {
-    this.appointmentCurrentPage =0 ;
+  // Deschide modalul pentru programările doctorului
+  getAppointmentModal(d: Doctor, appointmentContent: any): void {
+    this.appointmentCurrentPage = 0;
     this.modalDoctor = d;
     this.handleSearchAppointments(d);
-    this.modalService.open(appointmentContent, {size:'xl'});
-
+    this.modalService.open(appointmentContent, {size: 'xl'});
   }
 
-  handleSearchAppointments(d: Doctor) {
+  // Caută programările unui doctor
+  handleSearchAppointments(d: Doctor): void {
     this.pageAppointment$ = this.appointmentService.getAppointmentByDoctor(d.doctorId, this.appointmentCurrentPage, this.appointmentPageSize).pipe(
-      catchError( err => {
+      catchError(err => {
         this.appointmentErrorMessage = err.message;
         return throwError(err);
       })
-    )
+    );
   }
 
-  gotoAppointmentsPage(page: number) {
+  // Navigare între paginile programărilor unui doctor
+  gotoAppointmentsPage(page: number): void {
     this.appointmentCurrentPage = page;
     this.handleSearchAppointments(this.modalDoctor);
-
   }
 }

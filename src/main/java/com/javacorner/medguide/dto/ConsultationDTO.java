@@ -13,6 +13,35 @@ public class ConsultationDTO {
     private String doctorFirstName;
     private String doctorLastName;
 
+    public String getSymptoms() {
+        return symptoms;
+    }
+
+    public void setSymptoms(String symptoms) {
+        this.symptoms = symptoms;
+    }
+
+    public String getRecommendations() {
+        return recommendations;
+    }
+
+    public void setRecommendations(String recommendations) {
+        this.recommendations = recommendations;
+    }
+
+    public String getPrescriptions() {
+        return prescriptions;
+    }
+
+    public void setPrescriptions(String prescriptions) {
+        this.prescriptions = prescriptions;
+    }
+
+    private String symptoms;
+    private String recommendations;
+    private String prescriptions;
+
+
     public String getPatientFirstName() {
         return patientFirstName;
     }

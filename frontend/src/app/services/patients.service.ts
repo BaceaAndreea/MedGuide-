@@ -57,4 +57,8 @@ export class PatientsService {
     return this.http.get<Patient>(environment.backendHost + "/patients/find?email=" + email)
   }
 
+  getPatientById(id: number): Observable<Patient> {
+    return this.http.get<Patient>(`${environment.backendHost}/patients/${id}`);
+  }
+
 }

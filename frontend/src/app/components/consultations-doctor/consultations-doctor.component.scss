@@ -1,0 +1,482 @@
+/*Consultations Doctor Component SCSS*/
+/* Host styling - utilizam variabilele globale din styles.scss */
+:host {
+  display: block;
+  min-height: 100vh;
+  padding-top: 1rem;
+  position: relative;
+  overflow: hidden;
+
+  /* Nu mai definim background aici deoarece este setat la nivel de body */
+  /* Vom adauga doar overlays suplimentare peste fundalul global */
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+    background:
+      radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.07) 0%, transparent 30%),
+      radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.05) 0%, transparent 30%),
+      radial-gradient(circle at 80% 10%, rgba(255, 255, 255, 0.07) 0%, transparent 20%),
+      radial-gradient(circle at 40% 70%, rgba(255, 255, 255, 0.05) 0%, transparent 30%);
+  }
+}
+
+/* Variabile pe care le utilizăm local (complementare la cele globale) */
+$primary-color: #7569d6;
+$primary-light: #8678e0;
+$secondary-color: #9c75e8;
+$accent-color: #9157cc;
+$white: #ffffff;
+$light-gray: #f7f8fa;
+$medium-gray: #e2e8f0;
+$dark-gray: #4a5568;
+$text-color: #333;
+$error-color: #e53e3e;
+$success-color: #38a169;
+$warning-color: #ecc94b;
+$info-color: #4299e1;
+$border-radius: 10px;
+$border-radius-lg: 14px;
+$box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+$card-shadow: 0 10px 30px rgba(142, 123, 195, 0.1);
+
+/* Container pentru conținut */
+.consultations-container {
+  padding: 1.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 2;
+}
+
+/* Stilizare antet pagină */
+.page-header-container {
+  margin-bottom: 1.5rem;
+}
+
+.page-title-container {
+  margin-bottom: 3.5rem;
+
+  .page-title {
+    font-size: 2.5rem;
+    color: $white;
+    margin: 0;
+    font-weight: 600;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+    letter-spacing: 0.5px;
+    position: relative;
+
+    &::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: -5px;
+      width: 80px;
+      height: 3px;
+      background: linear-gradient(90deg, rgba(255,255,255,0.8), rgba(255,255,255,0.2));
+      border-radius: 3px;
+    }
+  }
+}
+
+/* Card consultații elegant */
+.consultations-card {
+  background-color: $white;
+  border-radius: $border-radius-lg;
+  box-shadow: $card-shadow;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(86, 73, 185, 0.15);
+  }
+
+  .error-message {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: $error-color;
+    padding: 1rem;
+    border-radius: $border-radius;
+    background-color: rgba($error-color, 0.08);
+
+    i {
+      font-size: 1.25rem;
+    }
+  }
+
+  .loading-indicator {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 2rem;
+    color: $primary-color;
+
+    .spin {
+      animation: spin 1s linear infinite;
+      font-size: 1.5rem;
+    }
+  }
+}
+
+/* Tabel modern și elegant - adaptat la dimensiunile din appointment-doctor */
+.consultations-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin-bottom: 1.5rem;
+
+  th {
+    text-align: left;
+    padding: 1rem;
+    border-bottom: 2px solid $medium-gray;
+    color: $dark-gray;
+    font-weight: 600;
+    font-size: 0.875rem;
+  }
+
+  td {
+    padding: 1rem;
+    border-bottom: 1px solid $medium-gray;
+    color: $dark-gray;
+  }
+
+  .consultation-row {
+    transition: all 0.2s;
+
+    &:hover {
+      background-color: $light-gray;
+    }
+  }
+
+  .btn-view {
+    background-color: rgba($info-color, 0.1);
+    color: $info-color;
+    border: none;
+    border-radius: $border-radius;
+    padding: 0.6rem 1.2rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.3s;
+
+    &:hover {
+      background-color: $info-color;
+      color: $white;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(66, 153, 225, 0.2);
+    }
+
+    i {
+      font-size: 1rem;
+    }
+  }
+}
+
+/* Controale de paginare rafinate */
+.pagination-controls {
+  display: flex;
+  justify-content: center;
+  margin-top: 1.5rem;
+
+  .pagination {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+
+    .page-item {
+      margin: 0 0.25rem;
+
+      .page-link {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background-color: $light-gray;
+        color: $dark-gray;
+        cursor: pointer;
+        transition: all 0.2s;
+
+        &:hover {
+          background-color: rgba($primary-color, 0.1);
+          color: $primary-color;
+        }
+      }
+
+      &.active .page-link {
+        background-color: $primary-color;
+        color: $white;
+        box-shadow: 0 2px 5px rgba(86, 73, 185, 0.3);
+      }
+
+      &.disabled .page-link {
+        opacity: 0.5;
+        cursor: not-allowed;
+
+        &:hover {
+          background-color: $light-gray;
+          color: $dark-gray;
+        }
+      }
+    }
+  }
+}
+
+/* Stiluri pentru responsive */
+@media (max-width: 768px) {
+  .consultations-table {
+    display: block;
+    overflow-x: auto;
+
+    th, td {
+      padding: 0.75rem 0.5rem;
+    }
+  }
+
+  .page-title-container .page-title {
+    font-size: 2rem;
+  }
+}
+
+/* Stiluri modal elegant - ajustate pentru dimensiuni uniforme */
+.modal-container {
+  animation: fadeIn 0.3s;
+  width: 100%;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid $medium-gray;
+  position: relative;
+
+  .modal-title {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: $primary-color;
+
+    i {
+      font-size: 1.4rem;
+    }
+  }
+
+  .btn-close {
+    background: transparent;
+    border: none;
+    font-size: 1.5rem;
+    color: $dark-gray;
+    cursor: pointer;
+    transition: all 0.3s;
+
+    &:hover {
+      color: $primary-color;
+      transform: rotate(90deg);
+    }
+  }
+}
+
+.modal-body {
+  padding: 1.25rem;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  padding: 1rem 1.5rem;
+  border-top: 1px solid $medium-gray;
+  gap: 0.5rem;
+}
+
+/* Stilizare pentru conținutul modal-ului */
+.consultation-info {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid $medium-gray;
+
+  .info-item {
+    display: flex;
+    margin-bottom: 0.5rem;
+
+    .info-label {
+      font-weight: 600;
+      color: $dark-gray;
+      width: 100px;
+    }
+
+    .info-value {
+      color: $text-color;
+      font-weight: 500;
+    }
+  }
+}
+
+/* Rezultatele consultației - titlu secțiune */
+.rezultatele-consultatiei {
+  padding-bottom: 0.5rem;
+  margin-bottom: 1rem;
+  position: relative;
+
+  &::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 60px;
+    height: 2px;
+    background: $primary-light;
+    border-radius: 2px;
+  }
+}
+
+.section-title {
+  color: $primary-color;
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  position: relative;
+  display: inline-block;
+
+  &::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -4px;
+    width: 35px;
+    height: 2px;
+    background: $primary-color;
+    border-radius: 2px;
+  }
+}
+
+.result-section {
+  margin-bottom: 1rem;
+  background-color: $light-gray;
+  border-radius: $border-radius;
+  padding: 1rem;
+  transition: all 0.3s;
+
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.05);
+  }
+
+  .result-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.5rem;
+
+    i {
+      color: $primary-color;
+      margin-right: 0.5rem;
+      font-size: 1rem;
+    }
+
+    h5 {
+      margin: 0;
+      color: $primary-color;
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+  }
+
+  .result-content {
+    color: $text-color;
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+}
+
+.no-data {
+  color: $dark-gray;
+  font-style: italic;
+  opacity: 0.7;
+  padding: 0.5rem 0;
+}
+
+.btn-cancel {
+  background-color: rgba($dark-gray, 0.08);
+  color: $dark-gray;
+  border: none;
+  border-radius: $border-radius;
+  padding: 0.5rem 1rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.3s;
+
+  &:hover {
+    background-color: $dark-gray;
+    color: $white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  i {
+    font-size: 0.9rem;
+  }
+}
+
+
+::ng-deep .modal-content {
+  border: none !important;
+  border-radius: $border-radius-lg !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15) !important;
+  overflow: hidden !important;
+  min-width: 850px !important;
+}
+
+::ng-deep .modal-dialog-centered {
+  display: flex;
+  align-items: center;
+  min-height: calc(100% - 3.5rem);
+  justify-content: center !important;
+}
+
+::ng-deep .modal-lg {
+  max-width: 700px !important; /* Mărit de la 600px la 700px */
+  width: 700px !important; /* Mărit de la 600px la 700px */
+}
+
+/* Stilizare pentru modal-ul Detalii Consultație mai specific */
+::ng-deep .modal-dialog.modal-consultation-details .modal-content {
+  min-height: 600px !important; /* Asigură înălțimea minimă */
+}
+
+::ng-deep .modal-dialog.modal-consultation-details .modal-body {
+  padding: 1.5rem !important;
+}
+
+/* Animații pentru referință - nu redefini, deoarece sunt în styles.scss */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}

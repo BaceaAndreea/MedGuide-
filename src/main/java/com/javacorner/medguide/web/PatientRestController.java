@@ -62,14 +62,14 @@ public class PatientRestController {
     }
 
     @PutMapping("/{patientId}")
-    @PreAuthorize("hasAuthority('Patient')")
+    @PreAuthorize("hasAnyAuthority('Admin', 'Patient')")
     public PatientDTO updatePatient(@RequestBody PatientDTO patientDTO, @PathVariable Long patientId){
         patientDTO.setPatientId(patientId);
         return patientService.updatePatient(patientDTO);
     }
 
     @GetMapping("/{patientId}/appointments")
-    @PreAuthorize("hasAnyAuthority('Admin', 'Patient')")
+    @PreAuthorize("hasAnyAuthority('Admin', 'Patient', 'Doctor')")
     public Page<AppointmentDTO> appointmentsByPatientId(@PathVariable Long patientId,
                                                         @RequestParam(name="page", defaultValue = "0") int page,
                                                         @RequestParam(name="size", defaultValue = "5") int size){
@@ -92,7 +92,7 @@ public class PatientRestController {
     }
 
     @GetMapping("/{patientId}/consultations")
-    @PreAuthorize("hasAnyAuthority('Admin', 'Patient')")
+    @PreAuthorize("hasAnyAuthority('Admin', 'Patient', 'Doctor')")
     public Page<ConsultationDTO> findConsultationsByPatientId(@PathVariable Long patientId,
                                                              @RequestParam(name="page", defaultValue = "0") int page,
                                                              @RequestParam(name="size", defaultValue = "5") int size){

@@ -33,13 +33,13 @@ public class AppointmentRestController {
     }
 
     @PostMapping
-    @PreAuthorize("hasAnyAuthority('Admin', 'Patient')")
+    @PreAuthorize("hasAnyAuthority('Admin', 'Patient', 'Doctor')")
     public AppointmentDTO saveAppointment(@RequestBody AppointmentDTO appointmentDTO) {
         return appointmentService.createAppointment(appointmentDTO);
     }
 
     @PutMapping("/{appointmentId}")
-    @PreAuthorize("hasAnyAuthority('Admin', 'Patient')")
+    @PreAuthorize("hasAnyAuthority('Admin', 'Patient', 'Doctor')")
     public AppointmentDTO updateAppointment(@RequestBody AppointmentDTO appointmentDTO, @PathVariable Long appointmentId) {
         appointmentDTO.setAppointmentId(appointmentId);
         return appointmentService.updateAppointment(appointmentDTO);

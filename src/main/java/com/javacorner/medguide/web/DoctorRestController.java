@@ -59,7 +59,7 @@ public class DoctorRestController {
     }
 
     @PutMapping("/{doctorId}")
-    @PreAuthorize("hasAuthority('Doctor')")
+    @PreAuthorize("hasAnyAuthority('Admin', 'Doctor')")
     public DoctorDTO updateDoctor(@RequestBody DoctorDTO doctorDTO, @PathVariable Long doctorId){
         doctorDTO.setDoctorId(doctorId);
 

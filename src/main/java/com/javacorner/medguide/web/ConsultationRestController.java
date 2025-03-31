@@ -37,10 +37,11 @@ public class ConsultationRestController {
     }
 
     @PutMapping("/appointmentId")
-    @PreAuthorize("hasAnyAuthority('Admin', 'Doctor')")
+    @PreAuthorize("hasAnyAuthority('Admin', 'Doctor', 'Patient')")
     public ConsultationDTO updateConsultation(@RequestBody ConsultationDTO consultationDTO, @PathVariable Long consultationId) {
         consultationDTO.setConsultationId(consultationId);
         return consultationService.createConsultation(consultationDTO);
     }
+
 
 }

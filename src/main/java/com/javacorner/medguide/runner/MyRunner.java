@@ -48,13 +48,21 @@ public class MyRunner implements CommandLineRunner {
     }
 
     private void createRoles() {
-        Arrays.asList("Admin", "Doctor", "Patient").forEach(role -> roleService.createRole(role));
+        Arrays.asList("Admin", "Doctor", "Patient").forEach(roleName -> {
+            if (roleService.findByName(roleName) == null) {
+                roleService.createRole(roleName);
+            }
+        });
     }
 
+
     private void createAdmin() {
-        userService.createUser("admin@gmail.com", "parola1234");
-        userService.assignRoleToUser("admin@gmail.com", "admin");
+        if (userService.loadUserByEmail("admin@gmail.com") == null) {
+            userService.createUser("admin@gmail.com", "parola1234");
+            userService.assignRoleToUser("admin@gmail.com", "admin");
+        }
     }
+
 
     private void createHospital() {
         // Creează câteva spitale pentru testare
@@ -125,6 +133,7 @@ public class MyRunner implements CommandLineRunner {
         for (int i = 0; i < 2; i++) {
             AppointmentDTO appointmentDTO = new AppointmentDTO();
             appointmentDTO.setStatus("Appointment" + i);
+            appointmentDTO.setReason("Reason" + i);
             LocalDate localDate = LocalDate.of(2025, 1, i + 1);
             appointmentDTO.setAppointmentDate(Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant()));
             DoctorDTO doctorDTO = new DoctorDTO();
@@ -149,6 +158,9 @@ public class MyRunner implements CommandLineRunner {
 
             ConsultationDTO consultationDTO = new ConsultationDTO();
             consultationDTO.setDiagnosis("Diagnosis for appointment " + appointment.getAppointmentId());
+            consultationDTO.setSymptoms("Symptoms for appointment " + appointment.getAppointmentId());
+            consultationDTO.setRecommendations("Recommendations for appointment " + appointment.getAppointmentId());
+            consultationDTO.setPrescriptions("Prescriptions for appointment " + appointment.getAppointmentId());
             consultationDTO.setAppointmentId(appointment.getAppointmentId());
             consultationDTO.setPatientId(appointment.getPatient().getPatientId());
             consultationDTO.setDoctorId(appointment.getDoctor().getDoctorId());
