@@ -6,6 +6,16 @@
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <script>
+    window.initGoogleCallback = function() {
+      window.googleMapsLoaded = true;
+      window.dispatchEvent(new Event('google-maps-loaded'));
+    };
+  </script>
+
+  <script async defer
+          src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAhD0-Y08U15sZE3ERXcUUUBtFwZK5xTAw&libraries=places&callback=initGoogleCallback&v=weekly">
+  </script>
 </head>
 <body>
   <app-root></app-root>
