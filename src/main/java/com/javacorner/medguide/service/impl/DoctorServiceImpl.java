@@ -123,4 +123,15 @@ public class DoctorServiceImpl implements DoctorService {
         doctorDao.deleteById(doctorId);
     }
 
+    @Override
+    public List<DoctorDTO> findDoctorsBySpecialization(Long specializationId) {
+        Specialization specialization = specializationDao.findById(specializationId)
+                .orElseThrow(() -> new EntityNotFoundException("Specialization not found"));
+
+        List<Doctor> doctors = doctorDao.findBySpecialization(specialization);
+        return doctors.stream()
+                .map(doctorMapper::fromDoctor)
+                .collect(Collectors.toList());
+    }
+
 }

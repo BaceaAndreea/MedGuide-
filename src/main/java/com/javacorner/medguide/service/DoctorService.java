@@ -21,4 +21,6 @@ public interface DoctorService {
 
     void removeDoctor(Long doctorId);
 
+    public List<DoctorDTO> findDoctorsBySpecialization(Long specializationId);
+
 }

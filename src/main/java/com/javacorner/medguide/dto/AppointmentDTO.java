@@ -6,8 +6,8 @@ import java.util.Date;
 
 public class AppointmentDTO {
     private Long appointmentId;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-    private Date appointmentDate;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm")
+    private Date appointmentDate;;
     private String status;
     private DoctorDTO doctor;
     private PatientDTO patient;

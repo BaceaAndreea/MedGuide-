@@ -1,6 +1,7 @@
 package com.javacorner.medguide.dao;
 
 import com.javacorner.medguide.domain.Doctor;
+import com.javacorner.medguide.domain.Specialization;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -19,6 +20,8 @@ public interface DoctorDao extends JpaRepository<Doctor, Long> {
 
     @Query("SELECT d FROM Doctor d WHERE d.hospital.hospitalId = :hospitalId")
     List<Doctor> findByHospitalId(@Param("hospitalId") Long hospitalId);
+
+    List<Doctor> findBySpecialization(Specialization specialization);
 
 
 }

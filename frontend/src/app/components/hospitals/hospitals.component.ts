@@ -45,6 +45,7 @@ export class HospitalsComponent implements OnInit, AfterViewInit, OnDestroy {
   mapErrors: string[] = [];
   private subscriptions: Subscription[] = [];
   private mapsInitialized = false;
+  private placesInitialized = false;
 
   constructor(
     private modalService: NgbModal,
@@ -88,7 +89,15 @@ export class HospitalsComponent implements OnInit, AfterViewInit, OnDestroy {
       }
     });
 
-    this.subscriptions.push(mapsSub);
+    // Additionally, subscribe to Places API load status
+    const placesSub = this.googleMapsService.isPlacesLoaded().subscribe(loaded => {
+      if (loaded) {
+        this.placesInitialized = true;
+        console.log('Places API is ready to use');
+      }
+    });
+
+    this.subscriptions.push(mapsSub, placesSub);
 
     // Load hospitals
     this.handleSearchHospitals();
@@ -126,122 +135,71 @@ export class HospitalsComponent implements OnInit, AfterViewInit, OnDestroy {
       return;
     }
 
-    if (!this.mapsInitialized) {
-      console.error('Google Maps not yet initialized');
+    if (!this.mapsInitialized || !this.placesInitialized) {
+      console.error('Google Maps or Places API not yet initialized');
       return;
     }
 
     try {
-      console.log('Initializing autocomplete for', inputElement.nativeElement);
+      console.log('Initializing legacy autocomplete for', inputElement.nativeElement);
 
-      // Check if window.google is available
-      if (!window.google || !window.google.maps || !window.google.maps.places) {
-        console.error('Google Maps Places API is not available');
-        return;
-      }
+      const autocomplete = new google.maps.places.Autocomplete(inputElement.nativeElement, {
+        types: ['address'],
+        componentRestrictions: { country: 'ro' },
+        fields: ['address_components', 'geometry', 'formatted_address']
+      });
 
-      // Using the PlaceAutocompleteElement as recommended by Google
-      // (but with fallback to legacy Autocomplete if necessary)
-      if (google.maps.places.PlaceAutocompleteElement) {
-        console.log('Using modern PlaceAutocompleteElement');
+      autocomplete.addListener('place_changed', () => {
+        this.ngZone.run(() => {
+          const place = autocomplete.getPlace();
 
-        // Check if there's already an existing autocomplete element
-        const existingAutocomplete = inputElement.nativeElement.nextElementSibling;
-        if (existingAutocomplete && existingAutocomplete.tagName === 'GMP-PLACE-AUTOCOMPLETE') {
-          console.log('Autocomplete element already exists, skipping initialization');
-          return;
-        }
+          if (!place || !place.geometry || !place.geometry.location) {
+            this.geocodeAddress(inputElement.nativeElement.value);
+            return;
+          }
 
-        // Create the PlaceAutocompleteElement
-        const autocompleteElement = new google.maps.places.PlaceAutocompleteElement({
-          types: ['address'],
-          componentRestrictions: { country: 'ro' },
-          fields: ['address_components', 'geometry', 'formatted_address']
-        });
+          const lat = place.geometry.location.lat();
+          const lng = place.geometry.location.lng();
+          const formattedAddress = place.formatted_address;
+          const addressComponents = place.address_components || [];
 
-        // Insert after the input
-        inputElement.nativeElement.parentNode.insertBefore(
-          autocompleteElement,
-          inputElement.nativeElement.nextSibling
-        );
+          // Update marker and center map
+          this.markerPosition = { lat, lng };
+          this.center = this.markerPosition;
+          this.zoom = 15;
 
-        // Hide the original input
-        inputElement.nativeElement.style.display = 'none';
+          // Extract city
+          let city = '';
+          const cityComponent = addressComponents.find((component: any) =>
+            component.types.includes('locality')
+          );
 
-        // Listen for place selection
-        autocompleteElement.addEventListener('gmp-placeselect', (event: any) => {
-          this.ngZone.run(() => {
-            const place = event.detail.place;
-            this.handlePlaceSelection(place, inputElement);
+          if (cityComponent) {
+            city = cityComponent.long_name;
+          } else {
+            this.geocodeAddress(formattedAddress, true);
+          }
+
+          const formToUpdate = inputElement.nativeElement.id?.includes('update')
+            ? this.updateHospitalFormGroup
+            : this.hospitalFormGroup;
+
+          formToUpdate.patchValue({
+            address: formattedAddress,
+            city: city,
+            lat: lat,
+            lng: lng
           });
-        });
-      } else {
-        console.log('Falling back to legacy Autocomplete');
 
-        // Use the legacy Autocomplete
-        const autocomplete = new google.maps.places.Autocomplete(inputElement.nativeElement, {
-          types: ['address'],
-          componentRestrictions: { country: 'ro' },
-          fields: ['address_components', 'geometry', 'formatted_address']
+          console.log('Place selected:', formattedAddress, 'City:', city, 'Lat:', lat, 'Lng:', lng);
         });
-
-        autocomplete.addListener('place_changed', () => {
-          this.ngZone.run(() => {
-            const place = autocomplete.getPlace();
-            this.handlePlaceSelection(place, inputElement);
-          });
-        });
-      }
+      });
     } catch (error) {
-      console.error('Error initializing autocomplete:', error);
+      console.error('Error initializing legacy Autocomplete:', error);
     }
   }
 
-  private handlePlaceSelection(place: any, inputElement: ElementRef): void {
-    if (!place || !place.geometry) {
-      console.error('No geometry returned for selected place');
-      // Try to recover by using geocoding service
-      this.geocodeAddress(place.formatted_address || inputElement.nativeElement.value);
-      return;
-    }
-
-    // Update marker position
-    this.markerPosition = {
-      lat: place.geometry.location.lat(),
-      lng: place.geometry.location.lng()
-    };
-
-    // Center map
-    this.center = this.markerPosition;
-    this.zoom = 15;
-
-    // Extract city
-    let city = '';
-    const addressComponents = place.address_components || [];
-    const cityComponent = addressComponents.find((component: any) =>
-      component.types.includes('locality')
-    );
-
-    if (cityComponent) {
-      city = cityComponent.long_name;
-    }
-
-    // Update the appropriate form
-    const formToUpdate = inputElement === this.addressInput
-      ? this.hospitalFormGroup
-      : this.updateHospitalFormGroup;
-
-    formToUpdate.patchValue({
-      address: place.formatted_address,
-      city: city,
-      lat: place.geometry.location.lat(),
-      lng: place.geometry.location.lng()
-    });
-
-    console.log('Place selected:', place.formatted_address);
-  }
-
-  private geocodeAddress(address: string): void {
+  private geocodeAddress(address: string, onlyForCity: boolean = false): void {
     if (!this.geocoder || !address) {
       console.error('Geocoder not available or address is empty');
       return;
@@ -252,15 +210,18 @@ export class HospitalsComponent implements OnInit, AfterViewInit, OnDestroy {
         if (status === 'OK' && results && results[0] && results[0].geometry) {
           console.log('Geocoded address successfully');
 
-          // Update marker
-          this.markerPosition = {
-            lat: results[0].geometry.location.lat(),
-            lng: results[0].geometry.location.lng()
-          };
+          // If we're only looking for the city, don't update marker
+          if (!onlyForCity) {
+            // Update marker
+            this.markerPosition = {
+              lat: results[0].geometry.location.lat(),
+              lng: results[0].geometry.location.lng()
+            };
 
-          // Center map
-          this.center = this.markerPosition;
-          this.zoom = 15;
+            // Center map
+            this.center = this.markerPosition;
+            this.zoom = 15;
+          }
 
           // Extract city
           let city = '';
@@ -277,12 +238,17 @@ export class HospitalsComponent implements OnInit, AfterViewInit, OnDestroy {
             ? this.hospitalFormGroup
             : this.updateHospitalFormGroup;
 
-          activeForm.patchValue({
-            address: results[0].formatted_address,
-            city: city,
-            lat: this.markerPosition.lat,
-            lng: this.markerPosition.lng
-          });
+          // Only update what we need
+          if (onlyForCity) {
+            activeForm.patchValue({ city: city });
+          } else {
+            activeForm.patchValue({
+              address: results[0].formatted_address,
+              city: city,
+              lat: results[0].geometry.location.lat(),
+              lng: results[0].geometry.location.lng()
+            });
+          }
         } else {
           console.error('Geocoding failed:', status);
         }
@@ -302,7 +268,7 @@ export class HospitalsComponent implements OnInit, AfterViewInit, OnDestroy {
     try {
       const modalRef = this.modalService.open(content, { size: 'xl' });
 
-      // Use a slightly longer timeout to ensure the DOM is ready
+      // Use a timeout to ensure DOM is ready and Modal has fully initialized
       setTimeout(() => {
         if (this.addressInput) {
           this.initAutocomplete(this.addressInput);
@@ -375,7 +341,14 @@ export class HospitalsComponent implements OnInit, AfterViewInit, OnDestroy {
   onCloseModal(modal: any) {
     modal.close();
     this.hospitalFormGroup.reset();
+
+    // Focus pe butonul „Adaugă spital”, dacă ai un astfel de element
+    const addButton = document.getElementById('add-hospital-button');
+    if (addButton) {
+      addButton.focus();
+    }
   }
+
 
   onSaveHospital(modal: any) {
     this.submitted = true;

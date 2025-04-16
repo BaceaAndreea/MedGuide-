@@ -132,15 +132,18 @@
 
           <!-- Adaugă Google Maps în modal -->
           <div class="map-container">
-            <google-map height="300px"
-                        width="100%"
-                        [center]="center"
-                        [zoom]="zoom"
-                        (mapClick)="mapClick($event)">
-              <map-marker *ngIf="markerPosition"
-                          [position]="markerPosition"
-                          [options]="{ draggable: true }">
-              </map-marker>
+            <google-map
+              height="400px"
+              width="100%"
+              [center]="center"
+              [zoom]="zoom"
+              (mapClick)="mapClick($event)"
+            >
+              <map-marker
+                *ngIf="markerPosition"
+                [position]="markerPosition"
+                [options]="{ draggable: true }"
+              ></map-marker>
             </google-map>
           </div>
 
@@ -207,15 +210,18 @@
 
           <!-- Adaugă Google Maps în modal pentru actualizare -->
           <div class="map-container">
-            <google-map height="300px"
-                        width="100%"
-                        [center]="center"
-                        [zoom]="zoom"
-                        (mapClick)="mapClick($event)">
-              <map-marker *ngIf="markerPosition"
-                          [position]="markerPosition"
-                          [options]="{ draggable: true }">
-              </map-marker>
+            <google-map
+              height="400px"
+              width="100%"
+              [center]="center"
+              [zoom]="zoom"
+              (mapClick)="mapClick($event)"
+            >
+              <map-marker
+                *ngIf="markerPosition"
+                [position]="markerPosition"
+                [options]="{ draggable: true }"
+              ></map-marker>
             </google-map>
           </div>
 
