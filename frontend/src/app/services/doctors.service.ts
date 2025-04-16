@@ -4,6 +4,7 @@ import {Doctor} from '../model/doctor.model';
 import {Observable} from 'rxjs';
 import {environment} from '../../environments/environment';
 import {PageRespone} from '../model/page.response.model';
+import {Specialization} from '../model/specialization.model';
 
 @Injectable({
   providedIn: 'root'
@@ -11,6 +12,8 @@ import {PageRespone} from '../model/page.response.model';
 
 
 export class DoctorsService {
+
+  private specializationUrl = environment.backendHost + '/specializations';
 
   constructor(private http: HttpClient) {
   }
@@ -46,6 +49,14 @@ export class DoctorsService {
 
   public loadDoctorByEmail(email : string) : Observable<Doctor>{
     return this.http.get<Doctor>(environment.backendHost + "/doctors/find?email=" + email)
+  }
+
+  findAllSpecializations(): Observable<Array<Specialization>> {
+    return this.http.get<Array<Specialization>>(`${this.specializationUrl}/all`);
+  }
+
+  findDoctorsBySpecialization(specializationId: number): Observable<Array<Doctor>> {
+    return this.http.get<Array<Doctor>>(`${environment.backendHost}/doctors/specialization/${specializationId}`);
   }
 
 }

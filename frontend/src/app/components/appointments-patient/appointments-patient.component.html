@@ -142,7 +142,6 @@
     </ng-template>
   </div>
 </div>
-
 <!-- New Appointment Modal -->
 <ng-template #content let-modal>
   <div class="modal-container">
@@ -153,7 +152,7 @@
       <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross Click')">×</button>
     </div>
 
-    <ng-container *ngIf="doctors$ | async as listDoctors; else modalFailureOrLoading">
+    <ng-container *ngIf="specializations$ | async as listSpecializations; else modalFailureOrLoading">
       <form [formGroup]="appointmentFormGroup" method="post" class="modal-form">
         <div class="modal-body">
           <div class="form-fields">
@@ -173,6 +172,24 @@
               </div>
             </div>
 
+            <!-- Specialization Selection Field -->
+            <div class="form-group">
+              <label>Specializare</label>
+              <select
+                class="form-control"
+                [ngClass]="{'is-invalid': submitted && appointmentFormGroup.get('specialization')?.invalid}"
+                formControlName="specialization"
+              >
+                <option [ngValue]="null" disabled>Alege o Specializare</option>
+                <option *ngFor="let specialization of listSpecializations" [ngValue]="specialization.specializationId">
+                  {{specialization.description}}
+                </option>
+              </select>
+              <div *ngIf="submitted && appointmentFormGroup.get('specialization')?.invalid" class="invalid-feedback">
+                Selectarea specializării este obligatorie
+              </div>
+            </div>
+
             <!-- Doctor Selection Field -->
             <div class="form-group">
               <label>Doctor</label>
@@ -182,12 +199,15 @@
                 formControlName="doctor"
               >
                 <option [ngValue]="null" disabled>Alege un Doctor</option>
-                <option *ngFor="let doctor of listDoctors" [ngValue]="doctor">
+                <option *ngFor="let doctor of filteredDoctors" [ngValue]="doctor">
                   Dr. {{doctor.firstName}} {{doctor.lastName}}
                 </option>
               </select>
               <div *ngIf="submitted && appointmentFormGroup.get('doctor')?.invalid" class="invalid-feedback">
                 Selectarea doctorului este obligatorie
+              </div>
+              <div *ngIf="filteredDoctors.length === 0 && appointmentFormGroup.get('specialization')?.valid" class="form-text text-info">
+                Selectați o specializare pentru a vedea doctorii disponibili
               </div>
             </div>
 
@@ -228,13 +248,12 @@
       <ng-template #modalLoading>
         <div class="loading-indicator modal-loading">
           <i class="bi bi-arrow-repeat spin"></i>
-          <span>Se încarcă informațiile despre doctori...</span>
+          <span>Se încarcă informațiile necesare...</span>
         </div>
       </ng-template>
     </ng-template>
   </div>
 </ng-template>
-
 <!-- Update Appointment Modal -->
 <ng-template #updateContent let-updateModal>
   <div class="modal-container">
@@ -245,7 +264,7 @@
       <button type="button" class="btn-close" aria-label="Close" (click)="updateModal.dismiss('Cross click')">×</button>
     </div>
 
-    <ng-container *ngIf="doctors$ | async as listDoctors; else modalFailureOrLoading">
+    <ng-container *ngIf="specializations$ | async as listSpecializations; else modalFailureOrLoading">
       <form [formGroup]="updateAppointmentFormGroup" method="post" class="modal-form">
         <div class="modal-body">
           <div class="form-fields">
@@ -259,7 +278,6 @@
                 readonly
               >
             </div>
-
 
             <div class="form-group">
               <label>Data Programării</label>
@@ -275,6 +293,24 @@
               </div>
             </div>
 
+            <!-- Specialization Selection Field -->
+            <div class="form-group">
+              <label>Specializare</label>
+              <select
+                class="form-control"
+                [ngClass]="{'is-invalid': submitted && updateAppointmentFormGroup.get('specialization')?.invalid}"
+                formControlName="specialization"
+              >
+                <option [ngValue]="null" disabled>Alege o Specializare</option>
+                <option *ngFor="let specialization of listSpecializations" [ngValue]="specialization.specializationId">
+                  {{specialization.description}}
+                </option>
+              </select>
+              <div *ngIf="submitted && updateAppointmentFormGroup.get('specialization')?.invalid" class="invalid-feedback">
+                Selectarea specializării este obligatorie
+              </div>
+            </div>
+
             <!-- Doctor Selection Field -->
             <div class="form-group">
               <label>Doctor</label>
@@ -283,18 +319,18 @@
                 [ngClass]="{'is-invalid': submitted && updateAppointmentFormGroup.get('doctor')?.invalid}"
                 formControlName="doctor"
               >
-                <option [defaultSelected]="true" [ngValue]="defaultDoctor">
-                  Dr. {{defaultDoctor.firstName}} {{defaultDoctor.lastName}}
-                </option>
-                <option *ngFor="let doctor of listDoctors" [ngValue]="doctor">
+                <option [ngValue]="null" disabled>Alege un Doctor</option>
+                <option *ngFor="let doctor of filteredDoctors" [ngValue]="doctor">
                   Dr. {{doctor.firstName}} {{doctor.lastName}}
                 </option>
               </select>
               <div *ngIf="submitted && updateAppointmentFormGroup.get('doctor')?.invalid" class="invalid-feedback">
                 Selectarea doctorului este obligatorie
               </div>
+              <div *ngIf="filteredDoctors.length === 0 && updateAppointmentFormGroup.get('specialization')?.valid" class="form-text text-info">
+                Selectați o specializare pentru a vedea doctorii disponibili
+              </div>
             </div>
-
 
             <div class="form-group">
               <label>Motivul Programării</label>
@@ -318,8 +354,6 @@
                 readonly
               >
             </div>
-
-
           </div>
         </div>
 
@@ -342,7 +376,7 @@
       <ng-template #modalLoading>
         <div class="loading-indicator modal-loading">
           <i class="bi bi-arrow-repeat spin"></i>
-          <span>Se încarcă informațiile despre doctori...</span>
+          <span>Se încarcă informațiile necesare...</span>
         </div>
       </ng-template>
     </ng-template>

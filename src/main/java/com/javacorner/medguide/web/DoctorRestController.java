@@ -89,5 +89,11 @@ public class DoctorRestController {
         return consultationService.findConsultationsByDoctorId(doctorId, page, size);
     }
 
+    @GetMapping("/specialization/{specializationId}")
+    @PreAuthorize("hasAnyAuthority('Admin', 'Doctor', 'Patient')")
+    public List<DoctorDTO> findDoctorsBySpecialization(@PathVariable Long specializationId) {
+        return doctorService.findDoctorsBySpecialization(specializationId);
+    }
+
 
 }

@@ -11,9 +11,10 @@ import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {Doctor} from '../../model/doctor.model';
 import {DoctorsService} from '../../services/doctors.service';
 import { futureDateValidator} from '../../validators/date-validator';
+import { Specialization } from '../../model/specialization.model';
+import { Subscription } from 'rxjs';
+import { filter } from 'rxjs/operators';
 
-//this component is the user interface for user who has the role of a patient,
-//we will be able to display the view of that patient whici contains the list of their appointments and other functionalities
 
 @Component({
   selector: 'app-appointments-patient',
@@ -40,6 +41,8 @@ export class AppointmentsPatientComponent implements OnInit{
   appointmentFormGroup!:FormGroup;
   submitted:boolean = false;
   doctors$!:Observable<Array<Doctor>>;
+  specializations$!:Observable<Array<Specialization>>;
+  filteredDoctors: Doctor[] = [];
   errorMessageDoctor!: string;
   updateAppointmentFormGroup!:FormGroup;
   defaultDoctor!: Doctor;
@@ -54,6 +57,37 @@ export class AppointmentsPatientComponent implements OnInit{
   constructor(private route : ActivatedRoute,  private fb : FormBuilder,
               private modalService : NgbModal, private doctorService : DoctorsService) {}
 
+  fetchSpecializations() {
+    this.specializations$ = this.doctorService.findAllSpecializations().pipe(
+      catchError(err => {
+        this.errorMessageDoctor = 'Eroare la încărcarea specializărilor: ' + err.message;
+        return throwError(err);
+      })
+    );
+  }
+
+  fetchDoctorsBySpecialization(specializationId: number | null | undefined) {
+    if (!specializationId) {
+      this.filteredDoctors = [];
+      return;
+    }
+
+    this.doctorService.findDoctorsBySpecialization(specializationId).subscribe({
+      next: (doctors) => {
+        this.filteredDoctors = doctors;
+        if (this.filteredDoctors.length === 0) {
+          // Dacă nu există doctori pentru această specializare, afișăm un mesaj
+          this.errorMessageDoctor = 'Nu există doctori disponibili pentru această specializare.';
+        } else {
+          this.errorMessageDoctor = '';
+        }
+      },
+      error: (err) => {
+        this.errorMessageDoctor = 'Eroare la încărcarea doctorilor: ' + err.message;
+        console.error(err);
+      }
+    });
+  }
 
   fetchDoctors() {
     this.doctors$ = this.doctorService.findAllDoctors().pipe(
@@ -63,7 +97,6 @@ export class AppointmentsPatientComponent implements OnInit{
       })
     )
   }
-
 
   ngOnInit(): void {
     this.patientId = this.route.snapshot.params['id'];
@@ -91,36 +124,67 @@ export class AppointmentsPatientComponent implements OnInit{
           return throwError(err);
         }),
         tap(pageResponse => {
-          // Call the dashboard summary calculation when appointments are loaded
           this.calculateDashboardSummary(pageResponse.content);
         })
       );
   }
 
-
-
-
   gotoPage(page: number) {
     this.currentPage = page;
     this.handleSearchPatientAppointments();
-
   }
+
+  private subscriptions = new Subscription(); // Adaugă această proprietate în clasa componentei
 
   getModal(content: any) {
     this.submitted = false;
     this.appointmentFormGroup = this.fb.group({
       appointmentDate: [null, [Validators.required, futureDateValidator()]],
       reason: ["", Validators.required],
+      specialization: [null, Validators.required],
       doctor: [null, Validators.required],
       patient: [this.currentPatient, Validators.required]
     });
-    this.fetchDoctors();
-    this.modalService.open(content, {size:'xl'});
+
+    // Dezactivăm inițial câmpul de doctor până când se selectează o specializare
+    this.appointmentFormGroup.get('doctor')?.disable();
+
+    // Când se schimbă specializarea, actualizăm lista de doctori
+    // Salvăm subscription-ul pentru a putea face unsubscribe mai târziu
+    const specializationControl = this.appointmentFormGroup.get('specialization');
+
+    if (specializationControl) {
+      const subscription = specializationControl.valueChanges.pipe(
+        filter((value: number | null | undefined) => value !== null && value !== undefined)
+      ).subscribe(specializationId => {
+        this.fetchDoctorsBySpecialization(specializationId);
+        this.appointmentFormGroup.get('doctor')?.enable();
+        this.appointmentFormGroup.get('doctor')?.setValue(null);
+      });
+
+      this.subscriptions.add(subscription);
+    }
+
+
+    this.fetchSpecializations();
+    this.modalService.open(content, {size:'xl'}).result.then(
+      () => {
+        // Când modalul este închis, facem unsubscribe
+        this.subscriptions.unsubscribe();
+        this.subscriptions = new Subscription();
+      },
+      () => {
+        // Și la dismiss
+        this.subscriptions.unsubscribe();
+        this.subscriptions = new Subscription();
+      }
+    );
   }
 
   onCloseModal(modal: any) {
     modal.close();
     this.appointmentFormGroup.reset();
+    this.filteredDoctors = [];
   }
 
   onSaveAppointment(modal: any) {
@@ -132,8 +196,8 @@ export class AppointmentsPatientComponent implements OnInit{
 
     const appointment = {
       appointmentDate: appointmentDateISO,
-      status: "Confirmată",  // Status setat automat
-      reason: this.appointmentFormGroup.value.reason, // Motivul introdus de pacient
+      status: "Confirmată",
+      reason: this.appointmentFormGroup.value.reason,
       doctor: { doctorId: this.appointmentFormGroup.value.doctor?.doctorId },
       patient: { patientId: this.currentPatient?.patientId }
     };
@@ -153,22 +217,52 @@ export class AppointmentsPatientComponent implements OnInit{
     });
   }
 
-
-
   getUpdateModal(a: any, updateContent: any) {
-    this.fetchDoctors();
+    this.fetchSpecializations();
+
+    let initialSpecializationId = a.doctor?.specialization?.specializationId;
 
     this.updateAppointmentFormGroup = this.fb.group({
       appointmentId: [a.appointmentId, Validators.required],
       appointmentDate: [a.appointmentDate, [Validators.required, futureDateValidator()]],
+      specialization: [initialSpecializationId, Validators.required],
       doctor: [a.doctor, Validators.required],
-      status: [a.status, Validators.required],  // Statusul (read-only)
-      reason: [a.reason, Validators.required],  // Motivul programării
+      status: [a.status, Validators.required],
+      reason: [a.reason, Validators.required],
     });
 
+    // Încărcăm doctorii pentru specializarea inițială
+    if (initialSpecializationId) {
+      this.fetchDoctorsBySpecialization(initialSpecializationId);
+    }
+
+    // Ascultăm schimbările specializării (cu pipe și filter)
+    const specializationControl = this.updateAppointmentFormGroup.get('specialization');
+
+    if (specializationControl) {
+      const subscription = specializationControl.valueChanges.pipe(
+        filter((value: number | null | undefined) => value !== null && value !== undefined)
+      ).subscribe(specializationId => {
+        this.fetchDoctorsBySpecialization(specializationId);
+        this.updateAppointmentFormGroup.get('doctor')?.setValue(null);
+      });
+
+      this.subscriptions.add(subscription); // pentru dezabonare la închiderea modalului
+    }
+
     this.defaultDoctor = this.updateAppointmentFormGroup.controls['doctor'].value;
-    this.modalService.open(updateContent, {size:'xl'});
+    this.modalService.open(updateContent, { size: 'xl' }).result.then(
+      () => {
+        this.subscriptions.unsubscribe();
+        this.subscriptions = new Subscription(); // resetăm subs
+      },
+      () => {
+        this.subscriptions.unsubscribe();
+        this.subscriptions = new Subscription(); // resetăm subs
+      }
+    );
   }
+
   getDateErrorMessage(): string {
     const dateControl = this.appointmentFormGroup?.get('appointmentDate');
 
@@ -197,7 +291,6 @@ export class AppointmentsPatientComponent implements OnInit{
     return '';
   }
 
-
   onUpdateAppointment(updateModal: any) {
     this.submitted = true;
     if (this.updateAppointmentFormGroup.invalid) return;
@@ -205,8 +298,8 @@ export class AppointmentsPatientComponent implements OnInit{
     const appointment = {
       appointmentId: this.updateAppointmentFormGroup.value.appointmentId,
       appointmentDate: this.updateAppointmentFormGroup.value.appointmentDate,
-      status: this.updateAppointmentFormGroup.value.status, // Păstrăm statusul curent
-      reason: this.updateAppointmentFormGroup.value.reason, // Actualizăm motivul
+      status: this.updateAppointmentFormGroup.value.status,
+      reason: this.updateAppointmentFormGroup.value.reason,
       doctor: { doctorId: this.updateAppointmentFormGroup.value.doctor?.doctorId },
       patient: { patientId: this.currentPatient?.patientId }
     };
@@ -228,12 +321,11 @@ export class AppointmentsPatientComponent implements OnInit{
     let conf = confirm("Ești sigur că dorești să anulezi această programare?");
     if(!conf) return;
 
-    // Actualizăm statusul la "Anulată" în loc să o ștergem
     const cancelledAppointment = {
       appointmentId: a.appointmentId,
       appointmentDate: a.appointmentDate,
-      status: "Anulată",  // Status setat automat
-      reason: a.reason,  // Păstrăm motivul existent
+      status: "Anulată",
+      reason: a.reason,
       doctor: { doctorId: a.doctor?.doctorId },
       patient: { patientId: this.currentPatient?.patientId }
     };
@@ -276,20 +368,16 @@ export class AppointmentsPatientComponent implements OnInit{
     this.completedAppointments = 0;
     this.canceledAppointments = 0;
 
-
     appointments.forEach(appointment => {
       const status = appointment.status ? appointment.status.toLowerCase() : '';
       const appointmentDate = new Date(appointment.appointmentDate);
 
-      // Count completed appointments
       if (status.includes('finalizat') || status.includes('completed')) {
         this.completedAppointments++;
       }
-      // Count cancelled appointments
       else if (status.includes('anulat') || status.includes('cancelled') || status.includes('canceled')) {
         this.canceledAppointments++;
       }
-      // Count upcoming appointments - toate programările viitoare care nu sunt anulate sau finalizate
       else if (appointmentDate > now) {
         this.upcomingAppointments++;
       }
@@ -315,8 +403,4 @@ export class AppointmentsPatientComponent implements OnInit{
     }
     return status;
   }
-
-
-
-
 }
