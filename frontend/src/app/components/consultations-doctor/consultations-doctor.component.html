@@ -1,4 +1,3 @@
-<!-- consultations-doctor.component.html -->
 <div class="background-dots"></div>
 <div class="floating-elements">
   <div class="floating-circle"></div>
@@ -9,7 +8,7 @@
 <div class="consultations-container">
   <div class="page-header-container">
     <div class="page-title-container">
-      <h1 class="page-title">Consultațiile tale</h1>
+      <h1 class="page-title">{{ 'CONSULTATIONS.DOCTOR_CONSULTATIONS' | translate }}</h1>
     </div>
   </div>
 
@@ -19,10 +18,10 @@
         <table class="consultations-table">
           <thead>
           <tr>
-            <th>Pacient</th>
-            <th>Data</th>
-            <th>Diagnostic</th>
-            <th>Detalii</th>
+            <th>{{ 'CONSULTATIONS.PATIENT' | translate }}</th>
+            <th>{{ 'CONSULTATIONS.DATE' | translate }}</th>
+            <th>{{ 'CONSULTATIONS.DIAGNOSTIC' | translate }}</th>
+            <th>{{ 'CONSULTATIONS.ACTIONS' | translate }}</th>
           </tr>
           </thead>
           <tbody>
@@ -32,7 +31,7 @@
             <td>{{ consultation.diagnosis }}</td>
             <td>
               <button (click)="openDetailsModal(consultation, detailsModal)" class="btn-view">
-                <i class="bi bi-eye"></i> Vezi Detalii
+                <i class="bi bi-eye"></i> {{ 'CONSULTATIONS.SEE_DETAILS' | translate }}
               </button>
             </td>
           </tr>
@@ -41,7 +40,7 @@
 
         <div *ngIf="listConsultations.content.length === 0" class="no-data-message">
           <i class="bi bi-clipboard-x"></i>
-          <p>Nu există consultații disponibile.</p>
+          <p>{{ 'CONSULTATIONS.NO_CONSULTATIONS' | translate }}</p>
         </div>
 
         <div class="pagination-controls" *ngIf="listConsultations.totalPages > 1">
@@ -76,7 +75,7 @@
       <ng-template #loading>
         <div class="loading-indicator">
           <i class="bi bi-arrow-repeat spin"></i>
-          <span>Se încarcă consultațiile...</span>
+          <span>{{ 'LOADING.CONSULTATIONS' | translate }}</span>
         </div>
       </ng-template>
     </ng-template>
@@ -88,7 +87,7 @@
   <div class="modal-container">
     <div class="modal-header">
       <div class="modal-title">
-        <i class="bi bi-clipboard-pulse"></i> Detalii Consultație
+        <i class="bi bi-clipboard-pulse"></i> {{ 'CONSULTATIONS.CONSULTATION_DETAILS' | translate }}
       </div>
       <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()">×</button>
     </div>
@@ -97,39 +96,39 @@
       <!-- Loading indicator pentru detalii -->
       <div *ngIf="loadingDetails" class="loading-indicator">
         <i class="bi bi-arrow-repeat spin"></i>
-        <span>Se încarcă detaliile consultației...</span>
+        <span>{{ 'LOADING.CONSULTATION_DETAILS' | translate }}</span>
       </div>
 
       <ng-container *ngIf="!loadingDetails && selectedConsultation">
         <div class="consultation-info">
           <div class="info-item">
-            <span class="info-label">Pacient:</span>
+            <span class="info-label">{{ 'CONSULTATIONS.PATIENT' | translate }}:</span>
             <span class="info-value">{{ selectedConsultation.patientFirstName }} {{ selectedConsultation.patientLastName }}</span>
           </div>
           <div class="info-item">
-            <span class="info-label">Data:</span>
+            <span class="info-label">{{ 'CONSULTATIONS.DATE' | translate }}:</span>
             <span class="info-value">{{ selectedConsultation.appointmentDate | date:'EEE, d MMM y, HH:mm' }}</span>
           </div>
           <div class="info-item" *ngIf="hasContent(selectedConsultation.hospitalAddress)">
-            <span class="info-label">Locație:</span>
+            <span class="info-label">{{ 'CONSULTATIONS.LOCATION' | translate }}:</span>
             <span class="info-value">{{ selectedConsultation.hospitalAddress }}</span>
           </div>
         </div>
 
         <div class="consultation-results">
-          <h4 class="section-title">Rezultatele consultației</h4>
+          <h4 class="section-title">{{ 'CONSULTATIONS.RESULTS' | translate }}</h4>
 
           <div class="result-section">
             <div class="result-header">
               <i class="bi bi-clipboard-pulse"></i>
-              <h5>Diagnostic</h5>
+              <h5>{{ 'CONSULTATIONS.DIAGNOSTIC' | translate }}</h5>
             </div>
             <div class="result-content">
               <ng-container *ngIf="hasContent(selectedConsultation.diagnosis); else noDiagnosis">
                 {{ selectedConsultation.diagnosis }}
               </ng-container>
               <ng-template #noDiagnosis>
-                <div class="no-data">Nu a fost adăugat un diagnostic încă.</div>
+                <div class="no-data">{{ 'CONSULTATIONS.NO_DIAGNOSIS' | translate }}</div>
               </ng-template>
             </div>
           </div>
@@ -137,14 +136,14 @@
           <div class="result-section">
             <div class="result-header">
               <i class="bi bi-activity"></i>
-              <h5>Simptome</h5>
+              <h5>{{ 'CONSULTATIONS.SYMPTOMS' | translate }}</h5>
             </div>
             <div class="result-content">
               <ng-container *ngIf="hasContent(selectedConsultation.symptoms); else noSymptoms">
                 {{ selectedConsultation.symptoms }}
               </ng-container>
               <ng-template #noSymptoms>
-                <div class="no-data">Nu au fost înregistrate simptome.</div>
+                <div class="no-data">{{ 'CONSULTATIONS.NO_SYMPTOMS' | translate }}</div>
               </ng-template>
             </div>
           </div>
@@ -152,14 +151,14 @@
           <div class="result-section">
             <div class="result-header">
               <i class="bi bi-card-checklist"></i>
-              <h5>Recomandări</h5>
+              <h5>{{ 'CONSULTATIONS.RECOMMENDATIONS' | translate }}</h5>
             </div>
             <div class="result-content">
               <ng-container *ngIf="hasContent(selectedConsultation.recommendations); else noRecommendations">
                 {{ selectedConsultation.recommendations }}
               </ng-container>
               <ng-template #noRecommendations>
-                <div class="no-data">Nu există recomandări momentan.</div>
+                <div class="no-data">{{ 'CONSULTATIONS.NO_RECOMMENDATIONS' | translate }}</div>
               </ng-template>
             </div>
           </div>
@@ -167,14 +166,14 @@
           <div class="result-section">
             <div class="result-header">
               <i class="bi bi-capsule"></i>
-              <h5>Medicamente prescrise</h5>
+              <h5>{{ 'CONSULTATIONS.PRESCRIPTIONS' | translate }}</h5>
             </div>
             <div class="result-content">
               <ng-container *ngIf="hasContent(selectedConsultation.prescriptions); else noPrescriptions">
                 {{ selectedConsultation.prescriptions }}
               </ng-container>
               <ng-template #noPrescriptions>
-                <div class="no-data">Nu au fost prescrise medicamente.</div>
+                <div class="no-data">{{ 'CONSULTATIONS.NO_PRESCRIPTIONS' | translate }}</div>
               </ng-template>
             </div>
           </div>
@@ -184,7 +183,7 @@
 
     <div class="modal-footer">
       <button type="button" class="btn-cancel" (click)="modal.dismiss()">
-        <i class="bi bi-x-circle"></i> Închide
+        <i class="bi bi-x-circle"></i> {{ 'COMMON.ACTIONS.CLOSE' | translate }}
       </button>
     </div>
   </div>

@@ -9,14 +9,14 @@
 <!-- Notification Banner -->
 <div *ngIf="showSuccessMessage" class="success-notification">
   <i class="bi bi-check-circle-fill"></i>
-  <span>Operațiune finalizată cu succes! Datele au fost salvate.</span>
+  <span>{{ 'SUCCESS.APPOINTMENT_UPDATED' | translate }}</span>
   <button class="close-notification" (click)="showSuccessMessage = false">×</button>
 </div>
 
 <div class="appointments-container">
   <div class="page-header-container">
     <div class="page-title-container">
-      <h1 class="page-title">Programările doctorului</h1>
+      <h1 class="page-title">{{ 'APPOINTMENTS.DOCTOR_APPOINTMENTS' | translate }}</h1>
     </div>
   </div>
 
@@ -28,7 +28,7 @@
         </div>
         <div class="summary-content">
           <h3 class="summary-value">{{ totalAppointments }}</h3>
-          <p class="summary-label">Total Programări</p>
+          <p class="summary-label">{{ 'APPOINTMENTS.TOTAL' | translate }}</p>
         </div>
       </div>
 
@@ -38,7 +38,7 @@
         </div>
         <div class="summary-content">
           <h3 class="summary-value">{{ upcomingAppointments }}</h3>
-          <p class="summary-label">Programări Viitoare</p>
+          <p class="summary-label">{{ 'APPOINTMENTS.UPCOMING' | translate }}</p>
         </div>
       </div>
 
@@ -48,7 +48,7 @@
         </div>
         <div class="summary-content">
           <h3 class="summary-value">{{ completedAppointments }}</h3>
-          <p class="summary-label">Programări Finalizate</p>
+          <p class="summary-label">{{ 'APPOINTMENTS.COMPLETED' | translate }}</p>
         </div>
       </div>
 
@@ -59,7 +59,7 @@
         </div>
         <div class="summary-content">
           <h3 class="summary-value">{{ cancelledAppointments }}</h3>
-          <p class="summary-label">Programări Anulate</p>
+          <p class="summary-label">{{ 'APPOINTMENTS.CANCELED' | translate }}</p>
         </div>
       </div>
     </div>
@@ -71,12 +71,12 @@
         <table class="appointments-table">
           <thead>
           <tr>
-            <th>ID Programare</th>
-            <th>Status</th>
-            <th>Data & Ora</th>
-            <th>Pacient</th>
-            <th>Motiv</th>
-            <th colspan="2">Acțiuni</th>
+            <th>{{ 'APPOINTMENTS.ID' | translate }}</th>
+            <th>{{ 'APPOINTMENTS.STATUS' | translate }}</th>
+            <th>{{ 'APPOINTMENTS.DATE' | translate }}</th>
+            <th>{{ 'APPOINTMENTS.PATIENT' | translate }}</th>
+            <th>{{ 'APPOINTMENTS.REASON' | translate }}</th>
+            <th colspan="2">{{ 'APPOINTMENTS.ACTIONS' | translate }}</th>
           </tr>
           </thead>
           <tbody>
@@ -88,7 +88,7 @@
             <span class="status-badge" [ngClass]="{
               'status-finalizata': a.status === 'COMPLETED' || a.status === 'Finalizată',
               'status-confirmata': a.status === 'CONFIRMED' || a.status === 'Confirmată' || a.status.toLowerCase().includes('confirm'),
-              'status-anulata': a.status === 'CANCELLED' || a.status === 'Anulată',
+              'status-anulata': a.status === 'CANCELED' || a.status === 'Anulată',
               'status-scheduled': a.status === 'SCHEDULED' || a.status === 'Programată' || a.status.includes('Appointment')}">
                 {{ getStatusText(a.status) }}
             </span>
@@ -115,7 +115,7 @@
 
         <div *ngIf="listAppointments.content.length === 0" class="no-data-message">
           <i class="bi bi-calendar-x"></i>
-          <p>Nu există programări disponibile.</p>
+          <p>{{ 'APPOINTMENTS.NO_APPOINTMENTS' | translate }}</p>
         </div>
 
         <div class="pagination-controls" *ngIf="listAppointments.totalPages > 1">
@@ -150,7 +150,7 @@
       <ng-template #loading>
         <div class="loading-indicator">
           <i class="bi bi-arrow-repeat spin"></i>
-          <span>Se încarcă programările...</span>
+          <span>{{ 'LOADING.APPOINTMENTS' | translate }}</span>
         </div>
       </ng-template>
     </ng-template>
@@ -162,7 +162,7 @@
   <div class="modal-container">
     <div class="modal-header">
       <div class="modal-title">
-        <i class="bi bi-calendar-check"></i> Actualizare Programare
+        <i class="bi bi-calendar-check"></i> {{ 'APPOINTMENTS.UPDATE_APPOINTMENT' | translate }}
       </div>
       <button type="button" class="btn-close" aria-label="Close" (click)="updateModal.dismiss('Cross click')">×</button>
     </div>
@@ -173,7 +173,7 @@
           <div class="form-fields">
             <!-- ID Field (Read-only) -->
             <div class="form-group">
-              <label>ID Programare</label>
+              <label>{{ 'APPOINTMENTS.ID' | translate }}</label>
               <input
                 type="text"
                 class="form-control form-control-readonly"
@@ -184,24 +184,24 @@
 
             <!-- Status Field -->
             <div class="form-group">
-              <label>Status Programare</label>
+              <label>{{ 'APPOINTMENTS.APPOINTMENT_STATUS' | translate }}</label>
               <select
                 class="form-control"
                 [ngClass]="{'is-invalid': submitted && updateAppointmentFormGroup.controls['appointmentStatus'].errors}"
                 formControlName="appointmentStatus">
-                <option value="SCHEDULED">Programată</option>
-                <option value="CONFIRMED">Confirmată</option>
-                <option value="COMPLETED">Finalizată</option>
-                <option value="CANCELLED">Anulată</option>
+                <option value="SCHEDULED">{{ 'STATUS.SCHEDULED' | translate }}</option>
+                <option value="CONFIRMED">{{ 'STATUS.CONFIRMED' | translate }}</option>
+                <option value="COMPLETED">{{ 'STATUS.COMPLETED' | translate }}</option>
+                <option value="CANCELED">{{ 'STATUS.CANCELED' | translate }}</option>
               </select>
               <div *ngIf="submitted && updateAppointmentFormGroup.get('appointmentStatus')?.invalid" class="invalid-feedback">
-                Status programare este obligatoriu
+                {{ 'VALIDATION.APPOINTMENT_STATUS_REQUIRED' | translate }}
               </div>
             </div>
 
             <!-- Date & Time Field -->
             <div class="form-group">
-              <label>Data Programării</label>
+              <label>{{ 'APPOINTMENTS.APPOINTMENT_DATE' | translate }}</label>
               <input
                 type="datetime-local"
                 class="form-control"
@@ -209,13 +209,13 @@
                 formControlName="appointmentDate"
               />
               <div *ngIf="submitted && updateAppointmentFormGroup.controls['appointmentDate'].errors" class="invalid-feedback">
-                Data programării este obligatorie
+                {{ 'VALIDATION.APPOINTMENT_DATE_REQUIRED' | translate }}
               </div>
             </div>
 
             <!-- Patient Selection Field -->
             <div class="form-group">
-              <label>Pacient</label>
+              <label>{{ 'APPOINTMENTS.PATIENT' | translate }}</label>
               <select
                 class="form-control"
                 [ngClass]="{'is-invalid': submitted && updateAppointmentFormGroup.get('patient')?.invalid}"
@@ -229,31 +229,31 @@
                 </option>
               </select>
               <div *ngIf="submitted && updateAppointmentFormGroup.controls['reason'].errors" class="invalid-feedback">
-                Selectarea pacientului este obligatorie
+                {{ 'VALIDATION.PATIENT_REQUIRED' | translate }}
               </div>
             </div>
 
             <!-- Reason Field -->
             <div class="form-group">
-              <label>Motivul Programării</label>
+              <label>{{ 'APPOINTMENTS.REASON' | translate }}</label>
               <input
                 type="text"
                 class="form-control"
                 [ngClass]="{'is-invalid':submitted && updateAppointmentFormGroup.controls['reason'].errors}"
                 formControlName="reason"
-                placeholder="Consultație generală, Control periodic, etc."
+                placeholder="{{ 'APPOINTMENTS.APPOINTMENT_REASON' | translate }}"
               >
               <div *ngIf="submitted && updateAppointmentFormGroup.get('reason')?.invalid" class="invalid-feedback">
-                Motivul programării este obligatoriu
+                {{ 'VALIDATION.REASON_REQUIRED' | translate }}
               </div>
             </div>
           </div>
         </div>
 
         <div class="modal-footer">
-          <button type="button" class="btn-cancel" (click)="onCloseModal(updateModal)">Anulează</button>
+          <button type="button" class="btn-cancel" (click)="onCloseModal(updateModal)">{{ 'COMMON.ACTIONS.CANCEL' | translate }}</button>
           <button type="button" class="btn-save" (click)="onUpdateAppointment(updateModal)" [disabled]="submitted && updateAppointmentFormGroup.invalid">
-            Salvează Modificările
+            {{ 'COMMON.ACTIONS.SAVE' | translate }}
           </button>
         </div>
       </form>
@@ -269,19 +269,19 @@
       <ng-template #modalLoading>
         <div class="loading-indicator modal-loading">
           <i class="bi bi-arrow-repeat spin"></i>
-          <span>Se încarcă informațiile despre pacienți...</span>
+          <span>{{ 'LOADING.DOCTORS_PATIENTS' | translate }}</span>
         </div>
       </ng-template>
     </ng-template>
   </div>
 </ng-template>
 
-<!-- Consultation Modal --><!-- Consultation Modal -->
+<!-- Consultation Modal -->
 <ng-template #consultationModal let-consultModal>
   <div class="modal-container">
     <div class="modal-header">
       <div class="modal-title">
-        <i class="bi bi-clipboard-pulse"></i> Finalizare consultație
+        <i class="bi bi-clipboard-pulse"></i> {{ 'CONSULTATIONS.FINALIZE_CONSULTATION' | translate }}
       </div>
       <button type="button" class="btn-close" aria-label="Close" (click)="consultModal.dismiss('Cross click')">×</button>
     </div>
@@ -292,28 +292,28 @@
           <!-- Patient Info Section -->
           <div class="consultation-info">
             <div class="info-item">
-              <span class="info-label">Pacient:</span>
+              <span class="info-label">{{ 'CONSULTATIONS.PATIENT' | translate }}:</span>
               <span class="info-value">{{ selectedAppointment?.patient?.firstName }} {{ selectedAppointment?.patient?.lastName }}</span>
             </div>
             <div class="info-item">
-              <span class="info-label">Data:</span>
+              <span class="info-label">{{ 'CONSULTATIONS.DATE' | translate }}:</span>
               <span class="info-value">{{ selectedAppointment?.appointmentDate | date:'EEE, d MMM y, HH:mm' }}</span>
             </div>
             <div class="info-item">
-              <span class="info-label">Motiv:</span>
+              <span class="info-label">{{ 'CONSULTATIONS.REASON' | translate }}:</span>
               <span class="info-value">{{ selectedAppointment?.reason || '-' }}</span>
             </div>
           </div>
 
           <!-- Results Section -->
           <div class="consultation-results">
-            <h4 class="section-title">Rezultatele consultației</h4>
+            <h4 class="section-title">{{ 'CONSULTATIONS.RESULTS' | translate }}</h4>
 
             <!-- Diagnostic Section -->
             <div class="result-section">
               <div class="result-header">
                 <i class="bi bi-file-medical"></i>
-                <h5>Diagnostic</h5>
+                <h5>{{ 'CONSULTATIONS.DIAGNOSTIC' | translate }}</h5>
               </div>
               <div class="result-content">
                 <input
@@ -321,10 +321,10 @@
                   class="form-control"
                   [ngClass]="{'is-invalid': submittedConsult && consultationFormGroup.get('diagnosis')?.invalid}"
                   formControlName="diagnosis"
-                  placeholder="Introduceți diagnosticul"
+                  placeholder="{{ 'CONSULTATIONS.DIAGNOSTIC_PLACEHOLDER' | translate }}"
                 >
                 <div *ngIf="submittedConsult && consultationFormGroup.get('diagnosis')?.invalid" class="invalid-feedback">
-                  Diagnosticul este obligatoriu
+                  {{ 'VALIDATION.DIAGNOSIS_REQUIRED' | translate }}
                 </div>
               </div>
             </div>
@@ -333,14 +333,14 @@
             <div class="result-section">
               <div class="result-header">
                 <i class="bi bi-heart-pulse"></i>
-                <h5>Simptome</h5>
+                <h5>{{ 'CONSULTATIONS.SYMPTOMS' | translate }}</h5>
               </div>
               <div class="result-content">
                 <textarea
                   class="form-control"
                   rows="3"
                   formControlName="symptoms"
-                  placeholder="Descrieți simptomele observate"
+                  placeholder="{{ 'CONSULTATIONS.SYMPTOMS_PLACEHOLDER' | translate }}"
                 ></textarea>
               </div>
             </div>
@@ -349,14 +349,14 @@
             <div class="result-section">
               <div class="result-header">
                 <i class="bi bi-chat-text"></i>
-                <h5>Recomandări</h5>
+                <h5>{{ 'CONSULTATIONS.RECOMMENDATIONS' | translate }}</h5>
               </div>
               <div class="result-content">
                 <textarea
                   class="form-control"
                   rows="3"
                   formControlName="recommendations"
-                  placeholder="Adăugați recomandări pentru pacient"
+                  placeholder="{{ 'CONSULTATIONS.RECOMMENDATIONS_PLACEHOLDER' | translate }}"
                 ></textarea>
               </div>
             </div>
@@ -365,14 +365,14 @@
             <div class="result-section">
               <div class="result-header">
                 <i class="bi bi-capsule"></i>
-                <h5>Medicamente prescrise</h5>
+                <h5>{{ 'CONSULTATIONS.PRESCRIPTIONS' | translate }}</h5>
               </div>
               <div class="result-content">
                 <textarea
                   class="form-control"
                   rows="3"
                   formControlName="prescriptions"
-                  placeholder="Adăugați medicamentele prescrise"
+                  placeholder="{{ 'CONSULTATIONS.PRESCRIPTIONS_PLACEHOLDER' | translate }}"
                 ></textarea>
               </div>
             </div>
@@ -381,9 +381,9 @@
       </div>
 
       <div class="modal-footer">
-        <button type="button" class="btn-cancel" (click)="consultModal.dismiss()">Anulează</button>
+        <button type="button" class="btn-cancel" (click)="consultModal.dismiss()">{{ 'COMMON.ACTIONS.CANCEL' | translate }}</button>
         <button type="button" class="btn-save" (click)="saveConsultation(consultModal)" [disabled]="submittedConsult && consultationFormGroup.invalid || processingConsultation">
-          <i class="bi bi-check-circle"></i> Finalizează Consultația
+          <i class="bi bi-check-circle"></i> {{ 'CONSULTATIONS.FINALIZE' | translate }}
         </button>
       </div>
     </form>

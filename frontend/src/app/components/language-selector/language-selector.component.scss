@@ -1,0 +1,20 @@
+.language-selector {
+  display: flex;
+  gap: 5px;
+  margin: 0 15px;
+}
+
+button {
+  padding: 5px 10px;
+  border: 1px solid #ccc;
+  background: white;
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 0.8rem;
+}
+
+button.active {
+  background: #6244c5;
+  color: white;
+  font-weight: bold;
+}

@@ -12,7 +12,7 @@ import {PatientsService} from '../../services/patients.service';
 import {Patient} from '../../model/patient.model';
 import {AuthService} from '../../services/auth.service';
 import { futureDateValidator} from '../../validators/date-validator';
-
+import {TranslateModule, TranslateService} from '@ngx-translate/core';
 
 
 @Component({
@@ -24,7 +24,8 @@ import { futureDateValidator} from '../../validators/date-validator';
     AsyncPipe,
     NgForOf,
     CommonModule,
-    NgbModalModule
+    NgbModalModule,
+    TranslateModule
 
   ],
   templateUrl: './appointments.component.html',
@@ -61,7 +62,8 @@ export class AppointmentsComponent implements OnInit{
     private fb: FormBuilder,
     private doctorService: DoctorsService,
     private patientService: PatientsService,
-    private authService: AuthService
+    private authService: AuthService,
+    protected translateService: TranslateService
   ) {}
 
   ngOnInit(): void {
@@ -114,13 +116,35 @@ export class AppointmentsComponent implements OnInit{
             const status = appointment.status?.toLowerCase() || '';
 
             // Check status for categorizing
-            if (status.includes('finalizat') || status.includes('completed')) {
+            if (status.includes('finalizat') || status.includes('complet') ||
+              status.includes('abgeschlossen') || status.includes('completed')) {
               this.completedAppointments++;
-            } else if (status.includes('anulat') || status.includes('cancelled') || status.includes('canceled')) {
+            } else if (status.includes('anul') || status.includes('cancel') ||
+              status.includes('stornier')) {
               this.canceledAppointments++;
             } else if (appointmentDate > currentDate) {
               // If appointment date is in the future and not canceled/completed
               this.upcomingAppointments++;
+            }
+
+            // Determinăm cheia de traducere potrivită pentru fiecare status
+            let statusKey = '';
+            if (status.includes('finalizat') || status.includes('complet') ||
+              status.includes('abgeschlossen') || status.includes('completed')) {
+              statusKey = 'STATUS.COMPLETED';
+            } else if (status.includes('anul') || status.includes('cancel') ||
+              status.includes('stornier')) {
+              statusKey = 'STATUS.CANCELED';
+            } else if (status.includes('program') || status.includes('schedul') ||
+              status.includes('geplant')) {
+              statusKey = 'STATUS.SCHEDULED';
+            } else if (status.includes('confirm') || status.includes('bestätigt')) {
+              statusKey = 'STATUS.CONFIRMED';
+            }
+
+            // Aplicăm traducerea dacă am găsit o potrivire
+            if (statusKey) {
+              appointment.status = this.translateService.instant(statusKey);
             }
           });
         }
@@ -140,14 +164,14 @@ export class AppointmentsComponent implements OnInit{
   }
 
   handleDeleteAppointment(a: Appointment) {
-    let conf = confirm("Ești sigur că dorești să anulezi această programare?");
+    let conf = confirm(this.translateService.instant('CONFIRMATION.DELETE_APPOINTMENT'));
     if (!conf) return;
 
     // În loc să ștergem programarea, actualizăm statusul la "Anulată"
     const cancelledAppointment = {
       appointmentId: a.appointmentId,
       appointmentDate: a.appointmentDate,
-      status: "Anulată", // Status setat la anulată
+      status: this.translateService.instant('STATUS.CANCELED'), // Status setat la anulată
       reason: a.reason,
       doctor: { doctorId: a.doctor?.doctorId },
       patient: { patientId: a.patient?.patientId }
@@ -155,11 +179,11 @@ export class AppointmentsComponent implements OnInit{
 
     this.appointmentService.updateAppointment(cancelledAppointment, cancelledAppointment.appointmentId).subscribe({
       next: () => {
-        alert("Programare anulată cu succes");
+        alert(this.translateService.instant('SUCCESS.APPOINTMENT_CANCELLED'));
         this.handleSearchAppointments();
       },
       error: err => {
-        alert("Eroare la anularea programării: " + err.message);
+        alert(this.translateService.instant('ERROR.CANCEL_APPOINTMENT') + ": " + err.message);
         console.log(err);
       }
     });
@@ -197,7 +221,7 @@ export class AppointmentsComponent implements OnInit{
 
     const appointment = {
       appointmentDate: appointmentDateISO,
-      status: "Confirmată", // Status setat automat
+      status: this.translateService.instant('STATUS.SCHEDULED'),
       reason: this.appointmentFormGroup.value.reason,
       doctor: { doctorId: this.appointmentFormGroup.value.doctor?.doctorId },
       patient: { patientId: this.appointmentFormGroup.value.patient?.patientId }
@@ -205,14 +229,14 @@ export class AppointmentsComponent implements OnInit{
 
     this.appointmentService.saveAppointment(appointment).subscribe({
       next: () => {
-        alert("Programare creată cu succes");
+        alert(this.translateService.instant('SUCCESS.APPOINTMENT_CREATED'));
         this.handleSearchAppointments();
         this.appointmentFormGroup.reset();
         this.submitted = false;
         modal.close();
       },
       error: err => {
-        alert("Eroare la salvarea programării: " + err.message);
+        alert(this.translateService.instant('ERROR.SAVE_APPOINTMENT') + ": " + err.message);
         console.error(err);
       }
     });
@@ -250,13 +274,13 @@ export class AppointmentsComponent implements OnInit{
 
     this.appointmentService.updateAppointment(appointment, appointment.appointmentId).subscribe({
       next: () => {
-        alert("Programare actualizată cu succes");
+        alert(this.translateService.instant('SUCCESS.APPOINTMENT_UPDATED'));
         this.handleSearchAppointments();
         this.submitted = false;
         updateModal.close();
       },
       error: err => {
-        alert(err.message);
+        alert(this.translateService.instant('ERROR.UPDATE_APPOINTMENT') + ": " + err.message);
       }
     });
   }
@@ -267,15 +291,26 @@ export class AppointmentsComponent implements OnInit{
 
     const statusLower = status.toLowerCase();
 
-    if (statusLower === 'scheduled' || statusLower === 'programată' || statusLower === 'programat')
+    // Adaugă "geplant" în lista de statusuri programate
+    if (statusLower === 'scheduled' || statusLower === 'programată' ||
+      statusLower === 'programat' || statusLower === 'geplant')
       return 'status-scheduled';
-    if (statusLower === 'confirmed' || statusLower === 'confirmată' || statusLower === 'confirmat')
+
+    if (statusLower === 'confirmed' || statusLower === 'confirmată' ||
+      statusLower === 'confirmat' || statusLower === 'bestätigt')
       return 'status-confirmed';
-    if (statusLower === 'completed' || statusLower === 'finalizată' || statusLower === 'finalizat')
+
+    if (statusLower === 'completed' || statusLower === 'finalizată' ||
+      statusLower === 'finalizat' || statusLower === 'abgeschlossen')
       return 'status-completed';
-    if (statusLower === 'cancelled' || statusLower === 'canceled' || statusLower === 'anulată' || statusLower === 'anulat')
+
+    if (statusLower === 'cancelled' || statusLower === 'canceled' ||
+      statusLower === 'anulată' || statusLower === 'anulat' ||
+      statusLower === 'storniert')
       return 'status-cancelled';
-    if (statusLower === 'pending' || statusLower === 'în așteptare')
+
+    if (statusLower === 'pending' || statusLower === 'în așteptare' ||
+      statusLower === 'wartend')
       return 'status-pending';
 
     return '';
@@ -286,26 +321,25 @@ export class AppointmentsComponent implements OnInit{
     const dateControl = this.appointmentFormGroup?.get('appointmentDate');
 
     if (dateControl?.hasError('required')) {
-      return 'Data programării este obligatorie';
+      return this.translateService.instant('VALIDATION.APPOINTMENT_DATE_REQUIRED');
     }
 
     if (dateControl?.hasError('pastDate')) {
-      return 'Nu poți programa în trecut. Te rugăm să selectezi o dată viitoare.';
+      return this.translateService.instant('VALIDATION.APPOINTMENT_FUTURE_DATE');
     }
 
     return '';
   }
 
-  // Metodă pentru a returna mesajul de eroare pentru câmpul de dată din formularul de actualizare
   getUpdateDateErrorMessage(): string {
     const dateControl = this.updateAppointmentFormGroup?.get('appointmentDate');
 
     if (dateControl?.hasError('required')) {
-      return 'Data programării este obligatorie';
+      return this.translateService.instant('VALIDATION.APPOINTMENT_DATE_REQUIRED');
     }
 
     if (dateControl?.hasError('pastDate')) {
-      return 'Nu poți programa în trecut. Te rugăm să selectezi o dată viitoare.';
+      return this.translateService.instant('VALIDATION.APPOINTMENT_FUTURE_DATE');
     }
 
     return '';
@@ -316,17 +350,17 @@ export class AppointmentsComponent implements OnInit{
     const normalizedStatus = status.toLowerCase();
 
     if (normalizedStatus.includes('complet') || normalizedStatus === 'completed') {
-      return 'Finalizată';
+      return this.translateService.instant('STATUS.COMPLETED');
     }
     if (normalizedStatus.includes('confirm') || normalizedStatus === 'confirmed') {
-      return 'Confirmată';
+      return this.translateService.instant('STATUS.CONFIRMED');
     }
     if (normalizedStatus.includes('cancel') || normalizedStatus === 'cancelled') {
-      return 'Anulată';
+      return this.translateService.instant('STATUS.CANCELED');
     }
     if (normalizedStatus.includes('schedul') || normalizedStatus === 'scheduled' ||
-      normalizedStatus.includes('appointment')) {
-      return 'Programată';
+      normalizedStatus.includes('program') || normalizedStatus === 'geplant') {
+      return this.translateService.instant('STATUS.SCHEDULED');
     }
     return status;
   }

@@ -1,0 +1,8 @@
+<div class="language-selector">
+  <button
+    *ngFor="let lang of availableLanguages"
+    (click)="switchLanguage(lang)"
+    [class.active]="currentLang === lang">
+    {{ lang | uppercase }}
+  </button>
+</div>

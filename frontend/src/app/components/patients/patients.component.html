@@ -10,12 +10,12 @@
 <div class="patients-container">
   <div class="page-header-container">
     <div class="page-title-container">
-      <h1 class="page-title">Pacienți</h1>
+      <h1 class="page-title">{{ 'PATIENTS.TITLE' | translate }}</h1>
     </div>
 
     <div class="controls-container">
       <button class="btn-new-patient" (click)="openModal(content)">
-        <i class="bi bi-plus-circle"></i> Pacient Nou
+        <i class="bi bi-plus-circle"></i> {{ 'PATIENTS.NEW_PATIENT' | translate }}
       </button>
     </div>
   </div>
@@ -29,7 +29,7 @@
         </div>
         <div class="summary-content">
           <h3 class="summary-value">{{ totalPatients }}</h3>
-          <p class="summary-label">Total Pacienți</p>
+          <p class="summary-label">{{ 'PATIENTS.TOTAL_PATIENTS' | translate }}</p>
         </div>
       </div>
 
@@ -39,7 +39,7 @@
         </div>
         <div class="summary-content">
           <h3 class="summary-value">{{ totalPatients }}</h3>
-          <p class="summary-label">Pacienți Activi</p>
+          <p class="summary-label">{{ 'PATIENTS.ACTIVE_PATIENTS' | translate }}</p>
         </div>
       </div>
 
@@ -49,7 +49,7 @@
         </div>
         <div class="summary-content">
           <h3 class="summary-value">0</h3>
-          <p class="summary-label">Necesită Programare</p>
+          <p class="summary-label">{{ 'PATIENTS.NEED_APPOINTMENT' | translate }}</p>
         </div>
       </div>
 
@@ -59,7 +59,7 @@
         </div>
         <div class="summary-content">
           <h3 class="summary-value">0</h3>
-          <p class="summary-label">Pacienți Noi (Luna)</p>
+          <p class="summary-label">{{ 'PATIENTS.NEW_PATIENTS' | translate }}</p>
         </div>
       </div>
     </div>
@@ -72,9 +72,10 @@
           <div class="search-input-group">
             <div class="search-input-wrapper">
               <i class="bi bi-search search-icon"></i>
-              <input type="search" formControlName="keyword" class="search-input" placeholder="Caută pacient..." aria-label="Search">
+              <input type="search" formControlName="keyword" class="search-input"
+                     [placeholder]="'PATIENTS.SEARCH' | translate" aria-label="Search">
             </div>
-            <button type="submit" class="btn-search">Caută</button>
+            <button type="submit" class="btn-search">{{ 'COMMON.ACTIONS.SEARCH' | translate }}</button>
           </div>
         </form>
       </div>
@@ -83,12 +84,12 @@
         <table class="patients-table">
           <thead>
           <tr>
-            <th>ID Pacient</th>
-            <th>Prenume</th>
-            <th>Nume</th>
-            <th>Istoric Medical</th>
-            <th>Alergii</th>
-            <th colspan="3">Acțiuni</th>
+            <th>{{ 'PATIENTS.ID' | translate }}</th>
+            <th>{{ 'PATIENTS.FIRST_NAME' | translate }}</th>
+            <th>{{ 'PATIENTS.LAST_NAME' | translate }}</th>
+            <th>{{ 'PATIENTS.MEDICAL_HISTORY' | translate }}</th>
+            <th>{{ 'PATIENTS.ALLERGIES' | translate }}</th>
+            <th colspan="3">{{ 'PATIENTS.ACTIONS' | translate }}</th>
           </tr>
           </thead>
           <tbody>
@@ -149,7 +150,7 @@
       <ng-template #loading>
         <div class="loading-indicator">
           <i class="bi bi-arrow-repeat spin"></i>
-          <span>Se încarcă pacienții...</span>
+          <span>{{ 'LOADING.DOCTORS_PATIENTS' | translate }}</span>
         </div>
       </ng-template>
     </ng-template>
@@ -161,7 +162,7 @@
   <div class="modal-container">
     <div class="modal-header">
       <div class="modal-title">
-        <i class="bi bi-person-plus"></i> Adăugare Pacient Nou
+        <i class="bi bi-person-plus"></i> {{ 'PATIENTS.NEW_PATIENT_TITLE' | translate }}
       </div>
       <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')">×</button>
     </div>
@@ -171,7 +172,7 @@
         <div class="form-fields">
           <div class="form-row">
             <div class="form-group">
-              <label>Prenume</label>
+              <label>{{ 'PATIENTS.FIRST_NAME' | translate }}</label>
               <input
                 type="text"
                 class="form-control"
@@ -179,12 +180,12 @@
                 formControlName="firstName"
               >
               <div *ngIf="submitted && patientFormGroup.get('firstName')?.invalid" class="invalid-feedback">
-                <div *ngIf="patientFormGroup.get('firstName')?.errors?.['required']">Prenumele este obligatoriu</div>
+                <div *ngIf="patientFormGroup.get('firstName')?.errors?.['required']">{{ 'VALIDATION.FIRST_NAME_REQUIRED' | translate }}</div>
               </div>
             </div>
 
             <div class="form-group">
-              <label>Nume</label>
+              <label>{{ 'PATIENTS.LAST_NAME' | translate }}</label>
               <input
                 type="text"
                 class="form-control"
@@ -192,14 +193,14 @@
                 formControlName="lastName"
               >
               <div *ngIf="submitted && patientFormGroup.get('lastName')?.invalid" class="invalid-feedback">
-                <div *ngIf="patientFormGroup.get('lastName')?.errors?.['required']">Numele este obligatoriu</div>
+                <div *ngIf="patientFormGroup.get('lastName')?.errors?.['required']">{{ 'VALIDATION.LAST_NAME_REQUIRED' | translate }}</div>
               </div>
             </div>
           </div>
 
           <div class="form-row">
             <div class="form-group">
-              <label>Istoric Medical</label>
+              <label>{{ 'PATIENTS.MEDICAL_HISTORY' | translate }}</label>
               <textarea
                 class="form-control"
                 formControlName="medicalHistory"
@@ -208,18 +209,19 @@
             </div>
 
             <div class="form-group">
-              <label>Alergii</label>
+              <label>{{ 'PATIENTS.ALLERGIES' | translate }}</label>
               <textarea
                 class="form-control"
                 formControlName="allergies"
                 rows="2"
+                [placeholder]="'PATIENTS.ALLERGIES_HINT' | translate"
               ></textarea>
             </div>
           </div>
 
           <div formGroupName="user" class="form-row">
             <div class="form-group">
-              <label>Email</label>
+              <label>{{ 'AUTH.REGISTER.EMAIL' | translate }}</label>
               <input
                 type="email"
                 class="form-control"
@@ -227,13 +229,13 @@
                 formControlName="email"
               >
               <div *ngIf="submitted && patientFormGroup.get('user.email')?.invalid" class="invalid-feedback">
-                <div *ngIf="patientFormGroup.get('user.email')?.errors?.['required']">Email-ul este obligatoriu</div>
-                <div *ngIf="patientFormGroup.get('user.email')?.errors?.['email']">Format email invalid</div>
+                <div *ngIf="patientFormGroup.get('user.email')?.errors?.['required']">{{ 'VALIDATION.EMAIL_REQUIRED' | translate }}</div>
+                <div *ngIf="patientFormGroup.get('user.email')?.errors?.['email']">{{ 'VALIDATION.EMAIL_INVALID' | translate }}</div>
               </div>
             </div>
 
             <div class="form-group">
-              <label>Parolă</label>
+              <label>{{ 'AUTH.REGISTER.PASSWORD' | translate }}</label>
               <input
                 type="password"
                 class="form-control"
@@ -241,8 +243,8 @@
                 formControlName="password"
               >
               <div *ngIf="submitted && patientFormGroup.get('user.password')?.invalid" class="invalid-feedback">
-                <div *ngIf="patientFormGroup.get('user.password')?.errors?.['required']">Parola este obligatorie</div>
-                <div *ngIf="patientFormGroup.get('user.password')?.errors?.['minlength']">Parola trebuie să aibă minim 6 caractere</div>
+                <div *ngIf="patientFormGroup.get('user.password')?.errors?.['required']">{{ 'VALIDATION.PASSWORD_REQUIRED' | translate }}</div>
+                <div *ngIf="patientFormGroup.get('user.password')?.errors?.['minlength']">{{ 'VALIDATION.PASSWORD_LENGTH' | translate }}</div>
               </div>
             </div>
           </div>
@@ -251,10 +253,10 @@
 
       <div class="modal-footer">
         <button type="button" class="btn-cancel" (click)="onCloseModal(modal)">
-          <i class="bi bi-x-circle"></i> Anulează
+          <i class="bi bi-x-circle"></i> {{ 'COMMON.ACTIONS.CANCEL' | translate }}
         </button>
         <button type="button" class="btn-save" (click)="onSavePatient(modal)">
-          <i class="bi bi-check-circle"></i> Salvează
+          <i class="bi bi-check-circle"></i> {{ 'COMMON.ACTIONS.SAVE' | translate }}
         </button>
       </div>
     </form>
@@ -266,7 +268,7 @@
   <div class="modal-container">
     <div class="modal-header">
       <div class="modal-title">
-        <i class="bi bi-calendar-check"></i> Programările Pacientului
+        <i class="bi bi-calendar-check"></i> {{ 'PATIENTS.PATIENT_APPOINTMENTS' | translate }}
       </div>
       <button type="button" class="btn-close" aria-label="Close" (click)="appointmentModal.dismiss('Cross click')">×</button>
     </div>
@@ -276,11 +278,11 @@
         <table class="appointments-table modal-table">
           <thead>
           <tr>
-            <th>ID Programare</th>
-            <th>Status</th>
-            <th>Data & Ora</th>
-            <th>Doctor</th>
-            <th>Pacient</th>
+            <th>{{ 'APPOINTMENTS.ID' | translate }}</th>
+            <th>{{ 'APPOINTMENTS.STATUS' | translate }}</th>
+            <th>{{ 'APPOINTMENTS.DATE' | translate }}</th>
+            <th>{{ 'APPOINTMENTS.DOCTOR' | translate }}</th>
+            <th>{{ 'APPOINTMENTS.PATIENT' | translate }}</th>
           </tr>
           </thead>
           <tbody>
@@ -288,7 +290,7 @@
             <td>{{a.appointmentId}}</td>
             <td>
                 <span class="status-badge" [ngClass]="'status-' + a.status.toLowerCase()">
-                  {{a.status}}
+                  {{ 'STATUS.' + a.status.toUpperCase() | translate }}
                 </span>
             </td>
             <td>{{a.appointmentDate | date:'EEE, MMM d, y, h:mm a'}}</td>
@@ -329,7 +331,7 @@
         <ng-template #appointmentLoading>
           <div class="loading-indicator">
             <i class="bi bi-arrow-repeat spin"></i>
-            <span>Se încarcă programările...</span>
+            <span>{{ 'LOADING.DOCTORS_PATIENTS' | translate }}</span>
           </div>
         </ng-template>
       </ng-template>
@@ -337,7 +339,7 @@
 
     <div class="modal-footer">
       <button type="button" class="btn-cancel" (click)="appointmentModal.dismiss('Close')">
-        <i class="bi bi-x-circle"></i> Închide
+        <i class="bi bi-x-circle"></i> {{ 'COMMON.ACTIONS.CLOSE' | translate }}
       </button>
     </div>
   </div>
@@ -348,7 +350,7 @@
   <div class="modal-container">
     <div class="modal-header">
       <div class="modal-title">
-        <i class="bi bi-pencil-square"></i> Actualizare Pacient
+        <i class="bi bi-pencil-square"></i> {{ 'PATIENTS.UPDATE_PATIENT' | translate }}
       </div>
       <button type="button" class="btn-close" aria-label="Close" (click)="updateModal.dismiss('Cross click')">×</button>
     </div>
@@ -358,33 +360,33 @@
         <div class="form-fields">
           <div class="form-row">
             <div class="form-group">
-              <label>Prenume</label>
+              <label>{{ 'PATIENTS.FIRST_NAME' | translate }}</label>
               <input
                 type="text"
                 class="form-control"
                 [ngClass]="{'is-invalid': submitted && updatePatientFormGroup.controls['firstName'].errors}"
                 formControlName="firstName">
               <div *ngIf="submitted && updatePatientFormGroup.get('firstName')?.invalid" class="invalid-feedback">
-                <div *ngIf="updatePatientFormGroup.get('firstName')?.errors?.['required']">Prenumele este obligatoriu</div>
+                <div *ngIf="updatePatientFormGroup.get('firstName')?.errors?.['required']">{{ 'VALIDATION.FIRST_NAME_REQUIRED' | translate }}</div>
               </div>
             </div>
 
             <div class="form-group">
-              <label>Nume</label>
+              <label>{{ 'PATIENTS.LAST_NAME' | translate }}</label>
               <input
                 type="text"
                 class="form-control"
                 [ngClass]="{'is-invalid': submitted && updatePatientFormGroup.controls['lastName'].errors}"
                 formControlName="lastName">
               <div *ngIf="submitted && updatePatientFormGroup.get('lastName')?.invalid" class="invalid-feedback">
-                <div *ngIf="updatePatientFormGroup.get('lastName')?.errors?.['required']">Numele este obligatoriu</div>
+                <div *ngIf="updatePatientFormGroup.get('lastName')?.errors?.['required']">{{ 'VALIDATION.LAST_NAME_REQUIRED' | translate }}</div>
               </div>
             </div>
           </div>
 
           <div class="form-row">
             <div class="form-group">
-              <label>Istoric Medical</label>
+              <label>{{ 'PATIENTS.MEDICAL_HISTORY' | translate }}</label>
               <textarea
                 class="form-control"
                 formControlName="medicalHistory"
@@ -394,7 +396,7 @@
             </div>
 
             <div class="form-group">
-              <label>Alergii</label>
+              <label>{{ 'PATIENTS.ALLERGIES' | translate }}</label>
               <textarea
                 class="form-control"
                 formControlName="allergies"
@@ -408,10 +410,10 @@
 
       <div class="modal-footer">
         <button type="button" class="btn-cancel" (click)="onCloseModal(updateModal)">
-          <i class="bi bi-x-circle"></i> Anulează
+          <i class="bi bi-x-circle"></i> {{ 'COMMON.ACTIONS.CANCEL' | translate }}
         </button>
         <button type="button" class="btn-save" (click)="onUpdatePatient(updateModal)">
-          <i class="bi bi-check-circle"></i> Salvează
+          <i class="bi bi-check-circle"></i> {{ 'COMMON.ACTIONS.SAVE' | translate }}
         </button>
       </div>
     </form>

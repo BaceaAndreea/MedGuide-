@@ -13,6 +13,8 @@ import {Router} from '@angular/router';
 import {EmailExistsValidators} from '../../validators/emailexists.validators';
 import {UsersService} from '../../services/users.service';
 import {PatientsService} from '../../services/patients.service';
+import {LanguageSelectorComponent} from '../language-selector/language-selector.component';
+import {TranslateModule} from '@ngx-translate/core';
 
 @Component({
   selector: 'app-authentication',
@@ -20,7 +22,9 @@ import {PatientsService} from '../../services/patients.service';
   imports: [
     ReactiveFormsModule,
     NgClass,
-    NgIf
+    NgIf,
+    TranslateModule,
+    LanguageSelectorComponent,
   ],
   templateUrl: './authentication.component.html',
   styleUrl: './authentication.component.scss'

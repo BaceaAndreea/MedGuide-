@@ -8,7 +8,7 @@ import {AsyncPipe, DatePipe, NgClass, NgForOf, NgIf} from '@angular/common';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {AppointmentsService} from '../../services/appointments.service';
 import {Appointment} from '../../model/appointment.model';
-
+import {TranslateModule, TranslateService} from '@ngx-translate/core';
 
 @Component({
   selector: 'app-patients',
@@ -20,7 +20,8 @@ import {Appointment} from '../../model/appointment.model';
     AsyncPipe,
     NgForOf,
     NgClass,
-    DatePipe
+    DatePipe,
+    TranslateModule
   ],
   styleUrl: './patients.component.scss'
 })
@@ -39,7 +40,7 @@ export class PatientsComponent implements OnInit {
   appointmentPageSize: number = 5;
   appointmentErrorMessage!: string;
 
-  // Proprietăți noi pentru statistici
+  // Proprietăți pentru statistici
   patientsData: PageRespone<Patient> | null = null;
   totalPatients: number = 0;
   activePatients: number = 0;
@@ -47,8 +48,9 @@ export class PatientsComponent implements OnInit {
   appointmentsNeeded: number = 0;
   originalPatient: Patient | null = null;
 
-  private patientsService = inject(PatientsService); // Injectare Lazy
+  private patientsService = inject(PatientsService);
   private appointmentService = inject(AppointmentsService);
+  private translate = inject(TranslateService);
 
   constructor(
     private modalService : NgbModal,
@@ -84,7 +86,6 @@ export class PatientsComponent implements OnInit {
     this.patientFormGroup.reset();
   }
 
-
   handleSearchPatients() {
     let keyword = this.searchFormGroup.value.keyword;
     this.pagePatients = this.patientsService.searchPatients(keyword, this.currentPage, this.pageSize).pipe(
@@ -92,16 +93,16 @@ export class PatientsComponent implements OnInit {
         this.patientsData = data;
         this.totalPatients = data.totalElements;
         this.activePatients = data.totalElements; // Asumăm că toți pacienții sunt activi pentru moment
-        // În implementarea reală ai putea să calculezi aceste valori din date reale
       }),
       catchError(err => {
         console.error("Error fetching patients:", err);
-        this.errorMessage = "Failed to load patients!";
+        this.translate.get('ERROR.FETCH_PATIENTS').subscribe((res: string) => {
+          this.errorMessage = res;
+        });
         return throwError(() => err);
       })
     );
   }
-
 
   gotoPage(page: number) {
     this.currentPage = page;
@@ -109,34 +110,41 @@ export class PatientsComponent implements OnInit {
   }
 
   handleDeletePatients(p:Patient) {
-    let conf = confirm("Ești sigur că vrei să ștergi acest pacient?");
-    if(!conf) return;
-    this.patientsService.deletePatient(p.patientId).subscribe({
-      next:() => {
-        this.handleSearchPatients();
-      },
-      error: err => {
-        alert(err.message);
-        console.log(err)
-      }
-    })
+    this.translate.get('CONFIRMATION.DELETE_PATIENT').subscribe((confirmMessage: string) => {
+      let conf = confirm(confirmMessage);
+      if(!conf) return;
+
+      this.patientsService.deletePatient(p.patientId).subscribe({
+        next:() => {
+          this.translate.get('SUCCESS.PATIENT_DELETED').subscribe((successMessage: string) => {
+            alert(successMessage);
+          });
+          this.handleSearchPatients();
+        },
+        error: err => {
+          this.translate.get('ERROR.DELETE_PATIENT').subscribe((errorMessage: string) => {
+            alert(errorMessage);
+          });
+          console.log(err);
+        }
+      });
+    });
   }
 
   onSavePatient(modal: any) {
-    this.submitted = true; // Marchează formularul ca fiind trimis
+    this.submitted = true;
 
     if (this.patientFormGroup.invalid) {
       console.log("Form is invalid", this.patientFormGroup.errors);
-      return; // Oprește execuția dacă formularul are erori
+      return;
     }
 
-    // Construim obiectul Patient pentru a-l trimite către backend
+    // Construim obiectul Patient
     const patient = {
       firstName: this.patientFormGroup.value.firstName,
       lastName: this.patientFormGroup.value.lastName,
       medicalHistory: this.patientFormGroup.value.medicalHistory ? [this.patientFormGroup.value.medicalHistory] : [],
       allergies: this.patientFormGroup.value.allergies ? [this.patientFormGroup.value.allergies] : [],
-
       user: {
         email: this.patientFormGroup.value.user.email,
         password: this.patientFormGroup.value.user.password
@@ -147,14 +155,18 @@ export class PatientsComponent implements OnInit {
 
     this.patientsService.savePatient(patient).subscribe({
       next: () => {
-        alert("Pacient salvat cu succes");
+        this.translate.get('SUCCESS.PATIENT_CREATED').subscribe((successMessage: string) => {
+          alert(successMessage);
+        });
         this.handleSearchPatients();
         this.submitted = false;
         this.patientFormGroup.reset();
         modal.close();
       },
       error: err => {
-        alert("Eroare la salvarea pacientului: " + err.message);
+        this.translate.get('ERROR.SAVE_PATIENT').subscribe((errorMessage: string) => {
+          alert(errorMessage + ": " + err.message);
+        });
         console.error("Save error:", err);
       }
     });
@@ -184,7 +196,7 @@ export class PatientsComponent implements OnInit {
     if (this.updatePatientFormGroup.invalid) return;
 
     const patient = {
-      patientId: Number(this.updatePatientFormGroup.value.patientId), // Convertim în număr
+      patientId: Number(this.updatePatientFormGroup.value.patientId),
       firstName: this.updatePatientFormGroup.value.firstName,
       lastName: this.updatePatientFormGroup.value.lastName,
       medicalHistory: Array.isArray(this.updatePatientFormGroup.value.medicalHistory)
@@ -194,22 +206,26 @@ export class PatientsComponent implements OnInit {
         ? this.updatePatientFormGroup.value.allergies
         : [this.updatePatientFormGroup.value.allergies],
       user: {
-        email: this.updatePatientFormGroup.value.user?.email, // Verificăm dacă `user` există
+        email: this.updatePatientFormGroup.value.user?.email,
         password: this.updatePatientFormGroup.value.user?.password
       }
     };
 
-    console.log("Updating patient:", patient); // Verifică structura înainte de a trimite
+    console.log("Updating patient:", patient);
 
     this.patientsService.updatePatient(patient, patient.patientId).subscribe({
       next: () => {
-        alert('Success updating Patient');
+        this.translate.get('SUCCESS.PATIENT_UPDATED').subscribe((successMessage: string) => {
+          alert(successMessage);
+        });
         this.handleSearchPatients();
         this.submitted = false;
         updateModal.close();
       },
       error: err => {
-        alert('Error updating patient: ' + err.message);
+        this.translate.get('ERROR.UPDATE_PATIENT').subscribe((errorMessage: string) => {
+          alert(errorMessage + ": " + err.message);
+        });
       }
     });
   }
@@ -224,7 +240,9 @@ export class PatientsComponent implements OnInit {
   handleSearchAppointments(p: Patient) {
     this.pageAppointment$ = this.appointmentService.getAppointmentsByPatient(p.patientId, this.appointmentCurrentPage, this.appointmentPageSize).pipe(
       catchError(err => {
-        this.appointmentErrorMessage = err.message;
+        this.translate.get('ERROR.FETCH_APPOINTMENTS').subscribe((errorMessage: string) => {
+          this.appointmentErrorMessage = errorMessage;
+        });
         return throwError(() => err);
       })
     );
@@ -235,13 +253,13 @@ export class PatientsComponent implements OnInit {
     this.handleSearchAppointments(this.modalPatient);
   }
 
-  // Metode pentru statusuri programări (folosite în template-ul de programări)
+  // Metode pentru statusuri programări
   getStatusClass(status: string): string {
     switch (status.toLowerCase()) {
       case 'scheduled': return 'status-scheduled';
       case 'confirmed': return 'status-confirmed';
       case 'completed': return 'status-completed';
-      case 'cancelled': return 'status-cancelled';
+      case 'canceled': return 'status-cancelled';
       case 'pending': return 'status-pending';
       default: return '';
     }

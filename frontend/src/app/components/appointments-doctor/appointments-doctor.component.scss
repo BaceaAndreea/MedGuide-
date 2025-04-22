@@ -368,8 +368,8 @@
   text-transform: uppercase;
 
   &.status-scheduled {
-    background-color: rgba(236, 201, 75, 0.15) !important;
-    color: darken(#ecc94b, 20%) !important; /* Galben pentru Programată */
+    background-color: rgba(66, 153, 225, 0.15) !important;
+    color: #4299e1 !important; /* Albastru pentru Confirmată */
   }
 
   &.status-confirmata {

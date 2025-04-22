@@ -7,6 +7,7 @@ import {Consultation} from '../../model/consultation.model';
 import {ConsultationsService} from '../../services/consultations.service';
 import {AsyncPipe, DatePipe, NgClass, NgForOf, NgIf} from '@angular/common';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {TranslateModule, TranslateService} from '@ngx-translate/core';
 
 @Component({
   selector: 'app-consultations-patient',
@@ -16,7 +17,8 @@ import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
     NgForOf,
     NgIf,
     NgClass,
-    DatePipe
+    DatePipe,
+    TranslateModule
   ],
   templateUrl: './consultations-patient.component.html',
   styleUrl: './consultations-patient.component.scss'
@@ -33,8 +35,12 @@ export class ConsultationsPatientComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private consultationService: ConsultationsService,
-    private modalService: NgbModal
-  ) {}
+    private modalService: NgbModal,
+    private translate: TranslateService // Inject TranslateService
+  ) {
+    // Initialize language settings
+    this.translate.setDefaultLang('ro');
+  }
 
   ngOnInit(): void {
     this.patientId = this.route.snapshot.params['id'];
@@ -48,7 +54,7 @@ export class ConsultationsPatientComponent implements OnInit {
       tap(response => {
         console.log('Loaded consultations:', response);
 
-        // Verifică dacă toate câmpurile necesare sunt prezente
+        // Check if all required fields are present
         if (response.content && response.content.length > 0) {
           response.content.forEach(consultation => {
             console.log('Consultation details:', {
@@ -62,7 +68,7 @@ export class ConsultationsPatientComponent implements OnInit {
       }),
       catchError(error => {
         console.error("Error fetching consultations:", error);
-        this.errorMessage = "Nu s-au putut încărca consultațiile.";
+        this.errorMessage = this.translate.instant('ERROR.FETCH_CONSULTATIONS');
         return of({
           content: [],
           totalPages: 0,
@@ -82,15 +88,15 @@ export class ConsultationsPatientComponent implements OnInit {
   openDetailsModal(consultation: Consultation, modal: any) {
     console.log('Opening modal for consultation:', consultation);
 
-    // În loc să creăm o copie, încărcăm consultația completă din backend
+    // Instead of creating a copy, load the complete consultation from backend
     this.consultationService.getConsultationById(consultation.consultationId).subscribe({
       next: (fullConsultation) => {
         console.log('Loaded full consultation details:', fullConsultation);
 
-        // Setăm consultația completă cu toate detaliile
+        // Set the complete consultation with all details
         this.selectedConsultation = fullConsultation;
 
-        // Deschidem modalul
+        // Open modal
         this.modalService.open(modal, {
           centered: true,
           backdrop: 'static',
@@ -100,7 +106,7 @@ export class ConsultationsPatientComponent implements OnInit {
       error: (err) => {
         console.error('Error loading consultation details:', err);
 
-        // În caz de eroare, folosim ce avem deja, dar completăm câmpurile lipsă
+        // In case of error, use what we already have, but complete missing fields
         this.selectedConsultation = {
           consultationId: consultation.consultationId,
           diagnosis: consultation.diagnosis || '',
@@ -113,12 +119,12 @@ export class ConsultationsPatientComponent implements OnInit {
           patientFirstName: consultation.patientFirstName || '',
           patientLastName: consultation.patientLastName || '',
           hospitalAddress: consultation.hospitalAddress || '',
-          symptoms: consultation.symptoms || 'Informație indisponibilă',
-          recommendations: consultation.recommendations || 'Informație indisponibilă',
-          prescriptions: consultation.prescriptions || 'Informație indisponibilă'
+          symptoms: consultation.symptoms || this.translate.instant('CONSULTATIONS.NO_SYMPTOMS'),
+          recommendations: consultation.recommendations || this.translate.instant('CONSULTATIONS.NO_RECOMMENDATIONS'),
+          prescriptions: consultation.prescriptions || this.translate.instant('CONSULTATIONS.NO_PRESCRIPTIONS')
         };
 
-        // Deschidem modalul oricum, cu ce informații avem
+        // Open modal anyway with whatever info we have
         this.modalService.open(modal, {
           centered: true,
           backdrop: 'static',
@@ -128,9 +134,8 @@ export class ConsultationsPatientComponent implements OnInit {
     });
   }
 
-  // Verifică dacă un câmp există și nu este gol
+  // Check if a field exists and is not empty
   hasValue(value: string | null | undefined): boolean {
     return value !== null && value !== undefined && value !== '';
   }
 }
-
