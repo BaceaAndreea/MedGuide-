@@ -12,12 +12,12 @@
     <div class="doctors-container">
       <div class="page-header-container">
         <div class="page-title-container">
-          <h1 class="page-title">Doctori</h1>
+          <h1 class="page-title">{{ 'DOCTORS.TITLE' | translate }}</h1>
         </div>
 
         <div class="controls-container">
           <button class="btn-new-doctor" (click)="getModal(content)">
-            <i class="bi bi-plus-circle"></i> Doctor Nou
+            <i class="bi bi-plus-circle"></i> {{ 'DOCTORS.NEW_DOCTOR' | translate }}
           </button>
         </div>
       </div>
@@ -30,7 +30,7 @@
             </div>
             <div class="summary-content">
               <h3 class="summary-value">{{ totalDoctors }}</h3>
-              <p class="summary-label">Total Doctori</p>
+              <p class="summary-label">{{ 'DOCTORS.TOTAL_DOCTORS' | translate }}</p>
             </div>
           </div>
 
@@ -40,7 +40,7 @@
             </div>
             <div class="summary-content">
               <h3 class="summary-value">{{ totalSpecializations }}</h3>
-              <p class="summary-label">Specializări</p>
+              <p class="summary-label">{{ 'DOCTORS.SPECIALIZATIONS' | translate }}</p>
             </div>
           </div>
 
@@ -50,7 +50,7 @@
             </div>
             <div class="summary-content">
               <h3 class="summary-value">{{ totalHospitals }}</h3>
-              <p class="summary-label">Spitale</p>
+              <p class="summary-label">{{ 'DOCTORS.HOSPITALS' | translate }}</p>
             </div>
           </div>
 
@@ -61,8 +61,9 @@
         <div *ngIf="searchFormGroup" class="search-container">
           <form [formGroup]="searchFormGroup" (ngSubmit)="handleSearchDoctors()">
             <div class="search-input-group">
-              <input type="search" formControlName="keyword" class="search-input" placeholder="Caută doctor..." aria-label="Search"/>
-              <button type="submit" class="search-button">Caută</button>
+              <input type="search" formControlName="keyword" class="search-input"
+                     [placeholder]="'DOCTORS.SEARCH' | translate" aria-label="Search"/>
+              <button type="submit" class="search-button">{{ 'COMMON.ACTIONS.SEARCH' | translate }}</button>
             </div>
           </form>
         </div>
@@ -72,13 +73,13 @@
             <table class="doctors-table">
               <thead>
               <tr>
-                <th>ID Doctor</th>
-                <th>Nume</th>
-                <th>Prenume</th>
-                <th>Data Nașterii</th>
-                <th>Spital</th>
-                <th>Specializare</th>
-                <th colspan="3">Acțiuni</th>
+                <th>{{ 'DOCTORS.ID' | translate }}</th>
+                <th>{{ 'DOCTORS.LAST_NAME' | translate }}</th>
+                <th>{{ 'DOCTORS.FIRST_NAME' | translate }}</th>
+                <th>{{ 'DOCTORS.BIRTH_DATE' | translate }}</th>
+                <th>{{ 'DOCTORS.HOSPITAL' | translate }}</th>
+                <th>{{ 'DOCTORS.SPECIALIZATION' | translate }}</th>
+                <th colspan="3">{{ 'DOCTORS.ACTIONS' | translate }}</th>
               </tr>
               </thead>
               <tbody>
@@ -140,7 +141,7 @@
           <ng-template #loading>
             <div class="loading-indicator">
               <i class="bi bi-arrow-repeat spin"></i>
-              <span>Se încarcă doctorii...</span>
+              <span>{{ 'LOADING.DOCTORS_PATIENTS' | translate }}</span>
             </div>
           </ng-template>
         </ng-template>
@@ -154,7 +155,7 @@
   <div class="modal-container">
     <div class="modal-header">
       <div class="modal-title">
-        <i class="bi bi-person-plus"></i> Doctor Nou
+        <i class="bi bi-person-plus"></i> {{ 'DOCTORS.NEW_DOCTOR_TITLE' | translate }}
       </div>
       <button type="button" class="btn-close" aria-label="Închide" (click)="modal.dismiss('Cross click')">×</button>
     </div>
@@ -164,39 +165,39 @@
         <form [formGroup]="doctorFormGroup" method="post" class="modal-form">
           <div class="modal-body">
             <div class="form-fields">
-              <!-- Nume Field -->
-              <div class="form-group">
-                <label>Nume</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  [ngClass]="{'is-invalid': submitted && doctorFormGroup.controls['lastName'].errors}"
-                  formControlName="lastName"
-                  placeholder="Numele doctorului"
-                >
-                <div *ngIf="submitted && doctorFormGroup.get('lastName')?.invalid" class="invalid-feedback">
-                  Numele este obligatoriu
+              <!-- Nume și Prenume pe aceeași linie -->
+              <div class="form-row">
+                <div class="form-group col">
+                  <label>{{ 'DOCTORS.LAST_NAME' | translate }}</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    [ngClass]="{'is-invalid': submitted && doctorFormGroup.controls['lastName'].errors}"
+                    formControlName="lastName"
+                    [placeholder]="'DOCTORS.LAST_NAME_PLACEHOLDER' | translate"
+                  >
+                  <div *ngIf="submitted && doctorFormGroup.get('lastName')?.invalid" class="invalid-feedback">
+                    {{ 'VALIDATION.LAST_NAME_REQUIRED' | translate }}
+                  </div>
                 </div>
-              </div>
-
-              <!-- Prenume Field -->
-              <div class="form-group">
-                <label>Prenume</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  [ngClass]="{'is-invalid': submitted && doctorFormGroup.controls['firstName'].errors}"
-                  formControlName="firstName"
-                  placeholder="Prenumele doctorului"
-                >
-                <div *ngIf="submitted && doctorFormGroup.get('firstName')?.invalid" class="invalid-feedback">
-                  Prenumele este obligatoriu
+                <div class="form-group col">
+                  <label>{{ 'DOCTORS.FIRST_NAME' | translate }}</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    [ngClass]="{'is-invalid': submitted && doctorFormGroup.controls['firstName'].errors}"
+                    formControlName="firstName"
+                    [placeholder]="'DOCTORS.FIRST_NAME_PLACEHOLDER' | translate"
+                  >
+                  <div *ngIf="submitted && doctorFormGroup.get('firstName')?.invalid" class="invalid-feedback">
+                    {{ 'VALIDATION.FIRST_NAME_REQUIRED' | translate }}
+                  </div>
                 </div>
               </div>
 
               <!-- Data Nașterii Field -->
               <div class="form-group">
-                <label>Data Nașterii</label>
+                <label>{{ 'DOCTORS.BIRTH_DATE' | translate }}</label>
                 <input
                   type="date"
                   class="form-control"
@@ -204,53 +205,53 @@
                   formControlName="birthDate"
                 >
                 <div *ngIf="submitted && doctorFormGroup.get('birthDate')?.invalid" class="invalid-feedback">
-                  Data nașterii este obligatorie
+                  {{ 'VALIDATION.BIRTH_DATE_REQUIRED' | translate }}
                 </div>
               </div>
 
               <!-- Hospital Selection Field -->
               <div class="form-group">
-                <label>Spital</label>
+                <label>{{ 'DOCTORS.HOSPITAL' | translate }}</label>
                 <select
                   class="form-control"
                   [ngClass]="{'is-invalid': submitted && doctorFormGroup.get('hospital')?.invalid}"
                   formControlName="hospital"
                 >
-                  <option [ngValue]="null" disabled>Alege spital</option>
+                  <option [ngValue]="null" disabled>{{ 'DOCTORS.SELECT_HOSPITAL' | translate }}</option>
                   <option *ngFor="let hospital of listHospitals" [ngValue]="hospital">
                     {{hospital.name}}
                   </option>
                 </select>
                 <div *ngIf="submitted && doctorFormGroup.get('hospital')?.invalid" class="invalid-feedback">
-                  Selectarea spitalului este obligatorie
+                  {{ 'VALIDATION.HOSPITAL_REQUIRED' | translate }}
                 </div>
               </div>
 
               <!-- Specialization Selection Field -->
               <div class="form-group">
-                <label>Specializare</label>
+                <label>{{ 'DOCTORS.SPECIALIZATION' | translate }}</label>
                 <select
                   class="form-control"
                   [ngClass]="{'is-invalid': submitted && doctorFormGroup.get('specialization')?.invalid}"
                   formControlName="specialization"
                 >
-                  <option [ngValue]="null" disabled>Alege specializarea</option>
+                  <option [ngValue]="null" disabled>{{ 'DOCTORS.SELECT_SPECIALIZATION' | translate }}</option>
                   <option *ngFor="let specialization of listSpecializations" [ngValue]="specialization">
                     {{specialization.description}}
                   </option>
                 </select>
                 <div *ngIf="submitted && doctorFormGroup.get('specialization')?.invalid" class="invalid-feedback">
-                  Selectarea specializării este obligatorie
+                  {{ 'VALIDATION.SPECIALIZATION_REQUIRED' | translate }}
                 </div>
               </div>
 
               <!-- Account Information -->
               <div formGroupName="user" class="user-form-group">
-                <h4 class="user-section-title">Informații Cont</h4>
+                <h4 class="user-section-title">{{ 'DOCTORS.ACCOUNT_INFO' | translate }}</h4>
 
                 <!-- Email Field -->
                 <div class="form-group">
-                  <label>Email</label>
+                  <label>{{ 'DOCTORS.EMAIL' | translate }}</label>
                   <input
                     type="email"
                     class="form-control"
@@ -259,25 +260,25 @@
                     placeholder="email@exemplu.com"
                   >
                   <div *ngIf="submitted && doctorFormGroup.get('user.email')?.invalid" class="invalid-feedback">
-                    <div *ngIf="doctorFormGroup.get('user.email')?.errors?.['required']">Emailul este obligatoriu</div>
-                    <div *ngIf="doctorFormGroup.get('user.email')?.errors?.['email']">Format email invalid</div>
-                    <div *ngIf="doctorFormGroup.get('user.email')?.errors?.['emailAlreadyExists']">Acest email există deja</div>
+                    <div *ngIf="doctorFormGroup.get('user.email')?.errors?.['required']">{{ 'VALIDATION.EMAIL_REQUIRED' | translate }}</div>
+                    <div *ngIf="doctorFormGroup.get('user.email')?.errors?.['email']">{{ 'VALIDATION.EMAIL_INVALID' | translate }}</div>
+                    <div *ngIf="doctorFormGroup.get('user.email')?.errors?.['emailAlreadyExists']">{{ 'VALIDATION.EMAIL_EXISTS' | translate }}</div>
                   </div>
                 </div>
 
                 <!-- Password Field -->
                 <div class="form-group">
-                  <label>Parolă</label>
+                  <label>{{ 'DOCTORS.PASSWORD' | translate }}</label>
                   <input
                     type="password"
                     class="form-control"
                     [ngClass]="{'is-invalid': submitted && doctorFormGroup.get('user.password')?.invalid}"
                     formControlName="password"
-                    placeholder="Minim 6 caractere"
+                    [placeholder]="'VALIDATION.PASSWORD_LENGTH_HINT' | translate"
                   >
                   <div *ngIf="submitted && doctorFormGroup.get('user.password')?.invalid" class="invalid-feedback">
-                    <div *ngIf="doctorFormGroup.get('user.password')?.errors?.['required']">Parola este obligatorie</div>
-                    <div *ngIf="doctorFormGroup.get('user.password')?.errors?.['minlength']">Parola trebuie să aibă cel puțin 6 caractere</div>
+                    <div *ngIf="doctorFormGroup.get('user.password')?.errors?.['required']">{{ 'VALIDATION.PASSWORD_REQUIRED' | translate }}</div>
+                    <div *ngIf="doctorFormGroup.get('user.password')?.errors?.['minlength']">{{ 'VALIDATION.PASSWORD_LENGTH' | translate }}</div>
                   </div>
                 </div>
               </div>
@@ -286,10 +287,10 @@
 
           <div class="modal-footer">
             <button type="button" class="btn-cancel" (click)="onCloseModal(modal)">
-              <i class="bi bi-x-circle"></i> Anulează
+              <i class="bi bi-x-circle"></i> {{ 'COMMON.ACTIONS.CANCEL' | translate }}
             </button>
             <button type="button" class="btn-save" (click)="onSaveDoctor(modal)">
-              <i class="bi bi-check-circle"></i> Salvează Doctor
+              <i class="bi bi-check-circle"></i> {{ 'DOCTORS.SAVE_DOCTOR' | translate }}
             </button>
           </div>
         </form>
@@ -306,19 +307,20 @@
       <ng-template #modalLoading>
         <div class="loading-indicator modal-loading">
           <i class="bi bi-arrow-repeat spin"></i>
-          <span>Se încarcă datele necesare...</span>
+          <span>{{ 'LOADING.FORM_DATA' | translate }}</span>
         </div>
       </ng-template>
     </ng-template>
   </div>
 </ng-template>
 
+
 <!-- Modal pentru Actualizare Doctor -->
 <ng-template #updateContent let-updateModal>
   <div class="modal-container">
     <div class="modal-header">
       <div class="modal-title">
-        <i class="bi bi-person-check"></i> Actualizare Doctor
+        <i class="bi bi-person-check"></i> {{ 'DOCTORS.UPDATE_DOCTOR' | translate }}
       </div>
       <button type="button" class="btn-close" aria-label="Închide" (click)="updateModal.dismiss('Cross click')">×</button>
     </div>
@@ -328,7 +330,7 @@
         <div class="form-fields">
           <!-- ID Field (Read-only) -->
           <div class="form-group">
-            <label>ID Doctor</label>
+            <label>{{ 'DOCTORS.ID' | translate }}</label>
             <input
               type="text"
               class="form-control form-control-readonly"
@@ -339,37 +341,37 @@
 
           <!-- Nume Field -->
           <div class="form-group">
-            <label>Nume</label>
+            <label>{{ 'DOCTORS.LAST_NAME' | translate }}</label>
             <input
               type="text"
               class="form-control"
               [ngClass]="{'is-invalid': submitted && updateDoctorFormGroup.controls['lastName'].errors}"
               formControlName="lastName"
-              placeholder="Numele doctorului"
+              [placeholder]="'DOCTORS.LAST_NAME_PLACEHOLDER' | translate"
             >
             <div *ngIf="submitted && updateDoctorFormGroup.get('lastName')?.invalid" class="invalid-feedback">
-              Numele este obligatoriu
+              {{ 'VALIDATION.LAST_NAME_REQUIRED' | translate }}
             </div>
           </div>
 
           <!-- Prenume Field -->
           <div class="form-group">
-            <label>Prenume</label>
+            <label>{{ 'DOCTORS.FIRST_NAME' | translate }}</label>
             <input
               type="text"
               class="form-control"
               [ngClass]="{'is-invalid': submitted && updateDoctorFormGroup.controls['firstName'].errors}"
               formControlName="firstName"
-              placeholder="Prenumele doctorului"
+              [placeholder]="'DOCTORS.FIRST_NAME_PLACEHOLDER' | translate"
             >
             <div *ngIf="submitted && updateDoctorFormGroup.get('firstName')?.invalid" class="invalid-feedback">
-              Prenumele este obligatoriu
+              {{ 'VALIDATION.FIRST_NAME_REQUIRED' | translate }}
             </div>
           </div>
 
           <!-- Data Nașterii Field -->
           <div class="form-group">
-            <label>Data Nașterii</label>
+            <label>{{ 'DOCTORS.BIRTH_DATE' | translate }}</label>
             <input
               type="date"
               class="form-control"
@@ -377,13 +379,13 @@
               formControlName="birthDate"
             >
             <div *ngIf="submitted && updateDoctorFormGroup.get('birthDate')?.invalid" class="invalid-feedback">
-              Data nașterii este obligatorie
+              {{ 'VALIDATION.BIRTH_DATE_REQUIRED' | translate }}
             </div>
           </div>
 
           <!-- Hospital Selection Field -->
           <div class="form-group">
-            <label>Spital</label>
+            <label>{{ 'DOCTORS.HOSPITAL' | translate }}</label>
             <select
               class="form-control"
               [ngClass]="{'is-invalid': submitted && updateDoctorFormGroup.get('hospital')?.invalid}"
@@ -394,13 +396,13 @@
               </option>
             </select>
             <div *ngIf="submitted && updateDoctorFormGroup.get('hospital')?.invalid" class="invalid-feedback">
-              Selectarea spitalului este obligatorie
+              {{ 'VALIDATION.HOSPITAL_REQUIRED' | translate }}
             </div>
           </div>
 
           <!-- Specialization Selection Field -->
           <div class="form-group">
-            <label>Specializare</label>
+            <label>{{ 'DOCTORS.SPECIALIZATION' | translate }}</label>
             <select
               class="form-control"
               [ngClass]="{'is-invalid': submitted && updateDoctorFormGroup.get('specialization')?.invalid}"
@@ -411,7 +413,7 @@
               </option>
             </select>
             <div *ngIf="submitted && updateDoctorFormGroup.get('specialization')?.invalid" class="invalid-feedback">
-              Selectarea specializării este obligatorie
+              {{ 'VALIDATION.SPECIALIZATION_REQUIRED' | translate }}
             </div>
           </div>
         </div>
@@ -419,10 +421,10 @@
 
       <div class="modal-footer">
         <button type="button" class="btn-cancel" (click)="onCloseModal(updateModal)">
-          <i class="bi bi-x-circle"></i> Anulează
+          <i class="bi bi-x-circle"></i> {{ 'COMMON.ACTIONS.CANCEL' | translate }}
         </button>
         <button type="button" class="btn-save" (click)="onUpdateDoctor(updateModal)">
-          <i class="bi bi-check-circle"></i> Salvează Modificările
+          <i class="bi bi-check-circle"></i> {{ 'PROFILE.SAVE_CHANGES' | translate }}
         </button>
       </div>
     </form>
@@ -434,7 +436,7 @@
   <div class="modal-container">
     <div class="modal-header">
       <div class="modal-title">
-        <i class="bi bi-calendar-week"></i> Programările Doctorului
+        <i class="bi bi-calendar-week"></i> {{ 'DOCTORS.DOCTOR_APPOINTMENTS' | translate }}
       </div>
       <button type="button" class="btn-close" aria-label="Închide" (click)="appointmentModal.dismiss('Cross click')">×</button>
     </div>
@@ -455,11 +457,11 @@
           <table class="appointments-table modal-table">
             <thead>
             <tr>
-              <th>ID Programare</th>
-              <th>Status</th>
-              <th>Data & Ora</th>
-              <th>Pacient</th>
-              <th>Motiv</th>
+              <th>{{ 'APPOINTMENTS.ID' | translate }}</th>
+              <th>{{ 'APPOINTMENTS.STATUS' | translate }}</th>
+              <th>{{ 'APPOINTMENTS.DATE' | translate }}</th>
+              <th>{{ 'APPOINTMENTS.PATIENT' | translate }}</th>
+              <th>{{ 'APPOINTMENTS.REASON' | translate }}</th>
             </tr>
             </thead>
             <tbody>
@@ -467,7 +469,7 @@
               <td>{{a.appointmentId}}</td>
               <td>
                 <span class="status-badge" [ngClass]="getStatusClass(a.status)">
-                  {{a.status}}
+                  {{ 'STATUS.' + a.status.toUpperCase() | translate }}
                 </span>
               </td>
               <td>{{a.appointmentDate | date:'dd/MM/yyyy, HH:mm'}}</td>
@@ -479,7 +481,7 @@
 
           <div *ngIf="listAppointments.content.length === 0" class="no-appointments">
             <i class="bi bi-calendar-x"></i>
-            <p>Nu există programări pentru acest doctor</p>
+            <p>{{ 'APPOINTMENTS.NO_APPOINTMENTS' | translate }}</p>
           </div>
 
           <div class="pagination-controls modal-pagination" *ngIf="listAppointments.totalPages > 1">
@@ -514,7 +516,7 @@
         <ng-template #appointmentLoading>
           <div class="loading-indicator modal-loading">
             <i class="bi bi-arrow-repeat spin"></i>
-            <span>Se încarcă programările...</span>
+            <span>{{ 'LOADING.APPOINTMENTS' | translate }}</span>
           </div>
         </ng-template>
       </ng-template>
@@ -522,7 +524,7 @@
 
     <div class="modal-footer">
       <button type="button" class="btn-cancel" (click)="appointmentModal.dismiss('Cross click')">
-        <i class="bi bi-x-circle"></i> Închide
+        <i class="bi bi-x-circle"></i> {{ 'COMMON.ACTIONS.CLOSE' | translate }}
       </button>
     </div>
   </div>

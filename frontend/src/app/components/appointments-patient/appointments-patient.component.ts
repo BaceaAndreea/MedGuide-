@@ -14,6 +14,7 @@ import { futureDateValidator} from '../../validators/date-validator';
 import { Specialization } from '../../model/specialization.model';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
+import {TranslateModule, TranslateService} from '@ngx-translate/core';
 
 
 @Component({
@@ -25,7 +26,8 @@ import { filter } from 'rxjs/operators';
     NgForOf,
     NgClass,
     ReactiveFormsModule,
-    DatePipe
+    DatePipe,
+    TranslateModule
   ],
   templateUrl: './appointments-patient.component.html',
   styleUrl: './appointments-patient.component.scss'
@@ -53,14 +55,29 @@ export class AppointmentsPatientComponent implements OnInit{
   minDate!: string;
   currentDate: Date = new Date();
   private appointmentService = inject(AppointmentsService);
+  currentLang: string = 'ro'; // Default language
 
-  constructor(private route : ActivatedRoute,  private fb : FormBuilder,
-              private modalService : NgbModal, private doctorService : DoctorsService) {}
+  constructor(
+    private route : ActivatedRoute,
+    private fb : FormBuilder,
+    private modalService : NgbModal,
+    private doctorService : DoctorsService,
+    private translate: TranslateService // Inject TranslateService
+  ) {
+    // Initialize language
+    this.translate.setDefaultLang('ro');
+    this.translate.use(this.currentLang);
+
+    // Subscribe to language changes
+    this.translate.onLangChange.subscribe(event => {
+      this.currentLang = event.lang;
+    });
+  }
 
   fetchSpecializations() {
     this.specializations$ = this.doctorService.findAllSpecializations().pipe(
       catchError(err => {
-        this.errorMessageDoctor = 'Eroare la încărcarea specializărilor: ' + err.message;
+        this.errorMessageDoctor = this.translate.instant('ERROR.FETCH_SPECIALIZATIONS') + ': ' + err.message;
         return throwError(err);
       })
     );
@@ -76,14 +93,15 @@ export class AppointmentsPatientComponent implements OnInit{
       next: (doctors) => {
         this.filteredDoctors = doctors;
         if (this.filteredDoctors.length === 0) {
-          // Dacă nu există doctori pentru această specializare, afișăm un mesaj
-          this.errorMessageDoctor = 'Nu există doctori disponibili pentru această specializare.';
+          // If there are no doctors for this specialization, show a message
+          this.errorMessageDoctor = this.translate.instant('ERROR.FETCH_DOCTORS') + ': ' +
+            this.translate.instant('APPOINTMENTS.NO_APPOINTMENTS');
         } else {
           this.errorMessageDoctor = '';
         }
       },
       error: (err) => {
-        this.errorMessageDoctor = 'Eroare la încărcarea doctorilor: ' + err.message;
+        this.errorMessageDoctor = this.translate.instant('ERROR.FETCH_DOCTORS') + ': ' + err.message;
         console.error(err);
       }
     });
@@ -92,7 +110,7 @@ export class AppointmentsPatientComponent implements OnInit{
   fetchDoctors() {
     this.doctors$ = this.doctorService.findAllDoctors().pipe(
       catchError(err => {
-        this.errorMessageDoctor = err.message;
+        this.errorMessageDoctor = this.translate.instant('ERROR.FETCH_DOCTORS') + ': ' + err.message;
         return throwError(err);
       })
     )
@@ -120,7 +138,7 @@ export class AppointmentsPatientComponent implements OnInit{
     this.pageAppointments$ = this.appointmentService.getAppointmentsByPatient(this.patientId, this.currentPage, this.pageSize)
       .pipe(
         catchError(err => {
-          this.errorMessage = err.message;
+          this.errorMessage = this.translate.instant('ERROR.FETCH_APPOINTMENTS') + ': ' + err.message;
           return throwError(err);
         }),
         tap(pageResponse => {
@@ -134,7 +152,7 @@ export class AppointmentsPatientComponent implements OnInit{
     this.handleSearchPatientAppointments();
   }
 
-  private subscriptions = new Subscription(); // Adaugă această proprietate în clasa componentei
+  private subscriptions = new Subscription(); // Add this property to the component class
 
   getModal(content: any) {
     this.submitted = false;
@@ -146,11 +164,11 @@ export class AppointmentsPatientComponent implements OnInit{
       patient: [this.currentPatient, Validators.required]
     });
 
-    // Dezactivăm inițial câmpul de doctor până când se selectează o specializare
+    // Initially disable the doctor field until a specialization is selected
     this.appointmentFormGroup.get('doctor')?.disable();
 
-    // Când se schimbă specializarea, actualizăm lista de doctori
-    // Salvăm subscription-ul pentru a putea face unsubscribe mai târziu
+    // When the specialization changes, update the list of doctors
+    // Save the subscription to unsubscribe later
     const specializationControl = this.appointmentFormGroup.get('specialization');
 
     if (specializationControl) {
@@ -169,12 +187,12 @@ export class AppointmentsPatientComponent implements OnInit{
     this.fetchSpecializations();
     this.modalService.open(content, {size:'xl'}).result.then(
       () => {
-        // Când modalul este închis, facem unsubscribe
+        // When the modal is closed, unsubscribe
         this.subscriptions.unsubscribe();
         this.subscriptions = new Subscription();
       },
       () => {
-        // Și la dismiss
+        // And on dismiss
         this.subscriptions.unsubscribe();
         this.subscriptions = new Subscription();
       }
@@ -204,14 +222,14 @@ export class AppointmentsPatientComponent implements OnInit{
 
     this.appointmentService.saveAppointment(appointment).subscribe({
       next: () => {
-        alert("Programare creată cu succes");
+        alert(this.translate.instant('SUCCESS.APPOINTMENT_CREATED'));
         setTimeout(() => this.handleSearchPatientAppointments(), 500);
         this.appointmentFormGroup.reset();
         this.submitted = false;
         modal.close();
       },
       error: err => {
-        alert("Eroare la crearea programării: " + err.message);
+        alert(this.translate.instant('ERROR.SAVE_APPOINTMENT') + ': ' + err.message);
         console.error(err);
       }
     });
@@ -231,12 +249,12 @@ export class AppointmentsPatientComponent implements OnInit{
       reason: [a.reason, Validators.required],
     });
 
-    // Încărcăm doctorii pentru specializarea inițială
+    // Load the doctors for the initial specialization
     if (initialSpecializationId) {
       this.fetchDoctorsBySpecialization(initialSpecializationId);
     }
 
-    // Ascultăm schimbările specializării (cu pipe și filter)
+    // Listen for specialization changes (with pipe and filter)
     const specializationControl = this.updateAppointmentFormGroup.get('specialization');
 
     if (specializationControl) {
@@ -247,18 +265,18 @@ export class AppointmentsPatientComponent implements OnInit{
         this.updateAppointmentFormGroup.get('doctor')?.setValue(null);
       });
 
-      this.subscriptions.add(subscription); // pentru dezabonare la închiderea modalului
+      this.subscriptions.add(subscription); // for unsubscribing when the modal closes
     }
 
     this.defaultDoctor = this.updateAppointmentFormGroup.controls['doctor'].value;
     this.modalService.open(updateContent, { size: 'xl' }).result.then(
       () => {
         this.subscriptions.unsubscribe();
-        this.subscriptions = new Subscription(); // resetăm subs
+        this.subscriptions = new Subscription(); // reset subs
       },
       () => {
         this.subscriptions.unsubscribe();
-        this.subscriptions = new Subscription(); // resetăm subs
+        this.subscriptions = new Subscription(); // reset subs
       }
     );
   }
@@ -267,11 +285,11 @@ export class AppointmentsPatientComponent implements OnInit{
     const dateControl = this.appointmentFormGroup?.get('appointmentDate');
 
     if (dateControl?.hasError('required')) {
-      return 'Data programării este obligatorie';
+      return this.translate.instant('VALIDATION.APPOINTMENT_DATE_REQUIRED');
     }
 
     if (dateControl?.hasError('pastDate')) {
-      return 'Nu poți programa în trecut. Te rugăm să selectezi o dată viitoare.';
+      return this.translate.instant('VALIDATION.APPOINTMENT_FUTURE_DATE');
     }
 
     return '';
@@ -281,11 +299,11 @@ export class AppointmentsPatientComponent implements OnInit{
     const dateControl = this.updateAppointmentFormGroup?.get('appointmentDate');
 
     if (dateControl?.hasError('required')) {
-      return 'Data programării este obligatorie';
+      return this.translate.instant('VALIDATION.APPOINTMENT_DATE_REQUIRED');
     }
 
     if (dateControl?.hasError('pastDate')) {
-      return 'Nu poți programa în trecut. Te rugăm să selectezi o dată viitoare.';
+      return this.translate.instant('VALIDATION.APPOINTMENT_FUTURE_DATE');
     }
 
     return '';
@@ -306,25 +324,25 @@ export class AppointmentsPatientComponent implements OnInit{
 
     this.appointmentService.updateAppointment(appointment, appointment.appointmentId).subscribe({
       next: () => {
-        alert("Programare actualizată cu succes");
+        alert(this.translate.instant('SUCCESS.APPOINTMENT_UPDATED'));
         this.handleSearchPatientAppointments();
         this.submitted = false;
         updateModal.close();
       },
       error: err => {
-        alert(err.message);
+        alert(this.translate.instant('ERROR.UPDATE_APPOINTMENT') + ': ' + err.message);
       }
     });
   }
 
   handleDeleteAppointment(a: Appointment) {
-    let conf = confirm("Ești sigur că dorești să anulezi această programare?");
+    let conf = confirm(this.translate.instant('CONFIRMATION.DELETE_APPOINTMENT'));
     if(!conf) return;
 
     const cancelledAppointment = {
       appointmentId: a.appointmentId,
       appointmentDate: a.appointmentDate,
-      status: "Anulată",
+      status: this.translate.instant('STATUS.CANCELED'),
       reason: a.reason,
       doctor: { doctorId: a.doctor?.doctorId },
       patient: { patientId: this.currentPatient?.patientId }
@@ -332,11 +350,11 @@ export class AppointmentsPatientComponent implements OnInit{
 
     this.appointmentService.updateAppointment(cancelledAppointment, cancelledAppointment.appointmentId).subscribe({
       next: () => {
-        alert("Programare anulată cu succes");
+        alert(this.translate.instant('SUCCESS.APPOINTMENT_CANCELLED'));
         this.handleSearchPatientAppointments();
       },
       error: err => {
-        alert("Eroare la anularea programării: " + err.message);
+        alert(this.translate.instant('ERROR.CANCEL_APPOINTMENT') + ': ' + err.message);
         console.error(err);
       }
     });
@@ -386,20 +404,22 @@ export class AppointmentsPatientComponent implements OnInit{
 
   getFormattedStatus(status: string): string {
     if (!status) return '';
+
     const normalizedStatus = status.toLowerCase();
 
+    // Use translated status based on current language
     if (normalizedStatus.includes('complet') || normalizedStatus === 'completed') {
-      return 'Finalizată';
+      return this.translate.instant('STATUS.COMPLETED');
     }
     if (normalizedStatus.includes('confirm') || normalizedStatus === 'confirmed') {
-      return 'Confirmată';
+      return this.translate.instant('STATUS.CONFIRMED');
     }
     if (normalizedStatus.includes('cancel') || normalizedStatus === 'cancelled') {
-      return 'Anulată';
+      return this.translate.instant('STATUS.CANCELED');
     }
     if (normalizedStatus.includes('schedul') || normalizedStatus === 'scheduled' ||
       normalizedStatus.includes('appointment')) {
-      return 'Programată';
+      return this.translate.instant('STATUS.SCHEDULED');
     }
     return status;
   }

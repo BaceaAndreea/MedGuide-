@@ -6,6 +6,7 @@ import { catchError, Observable, throwError } from 'rxjs';
 import { PageRespone } from '../../model/page.response.model';
 import { Specialization } from '../../model/specialization.model';
 import {AsyncPipe, NgClass, NgForOf, NgIf} from '@angular/common';
+import {TranslateModule, TranslateService} from '@ngx-translate/core';
 
 @Component({
   selector: 'app-specializations',
@@ -16,14 +17,16 @@ import {AsyncPipe, NgClass, NgForOf, NgIf} from '@angular/common';
     NgIf,
     AsyncPipe,
     NgForOf,
-    NgClass
+    NgClass,
+    TranslateModule
   ],
   styleUrl: './specializations.component.scss'
 })
+
 export class SpecializationsComponent implements OnInit {
   searchFormGroup!: FormGroup;
   currentPage: number = 0;
-  pageSize: number = 10;
+  pageSize: number = 6;
   errorMessage!: String;
   pageSpecializations!: Observable<PageRespone<Specialization>>;
   specializationFormGroup!: FormGroup;
@@ -33,7 +36,8 @@ export class SpecializationsComponent implements OnInit {
   constructor(
     private modalService: NgbModal,
     private fb: FormBuilder,
-    private specializationsService: SpecializationsService
+    private specializationsService: SpecializationsService,
+    private translate: TranslateService
   ) {}
 
   ngOnInit(): void {
@@ -49,6 +53,7 @@ export class SpecializationsComponent implements OnInit {
 
   openModal(content: any) {
     this.submitted = false;
+    this.specializationFormGroup.reset();
     this.modalService.open(content, { size: 'xl' });
   }
 
@@ -61,31 +66,41 @@ export class SpecializationsComponent implements OnInit {
     let keyword = this.searchFormGroup.value.keyword;
     this.pageSpecializations = this.specializationsService.searchSpecializations(keyword, this.currentPage, this.pageSize).pipe(
       catchError(err => {
-        this.errorMessage = err.message;
-        return throwError(err);
+        this.translate.get('ERROR.FETCH_SPECIALIZATIONS').subscribe((errorMessage: string) => {
+          this.errorMessage = errorMessage;
+        });
+        return throwError(() => err);
       })
     );
   }
 
   gotoPage(page: number) {
+    if (page < 0 || page >= this.pageSize) return;  // Validare pagina
     this.currentPage = page;
     this.handleSearchSpecializations();
   }
 
   handleDeleteSpecialization(spec: Specialization) {
-    let conf = confirm("Are you sure?");
-    if(!conf) return;
-    this.specializationsService.deleteSpecialization(spec.specializationId).subscribe({
-      next:() => {
-        this.handleSearchSpecializations();
-      },
-      error: err => {
-        alert(err.message);
-        console.log(err);
-      }
-    })
-  }
+    this.translate.get('CONFIRMATION.DELETE_SPECIALIZATION').subscribe((confirmMessage: string) => {
+      let conf = confirm(confirmMessage);
+      if(!conf) return;
 
+      this.specializationsService.deleteSpecialization(spec.specializationId).subscribe({
+        next:() => {
+          this.translate.get('SUCCESS.SPECIALIZATION_DELETED').subscribe((successMessage: string) => {
+            alert(successMessage);
+          });
+          this.handleSearchSpecializations();
+        },
+        error: err => {
+          this.translate.get('ERROR.DELETE_SPECIALIZATION').subscribe((errorMessage: string) => {
+            alert(errorMessage + ": " + err.message);
+          });
+          console.log(err);
+        }
+      });
+    });
+  }
 
   onSaveSpecialization(modal: any) {
     this.submitted = true;
@@ -100,31 +115,36 @@ export class SpecializationsComponent implements OnInit {
     };
 
     this.specializationsService.createSpecialization(specialization).subscribe({
-      next:() => {alert("Specialization saved successfully");
-        this.handleSearchSpecializations(); // Reîncarcă lista doctorilor
-        this.submitted = false; // Resetăm starea formularului
-        this.specializationFormGroup.reset(); // Resetăm formularul
-        modal.close(); // Închidem modalul
+      next:() => {
+        this.translate.get('SUCCESS.SPECIALIZATION_CREATED').subscribe((successMessage: string) => {
+          alert(successMessage);
+        });
+        this.handleSearchSpecializations();
+        this.submitted = false;
+        this.specializationFormGroup.reset();
+        modal.close();
       },
       error: err => {
-        alert("Error saving doctor: " + err.message);
+        this.translate.get('ERROR.SAVE_SPECIALIZATION').subscribe((errorMessage: string) => {
+          alert(errorMessage + ": " + err.message);
+        });
         console.error("Save error:", err);
       }
-    })
-
+    });
   }
 
   getUpdateSpecializationModal(spec: Specialization, updateContent: any) {
+    this.submitted = false;
     this.updateSpecializationFormGroup = this.fb.group({
       specializationId : [spec.specializationId, Validators.required],
-      description: [spec.description]
+      description: [spec.description, Validators.required]
     });
     this.modalService.open(updateContent, {size : 'xl'});
   }
 
   onUpdateSpecialization(updateModal: any) {
-    this.submitted=true;
-    if ( this.updateSpecializationFormGroup.invalid) return;
+    this.submitted = true;
+    if (this.updateSpecializationFormGroup.invalid) return;
 
     const specialization = {
       specializationId: this.updateSpecializationFormGroup.value.specializationId,
@@ -133,15 +153,18 @@ export class SpecializationsComponent implements OnInit {
 
     this.specializationsService.updateSpecialization(specialization, specialization.specializationId).subscribe({
       next: () => {
-        alert("Success updating Specialization");
-        this.handleSearchSpecializations(); // Reîncarcă lista doctorilor
+        this.translate.get('SUCCESS.SPECIALIZATION_UPDATED').subscribe((successMessage: string) => {
+          alert(successMessage);
+        });
+        this.handleSearchSpecializations();
         this.submitted = false;
-        updateModal.close(); // Închide modalul
+        updateModal.close();
       },
       error: err => {
-        alert("Error updating doctor: " + err.message);
+        this.translate.get('ERROR.UPDATE_SPECIALIZATION').subscribe((errorMessage: string) => {
+          alert(errorMessage + ": " + err.message);
+        });
       }
-    })
-
+    });
   }
 }

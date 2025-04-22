@@ -14,6 +14,8 @@ import {Doctor} from '../../model/doctor.model';
 import {Patient} from '../../model/patient.model';
 import {Hospital} from '../../model/hospital.model';
 import {Specialization} from '../../model/specialization.model';
+import {LanguageSelectorComponent} from '../language-selector/language-selector.component';
+import {TranslateModule} from '@ngx-translate/core';
 
 @Component({
   selector: 'app-navbar',
@@ -25,7 +27,9 @@ import {Specialization} from '../../model/specialization.model';
     NgClass,
     AsyncPipe,
     NgForOf,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    LanguageSelectorComponent,
+    TranslateModule
   ],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.scss'

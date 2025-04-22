@@ -13,6 +13,7 @@ import {PatientsService} from '../../services/patients.service';
 import {Hospital} from '../../model/hospital.model';
 import {Specialization} from '../../model/specialization.model';
 import {ConsultationsService} from '../../services/consultations.service';
+import {TranslateModule, TranslateService} from '@ngx-translate/core';
 
 @Component({
   selector: 'app-appointments-doctor',
@@ -23,7 +24,8 @@ import {ConsultationsService} from '../../services/consultations.service';
     NgForOf,
     NgClass,
     ReactiveFormsModule,
-    DatePipe
+    DatePipe,
+    TranslateModule
   ],
   templateUrl: './appointments-doctor.component.html',
   styleUrl: './appointments-doctor.component.scss'
@@ -33,13 +35,13 @@ export class AppointmentsDoctorComponent {
   currentDoctor!: Doctor;
   pageAppointments$!: Observable<PageRespone<Appointment>>;
   currentPage: number = 0;
-  pageSize : number= 5;
+  pageSize: number = 5;
   errorMessage !: string;
-  appointmentFormGroup!:FormGroup;
-  submitted:boolean = false;
-  patients$!:Observable<Array<Patient>>;
+  appointmentFormGroup!: FormGroup;
+  submitted: boolean = false;
+  patients$!: Observable<Array<Patient>>;
   errorMessagePatient!: string;
-  updateAppointmentFormGroup!:FormGroup;
+  updateAppointmentFormGroup!: FormGroup;
   defaultPatient!: Patient;
   // Proprietăți pentru cardurile de statistici
   totalAppointments: number = 0;
@@ -59,15 +61,17 @@ export class AppointmentsDoctorComponent {
 
   private appointmentService = inject(AppointmentsService);
 
-  constructor(private route : ActivatedRoute, private fb : FormBuilder,
-              private modalService : NgbModal, private patientService : PatientsService,
-              private consultationsService : ConsultationsService) {}
+  constructor(private route: ActivatedRoute, private fb: FormBuilder,
+              private modalService: NgbModal, private patientService: PatientsService,
+              private consultationsService: ConsultationsService,
+              private translate: TranslateService) {
+  }
 
 
   fetchPatients() {
     this.patients$ = this.patientService.findAllPatients().pipe(
       catchError(err => {
-        this.errorMessagePatient = err.message;
+        this.errorMessagePatient = this.translate.instant('ERROR.FETCH_PATIENTS');
         return throwError(err);
       })
     )
@@ -91,13 +95,13 @@ export class AppointmentsDoctorComponent {
 
   private fillCurrentDoctor() {
     this.currentDoctor = {
-      doctorId : this.doctorId,
+      doctorId: this.doctorId,
       firstName: "",
       lastName: "",
       birthDate: new Date(),
       hospital: {} as Hospital,
       specialization: {} as Specialization,
-      user:{email: "", password: ""}
+      user: {email: "", password: ""}
     }
   }
 
@@ -143,7 +147,7 @@ export class AppointmentsDoctorComponent {
       }),
       catchError(error => {
         console.error("Complete error fetching appointments:", error);
-        this.errorMessage = error.message;
+        this.errorMessage = this.translate.instant('ERROR.FETCH_DOCTOR_APPOINTMENTS');
         return throwError(error);
       })
     );
@@ -172,7 +176,7 @@ export class AppointmentsDoctorComponent {
     });
 
     this.defaultPatient = this.updateAppointmentFormGroup.controls['patient'].value;
-    this.modalService.open(updateContent, {size:'xl'});
+    this.modalService.open(updateContent, {size: 'xl'});
   }
 
   onUpdateAppointment(updateModal: any) {
@@ -184,8 +188,8 @@ export class AppointmentsDoctorComponent {
       appointmentDate: this.updateAppointmentFormGroup.value.appointmentDate,
       status: this.updateAppointmentFormGroup.value.appointmentStatus,
       reason: this.updateAppointmentFormGroup.value.reason, // Adăugăm motivul în obiectul trimis la API
-      doctor: { doctorId: this.doctorId },
-      patient: { patientId: this.updateAppointmentFormGroup.value.patient?.patientId }
+      doctor: {doctorId: this.doctorId},
+      patient: {patientId: this.updateAppointmentFormGroup.value.patient?.patientId}
     };
 
     // Preluăm statusul vechi pentru a actualiza corect contoarele
@@ -211,7 +215,7 @@ export class AppointmentsDoctorComponent {
         // Dacă apare o eroare, restaurăm contoarele la valorile anterioare
         this.updateCountersBasedOnStatusChange(newStatus, oldStatus);
 
-        alert(err.message);
+        alert(this.translate.instant('ERROR.UPDATE_APPOINTMENT'));
         this.loadAppointments();
       }
     });
@@ -386,8 +390,8 @@ export class AppointmentsDoctorComponent {
       appointmentId: this.selectedAppointment.appointmentId,
       status: "COMPLETED",
       appointmentDate: this.selectedAppointment.appointmentDate,
-      doctor: { doctorId: this.doctorId },
-      patient: { patientId: this.selectedAppointment.patient.patientId }
+      doctor: {doctorId: this.doctorId},
+      patient: {patientId: this.selectedAppointment.patient.patientId}
     };
 
     console.log('Silently updating appointment status:', appointmentToUpdate);
@@ -413,7 +417,7 @@ export class AppointmentsDoctorComponent {
     const newAppointment = {
       ...appointmentData,
       status: 'CONFIRMED',
-      doctor: { doctorId: this.doctorId }
+      doctor: {doctorId: this.doctorId}
     };
 
     this.appointmentService.saveAppointment(newAppointment).subscribe({
@@ -439,27 +443,29 @@ export class AppointmentsDoctorComponent {
       },
       error: (err) => {
         console.error('Error creating new appointment:', err);
-        alert('Eroare la crearea programării: ' + (err.error?.message || err.message || 'Eroare necunoscută'));
+        alert(this.translate.instant('ERROR.SAVE_APPOINTMENT'));
       }
     });
   }
 
   getStatusText(status: string): string {
-    // Normalizăm statusul pentru a gestiona toate variantele posibile
+    // Folosim translate service pentru a obține valorile corecte în funcție de limbă
+    if (!status) return '';
+
     const normalizedStatus = status.toUpperCase();
 
-    if (normalizedStatus.includes('COMPLET') || normalizedStatus === 'COMPLETED') {
-      return 'Finalizată';
+    // Lucrăm strict cu codurile de status, nu cu textele traduse
+    if (normalizedStatus === 'COMPLETED' || normalizedStatus.includes('COMPLET')) {
+      return this.translate.instant('STATUS.COMPLETED');
     }
-    if (normalizedStatus.includes('CONFIRM') || normalizedStatus === 'CONFIRMED') {
-      return 'Confirmată';
+    if (normalizedStatus === 'CONFIRMED' || normalizedStatus.includes('CONFIRM')) {
+      return this.translate.instant('STATUS.CONFIRMED');
     }
-    if (normalizedStatus.includes('CANCEL') || normalizedStatus === 'CANCELLED') {
-      return 'Anulată';
+    if (normalizedStatus === 'CANCELED' || normalizedStatus.includes('CANCEL')) {
+      return this.translate.instant('STATUS.CANCELED');
     }
-    if (normalizedStatus.includes('SCHEDUL') || normalizedStatus === 'SCHEDULED' ||
-      normalizedStatus.includes('APPOINTMENT')) {
-      return 'Programată';
+    if (normalizedStatus === 'SCHEDULED' || normalizedStatus.includes('SCHEDUL')) {
+      return this.translate.instant('STATUS.SCHEDULED');
     }
     return status;
   }

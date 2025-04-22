@@ -8,13 +8,13 @@
 
 <div class="hospitals-container">
   <div class="title-section">
-    <h1 class="main-title">Spitale</h1>
+    <h1 class="main-title">{{ 'HOSPITALS.TITLE' | translate }}</h1>
     <div class="underline"></div>
   </div>
 
   <div class="add-button-container">
-    <button class="btn-add-hospital" (click)="openModal(content)">
-      <i class="bi bi-plus-circle"></i> Adaugă spital
+    <button class="btn-add-hospital" (click)="openModal(content)" id="add-hospital-button">
+      <i class="bi bi-plus-circle"></i> {{ 'HOSPITALS.ADD_HOSPITAL' | translate }}
     </button>
   </div>
 
@@ -22,9 +22,10 @@
     <div *ngIf="searchFormGroup" class="search-container">
       <form [formGroup]="searchFormGroup" (ngSubmit)="handleSearchHospitals()">
         <div class="search-input-group">
-          <input type="search" formControlName="keyword" class="search-input" placeholder="Caută spital..." aria-label="Search">
+          <input type="search" formControlName="keyword" class="search-input"
+                 [placeholder]="'HOSPITALS.SEARCH' | translate" aria-label="Search">
           <button type="submit" class="search-button">
-            Caută
+            {{ 'COMMON.ACTIONS.SEARCH' | translate }}
           </button>
         </div>
       </form>
@@ -34,11 +35,11 @@
       <table class="hospitals-table">
         <thead>
         <tr>
-          <th>ID SPITAL</th>
-          <th>NUME </th>
-          <th>ADRESĂ</th>
-          <th>ORAȘ</th>
-          <th>ACȚIUNI</th>
+          <th>{{ 'HOSPITALS.ID' | translate }}</th>
+          <th>{{ 'HOSPITALS.NAME' | translate }}</th>
+          <th>{{ 'HOSPITALS.ADDRESS' | translate }}</th>
+          <th>{{ 'HOSPITALS.CITY' | translate }}</th>
+          <th>{{ 'HOSPITALS.ACTIONS' | translate }}</th>
         </tr>
         </thead>
         <tbody>
@@ -61,10 +62,20 @@
 
       <div class="pagination-controls" *ngIf="listHospitals.totalPages > 1">
         <ul class="pagination">
+          <li class="page-item" [ngClass]="{'disabled': currentPage === 0}">
+            <a class="page-link" (click)="gotoPage(currentPage - 1)" aria-label="Previous">
+              <i class="bi bi-chevron-left"></i>
+            </a>
+          </li>
           <li *ngFor="let item of [].constructor(listHospitals.totalPages); let page = index"
               class="page-item"
               [ngClass]="{'active': page === currentPage}">
-            <a (click)="gotoPage(page)" class="page-link">{{page}}</a>
+            <a (click)="gotoPage(page)" class="page-link">{{ page + 1 }}</a>
+          </li>
+          <li class="page-item" [ngClass]="{'disabled': currentPage === listHospitals.totalPages - 1}">
+            <a class="page-link" (click)="gotoPage(currentPage + 1)" aria-label="Next">
+              <i class="bi bi-chevron-right"></i>
+            </a>
           </li>
         </ul>
       </div>
@@ -80,7 +91,7 @@
       <ng-template #loading>
         <div class="loading-indicator">
           <i class="bi bi-arrow-repeat spin"></i>
-          <span>Se încarcă spitalele...</span>
+          <span>{{ 'LOADING.HOSPITALS' | translate }}</span>
         </div>
       </ng-template>
     </ng-template>
@@ -92,7 +103,7 @@
   <div class="modal-container">
     <div class="modal-header">
       <div class="modal-title">
-        <i class="bi bi-hospital"></i> Adăugare Spital Nou
+        <i class="bi bi-hospital"></i> {{ 'HOSPITALS.NEW_HOSPITAL_TITLE' | translate }}
       </div>
       <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')">×</button>
     </div>
@@ -101,32 +112,32 @@
       <div class="modal-body">
         <div class="form-row">
           <div class="form-group">
-            <label>Nume</label>
+            <label>{{ 'HOSPITALS.NAME' | translate }}</label>
             <input type="text" class="form-input"
                    [ngClass]="{'is-invalid': submitted && hospitalFormGroup.controls['name'].errors}"
                    formControlName="name">
             <div *ngIf="submitted && hospitalFormGroup.get('name')?.invalid" class="invalid-feedback">
-              <div *ngIf="hospitalFormGroup.get('name')?.errors?.['required']">Numele este obligatoriu</div>
+              <div *ngIf="hospitalFormGroup.get('name')?.errors?.['required']">{{ 'VALIDATION.NAME_REQUIRED' | translate }}</div>
             </div>
           </div>
 
           <div class="form-group">
-            <label>Adresă</label>
+            <label>{{ 'HOSPITALS.ADDRESS' | translate }}</label>
             <input #addressInput type="text" class="form-input"
                    [ngClass]="{'is-invalid': submitted && hospitalFormGroup.controls['address'].errors}"
-                   formControlName="address" placeholder="Începe să scrii adresa...">
+                   formControlName="address" [placeholder]="'HOSPITALS.ADDRESS_PLACEHOLDER' | translate">
             <div *ngIf="submitted && hospitalFormGroup.get('address')?.invalid" class="invalid-feedback">
-              <div *ngIf="hospitalFormGroup.get('address')?.errors?.['required']">Adresa este obligatorie</div>
+              <div *ngIf="hospitalFormGroup.get('address')?.errors?.['required']">{{ 'VALIDATION.ADDRESS_REQUIRED' | translate }}</div>
             </div>
           </div>
 
           <div class="form-group">
-            <label>Oraș</label>
+            <label>{{ 'HOSPITALS.CITY' | translate }}</label>
             <input type="text" class="form-input"
                    [ngClass]="{'is-invalid': submitted && hospitalFormGroup.controls['city'].errors}"
                    formControlName="city">
             <div *ngIf="submitted && hospitalFormGroup.get('city')?.invalid" class="invalid-feedback">
-              <div *ngIf="hospitalFormGroup.get('city')?.errors?.['required']">Orașul este obligatoriu</div>
+              <div *ngIf="hospitalFormGroup.get('city')?.errors?.['required']">{{ 'VALIDATION.CITY_REQUIRED' | translate }}</div>
             </div>
           </div>
 
@@ -155,10 +166,10 @@
 
       <div class="modal-footer">
         <button type="button" class="btn-cancel" (click)="onCloseModal(modal)">
-          <i class="bi bi-x-circle"></i> Închide
+          <i class="bi bi-x-circle"></i> {{ 'COMMON.ACTIONS.CLOSE' | translate }}
         </button>
         <button type="button" class="btn-save" (click)="onSaveHospital(modal)">
-          <i class="bi bi-check-circle"></i> Salvează
+          <i class="bi bi-check-circle"></i> {{ 'COMMON.ACTIONS.SAVE' | translate }}
         </button>
       </div>
     </form>
@@ -170,7 +181,7 @@
   <div class="modal-container">
     <div class="modal-header">
       <div class="modal-title">
-        <i class="bi bi-hospital"></i> Actualizare Spital
+        <i class="bi bi-hospital"></i> {{ 'HOSPITALS.UPDATE_HOSPITAL' | translate }}
       </div>
       <button type="button" class="btn-close" aria-label="Close" (click)="updateModal.dismiss('Cross click')">×</button>
     </div>
@@ -179,32 +190,32 @@
       <div class="modal-body">
         <div class="form-row">
           <div class="form-group">
-            <label>Nume</label>
+            <label>{{ 'HOSPITALS.NAME' | translate }}</label>
             <input type="text" class="form-input"
                    [ngClass]="{'is-invalid': submitted && updateHospitalFormGroup.controls['name'].errors}"
                    formControlName="name">
             <div *ngIf="submitted && updateHospitalFormGroup.get('name')?.invalid" class="invalid-feedback">
-              <div *ngIf="updateHospitalFormGroup.get('name')?.errors?.['required']">Numele este obligatoriu</div>
+              <div *ngIf="updateHospitalFormGroup.get('name')?.errors?.['required']">{{ 'VALIDATION.NAME_REQUIRED' | translate }}</div>
             </div>
           </div>
 
           <div class="form-group">
-            <label>Adresă</label>
+            <label>{{ 'HOSPITALS.ADDRESS' | translate }}</label>
             <input #updateAddressInput type="text" class="form-input"
                    [ngClass]="{'is-invalid': submitted && updateHospitalFormGroup.controls['address'].errors}"
-                   formControlName="address" placeholder="Începe să scrii adresa...">
+                   formControlName="address" [placeholder]="'HOSPITALS.ADDRESS_PLACEHOLDER' | translate">
             <div *ngIf="submitted && updateHospitalFormGroup.get('address')?.invalid" class="invalid-feedback">
-              <div *ngIf="updateHospitalFormGroup.get('address')?.errors?.['required']">Adresa este obligatorie</div>
+              <div *ngIf="updateHospitalFormGroup.get('address')?.errors?.['required']">{{ 'VALIDATION.ADDRESS_REQUIRED' | translate }}</div>
             </div>
           </div>
 
           <div class="form-group">
-            <label>Oraș</label>
+            <label>{{ 'HOSPITALS.CITY' | translate }}</label>
             <input type="text" class="form-input"
                    [ngClass]="{'is-invalid': submitted && updateHospitalFormGroup.controls['city'].errors}"
                    formControlName="city">
             <div *ngIf="submitted && updateHospitalFormGroup.get('city')?.invalid" class="invalid-feedback">
-              <div *ngIf="updateHospitalFormGroup.get('city')?.errors?.['required']">Orașul este obligatoriu</div>
+              <div *ngIf="updateHospitalFormGroup.get('city')?.errors?.['required']">{{ 'VALIDATION.CITY_REQUIRED' | translate }}</div>
             </div>
           </div>
 
@@ -233,10 +244,10 @@
 
       <div class="modal-footer">
         <button type="button" class="btn-cancel" (click)="onCloseModal(updateModal)">
-          <i class="bi bi-x-circle"></i> Închide
+          <i class="bi bi-x-circle"></i> {{ 'COMMON.ACTIONS.CLOSE' | translate }}
         </button>
         <button type="button" class="btn-save" (click)="onUpdateHospital(updateModal)">
-          <i class="bi bi-check-circle"></i> Salvează
+          <i class="bi bi-check-circle"></i> {{ 'COMMON.ACTIONS.SAVE' | translate }}
         </button>
       </div>
     </form>

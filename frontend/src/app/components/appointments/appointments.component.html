@@ -12,12 +12,12 @@
     <div class="appointments-container">
       <div class="page-header-container">
         <div class="page-title-container">
-          <h1 class="page-title">Programări</h1>
+          <h1 class="page-title">{{ 'APPOINTMENTS.TITLE' | translate }}</h1>
         </div>
 
         <div class="controls-container">
           <button class="btn-new-appointment" (click)="openModal(content)">
-            <i class="bi bi-plus-circle"></i> Programare Nouă
+            <i class="bi bi-plus-circle"></i> {{ 'APPOINTMENTS.NEW_APPOINTMENT' | translate }}
           </button>
         </div>
       </div>
@@ -30,7 +30,7 @@
             </div>
             <div class="summary-content">
               <h3 class="summary-value">{{ totalAppointments }}</h3>
-              <p class="summary-label">Total Programări</p>
+              <p class="summary-label">{{ 'APPOINTMENTS.TOTAL' | translate }}</p>
             </div>
           </div>
 
@@ -40,7 +40,7 @@
             </div>
             <div class="summary-content">
               <h3 class="summary-value">{{ upcomingAppointments }}</h3>
-              <p class="summary-label">Programări Viitoare</p>
+              <p class="summary-label">{{ 'APPOINTMENTS.UPCOMING' | translate }}</p>
             </div>
           </div>
 
@@ -50,7 +50,7 @@
             </div>
             <div class="summary-content">
               <h3 class="summary-value">{{ completedAppointments }}</h3>
-              <p class="summary-label">Programări Finalizate</p>
+              <p class="summary-label">{{ 'APPOINTMENTS.COMPLETED' | translate }}</p>
             </div>
           </div>
 
@@ -60,7 +60,7 @@
             </div>
             <div class="summary-content">
               <h3 class="summary-value">{{ canceledAppointments }}</h3>
-              <p class="summary-label">Programări Anulate</p>
+              <p class="summary-label">{{ 'APPOINTMENTS.CANCELED' | translate }}</p>
             </div>
           </div>
         </div>
@@ -70,8 +70,8 @@
         <div *ngIf="searchFormGroup" class="search-container">
           <form [formGroup]="searchFormGroup" (ngSubmit)="handleSearchAppointments()">
             <div class="search-input-group">
-              <input type="search" formControlName="keyword" class="search-input" placeholder="Caută programare..." aria-label="Search"/>
-              <button type="submit" class="search-button">Caută</button>
+              <input type="search" formControlName="keyword" class="search-input" placeholder="{{ 'APPOINTMENTS.SEARCH' | translate }}" aria-label="Search"/>
+              <button type="submit" class="search-button">{{ 'COMMON.ACTIONS.SEARCH' | translate }}</button>
             </div>
           </form>
         </div>
@@ -81,13 +81,13 @@
             <table class="appointments-table">
               <thead>
               <tr>
-                <th>ID Programare</th>
-                <th>Status</th>
-                <th>Data & Ora</th>
-                <th>Doctor</th>
-                <th>Pacient</th>
-                <th>Motiv</th>
-                <th colspan="2">Acțiuni</th>
+                <th>{{ 'APPOINTMENTS.ID' | translate }}</th>
+                <th>{{ 'APPOINTMENTS.STATUS' | translate }}</th>
+                <th>{{ 'APPOINTMENTS.DATE' | translate }}</th>
+                <th>{{ 'APPOINTMENTS.DOCTOR' | translate }}</th>
+                <th>{{ 'APPOINTMENTS.PATIENT' | translate }}</th>
+                <th>{{ 'APPOINTMENTS.REASON' | translate }}</th>
+                <th colspan="2">{{ 'APPOINTMENTS.ACTIONS' | translate }}</th>
               </tr>
               </thead>
               <tbody>
@@ -103,12 +103,12 @@
                 <td>{{a.patient.firstName}} {{a.patient.lastName}}</td>
                 <td>{{a.reason || '-'}}</td>
                 <td class="actions-cell">
-                  <button (click)="getUpdateModal(a, updateContent)" class="btn-edit" aria-label="Editare programare">
+                  <button (click)="getUpdateModal(a, updateContent)" class="btn-edit" [attr.aria-label]="'COMMON.ACTIONS.EDIT' | translate">
                     <i class="bi bi-pencil-square"></i>
                   </button>
                 </td>
                 <td class="actions-cell">
-                  <button (click)="handleDeleteAppointment(a)" class="btn-delete" aria-label="Anulare programare">
+                  <button (click)="handleDeleteAppointment(a)" class="btn-delete" [attr.aria-label]="'COMMON.ACTIONS.DELETE' | translate">
                     <i class="bi bi-trash"></i>
                   </button>
                 </td>
@@ -119,7 +119,7 @@
             <div class="pagination-controls" *ngIf="listAppointments.totalPages > 1">
               <ul class="pagination">
                 <li class="page-item" [ngClass]="{'disabled': currentPage === 0}">
-                  <a class="page-link" (click)="gotoPage(currentPage - 1)" aria-label="Înapoi">
+                  <a class="page-link" (click)="gotoPage(currentPage - 1)" [attr.aria-label]="'Previous' | translate">
                     <i class="bi bi-chevron-left"></i>
                   </a>
                 </li>
@@ -129,7 +129,7 @@
                   <a (click)="gotoPage(page)" class="page-link">{{ page + 1 }}</a>
                 </li>
                 <li class="page-item" [ngClass]="{'disabled': currentPage === listAppointments.totalPages - 1}">
-                  <a class="page-link" (click)="gotoPage(currentPage + 1)" aria-label="Înainte">
+                  <a class="page-link" (click)="gotoPage(currentPage + 1)" [attr.aria-label]="'Next' | translate">
                     <i class="bi bi-chevron-right"></i>
                   </a>
                 </li>
@@ -148,7 +148,7 @@
           <ng-template #loading>
             <div class="loading-indicator">
               <i class="bi bi-arrow-repeat spin"></i>
-              <span>Se încarcă programările...</span>
+              <span>{{ 'Loading appointments...' | translate }}</span>
             </div>
           </ng-template>
         </ng-template>
@@ -162,9 +162,9 @@
   <div class="modal-container">
     <div class="modal-header">
       <div class="modal-title">
-        <i class="bi bi-calendar-plus"></i> Programare Nouă
+        <i class="bi bi-calendar-plus"></i> {{ 'APPOINTMENTS.NEW_APPOINTMENT_TITLE' | translate }}
       </div>
-      <button type="button" class="btn-close" aria-label="Închide" (click)="modal.dismiss('Cross click')">×</button>
+      <button type="button" class="btn-close" [attr.aria-label]="'COMMON.ACTIONS.CLOSE' | translate" (click)="modal.dismiss('Cross click')">×</button>
     </div>
 
     <ng-container *ngIf="doctors$ | async as listDoctors; else modalFailureOrLoading">
@@ -174,7 +174,7 @@
             <div class="form-fields">
               <!-- Date & Time Field -->
               <div class="form-group">
-                <label>Data Programării</label>
+                <label>{{ 'APPOINTMENTS.APPOINTMENT_DATE' | translate }}</label>
                 <input
                   type="datetime-local"
                   class="form-control"
@@ -189,64 +189,64 @@
 
               <!-- Doctor Selection Field -->
               <div class="form-group">
-                <label>Doctor</label>
+                <label>{{ 'APPOINTMENTS.DOCTOR' | translate }}</label>
                 <select
                   class="form-control"
                   [ngClass]="{'is-invalid': submitted && appointmentFormGroup.get('doctor')?.invalid}"
                   formControlName="doctor"
                 >
-                  <option [ngValue]="null" disabled>Alege doctor</option>
+                  <option [ngValue]="null" disabled>{{ 'APPOINTMENTS.SELECT_DOCTOR' | translate }}</option>
                   <option *ngFor="let doctor of listDoctors" [ngValue]="doctor">
                     Dr. {{doctor.firstName}} {{doctor.lastName}}
                   </option>
                 </select>
                 <div *ngIf="submitted && appointmentFormGroup.get('doctor')?.invalid" class="invalid-feedback">
-                  Selectarea doctorului este obligatorie
+                  {{ 'VALIDATION.DOCTOR_REQUIRED' | translate }}
                 </div>
+
               </div>
 
               <!-- Patient Selection Field -->
               <div class="form-group">
-                <label>Pacient</label>
+                <label>{{ 'APPOINTMENTS.PATIENT' | translate }}</label>
                 <select
                   class="form-control"
                   [ngClass]="{'is-invalid': submitted && appointmentFormGroup.get('patient')?.invalid}"
                   formControlName="patient"
                 >
-                  <option [ngValue]="null" disabled>Alege pacient</option>
+                  <option [ngValue]="null" disabled>{{ 'APPOINTMENTS.SELECT_PATIENT' | translate }}</option>
                   <option *ngFor="let patient of listPatients" [ngValue]="patient">
                     {{patient.firstName}} {{patient.lastName}}
                   </option>
                 </select>
                 <div *ngIf="submitted && appointmentFormGroup.get('patient')?.invalid" class="invalid-feedback">
-                  Selectarea pacientului este obligatorie
+                  {{ 'VALIDATION.PATIENT_REQUIRED' | translate }}
                 </div>
               </div>
 
               <!-- Reason Field -->
               <div class="form-group">
-                <label>Motivul Programării</label>
+                <label>{{ 'APPOINTMENTS.APPOINTMENT_REASON' | translate }}</label>
                 <input
                   type="text"
                   class="form-control"
                   [ngClass]="{'is-invalid': submitted && appointmentFormGroup.controls['reason'].errors}"
                   formControlName="reason"
-                  placeholder="Consultație generală, Control periodic, etc."
+                  placeholder="{{ 'General consultation, periodic check, etc.' | translate }}"
                 >
                 <div *ngIf="submitted && appointmentFormGroup.get('reason')?.invalid" class="invalid-feedback">
-                  Motivul programării este obligatoriu
+                  {{ 'VALIDATION.REASON_REQUIRED' | translate }}
                 </div>
               </div>
-
             </div>
           </div>
 
           <div class="modal-footer">
             <button type="button" class="btn-cancel" (click)="onCloseModel(modal)">
-              <i class="bi bi-x-circle"></i> Anulează
+              <i class="bi bi-x-circle"></i> {{ 'COMMON.ACTIONS.CANCEL' | translate }}
             </button>
             <button type="button" class="btn-save" (click)="onSaveAppointment(modal)">
-              <i class="bi bi-check-circle"></i> Creează Programare
+              <i class="bi bi-check-circle"></i> {{ 'APPOINTMENTS.CREATE_APPOINTMENT' | translate }}
             </button>
           </div>
         </form>
@@ -263,7 +263,7 @@
       <ng-template #modalLoading>
         <div class="loading-indicator modal-loading">
           <i class="bi bi-arrow-repeat spin"></i>
-          <span>Se încarcă informațiile despre doctori și pacienți...</span>
+          <span>{{ 'Loading doctor and patient information...' | translate }}</span>
         </div>
       </ng-template>
     </ng-template>
@@ -275,9 +275,9 @@
   <div class="modal-container">
     <div class="modal-header">
       <div class="modal-title">
-        <i class="bi bi-calendar-check"></i> Actualizare Programare
+        <i class="bi bi-calendar-check"></i> {{ 'APPOINTMENTS.UPDATE_APPOINTMENT' | translate }}
       </div>
-      <button type="button" class="btn-close" aria-label="Închide" (click)="updateModal.dismiss('Cross click')">×</button>
+      <button type="button" class="btn-close" [attr.aria-label]="'COMMON.ACTIONS.CLOSE' | translate" (click)="updateModal.dismiss('Cross click')">×</button>
     </div>
 
     <ng-container *ngIf="doctors$ | async as listDoctors; else modalFailureOrLoading">
@@ -287,7 +287,7 @@
             <div class="form-fields">
               <!-- ID Field (Read-only) -->
               <div class="form-group">
-                <label>ID Programare</label>
+                <label>{{ 'APPOINTMENTS.ID' | translate }}</label>
                 <input
                   type="text"
                   class="form-control form-control-readonly"
@@ -298,24 +298,24 @@
 
               <!-- Status Field -->
               <div class="form-group">
-                <label>Status Programare</label>
+                <label>{{ 'APPOINTMENTS.APPOINTMENT_STATUS' | translate }}</label>
                 <select
                   class="form-control"
                   [ngClass]="{'is-invalid': submitted && updateAppointmentFormGroup.controls['appointmentStatus'].errors}"
                   formControlName="appointmentStatus"
                 >
-                  <option value="Confirmată">Confirmată</option>
-                  <option value="Finalizată">Finalizată</option>
-                  <option value="Anulată">Anulată</option>
+                  <option [ngValue]="translateService.instant('STATUS.SCHEDULED')">{{ 'STATUS.SCHEDULED' | translate }}</option>
+                  <option [ngValue]="translateService.instant('STATUS.COMPLETED')">{{ 'STATUS.COMPLETED' | translate }}</option>
+                  <option [ngValue]="translateService.instant('STATUS.CANCELED')">{{ 'STATUS.CANCELED' | translate }}</option>
                 </select>
                 <div *ngIf="submitted && updateAppointmentFormGroup.get('appointmentStatus')?.invalid" class="invalid-feedback">
-                  Statusul programării este obligatoriu
+                  {{ 'Appointment status is required' | translate }}
                 </div>
               </div>
 
               <!-- Date Field -->
               <div class="form-group">
-                <label>Data Programării</label>
+                <label>{{ 'APPOINTMENTS.APPOINTMENT_DATE' | translate }}</label>
                 <input
                   type="datetime-local"
                   class="form-control"
@@ -330,7 +330,7 @@
 
               <!-- Doctor Selection Field -->
               <div class="form-group">
-                <label>Doctor</label>
+                <label>{{ 'APPOINTMENTS.DOCTOR' | translate }}</label>
                 <select
                   class="form-control"
                   [ngClass]="{'is-invalid': submitted && updateAppointmentFormGroup.get('doctor')?.invalid}"
@@ -344,13 +344,13 @@
                   </option>
                 </select>
                 <div *ngIf="submitted && updateAppointmentFormGroup.get('doctor')?.invalid" class="invalid-feedback">
-                  Selectarea doctorului este obligatorie
+                  {{ 'VALIDATION.DOCTOR_REQUIRED' | translate }}
                 </div>
               </div>
 
               <!-- Patient Selection Field -->
               <div class="form-group">
-                <label>Pacient</label>
+                <label>{{ 'APPOINTMENTS.PATIENT' | translate }}</label>
                 <select
                   class="form-control"
                   [ngClass]="{'is-invalid': submitted && updateAppointmentFormGroup.get('patient')?.invalid}"
@@ -364,22 +364,22 @@
                   </option>
                 </select>
                 <div *ngIf="submitted && updateAppointmentFormGroup.get('patient')?.invalid" class="invalid-feedback">
-                  Selectarea pacientului este obligatorie
+                  {{ 'VALIDATION.PATIENT_REQUIRED' | translate }}
                 </div>
               </div>
 
               <!-- Reason Field -->
               <div class="form-group">
-                <label>Motivul Programării</label>
+                <label>{{ 'APPOINTMENTS.APPOINTMENT_REASON' | translate }}</label>
                 <input
                   type="text"
                   class="form-control"
                   [ngClass]="{'is-invalid': submitted && updateAppointmentFormGroup.controls['reason'].errors}"
                   formControlName="reason"
-                  placeholder="Consultație generală, Control periodic, etc."
+                  placeholder="{{ 'General consultation, periodic check, etc.' | translate }}"
                 >
                 <div *ngIf="submitted && updateAppointmentFormGroup.get('reason')?.invalid" class="invalid-feedback">
-                  Motivul programării este obligatoriu
+                  {{ 'VALIDATION.REASON_REQUIRED' | translate }}
                 </div>
               </div>
             </div>
@@ -387,10 +387,10 @@
 
           <div class="modal-footer">
             <button type="button" class="btn-cancel" (click)="onCloseModel(updateModal)">
-              <i class="bi bi-x-circle"></i> Anulează
+              <i class="bi bi-x-circle"></i> {{ 'COMMON.ACTIONS.CANCEL' | translate }}
             </button>
             <button type="button" class="btn-save" (click)="onUpdateAppointment(updateModal)">
-              <i class="bi bi-check-circle"></i> Salvează Modificările
+              <i class="bi bi-check-circle"></i> {{ 'APPOINTMENTS.SAVE_CHANGES' | translate }}
             </button>
           </div>
         </form>
@@ -407,7 +407,7 @@
       <ng-template #modalLoading>
         <div class="loading-indicator modal-loading">
           <i class="bi bi-arrow-repeat spin"></i>
-          <span>Se încarcă informațiile despre doctori și pacienți...</span>
+          <span>{{ 'LOADING.DOCTORS_PATIENTS' | translate }}</span>
         </div>
       </ng-template>
     </ng-template>

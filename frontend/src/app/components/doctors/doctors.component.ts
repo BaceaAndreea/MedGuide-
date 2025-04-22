@@ -15,6 +15,7 @@ import {EmailExistsValidators} from '../../validators/emailexists.validators';
 import {UsersService} from '../../services/users.service';
 import {AppointmentsService} from '../../services/appointments.service';
 import {Appointment} from '../../model/appointment.model';
+import {TranslateModule, TranslateService} from '@ngx-translate/core';
 
 @Component({
   selector: 'app-doctors',
@@ -26,7 +27,8 @@ import {Appointment} from '../../model/appointment.model';
     NgForOf,
     NgIf,
     NgClass,
-    DatePipe
+    DatePipe,
+    TranslateModule
   ],
   styleUrls: ['./doctors.component.scss']
 })
@@ -63,7 +65,8 @@ export class DoctorsComponent implements OnInit{
     private hospitalService: HospitalsService,
     private specializationService: SpecializationsService,
     private userService: UsersService,
-    private appointmentService: AppointmentsService
+    private appointmentService: AppointmentsService,
+    private translate: TranslateService
   ) {}
 
   ngOnInit(): void {
@@ -96,10 +99,10 @@ export class DoctorsComponent implements OnInit{
 
   // Returneazp clasa pentru status badge în modală
   getStatusClass(status: string): string {
-    if (status === 'Confirmată') return 'status-confirmed';
-    if (status === 'Finalizată') return 'status-completed';
-    if (status === 'Anulată') return 'status-cancelled';
-    if (status === 'Programată') return 'status-scheduled';
+    if (status === 'SCHEDULED') return 'status-scheduled';
+    if (status === 'COMPLETED') return 'status-completed';
+    if (status === 'CANCELED') return 'status-cancelled';
+    if (status === 'CONFIRMED') return 'status-confirmed';
     return 'status-pending';
   }
 
@@ -113,7 +116,7 @@ export class DoctorsComponent implements OnInit{
       }),
       catchError(err => {
         console.error('Eroare la încărcarea numărului de doctori', err);
-        return throwError(err);
+        return throwError(() => err);
       })
     ).subscribe();
 
@@ -125,7 +128,7 @@ export class DoctorsComponent implements OnInit{
       }),
       catchError(err => {
         console.error('Eroare la încărcarea specializărilor', err);
-        return throwError(err);
+        return throwError(() => err);
       })
     ).subscribe();
 
@@ -137,10 +140,9 @@ export class DoctorsComponent implements OnInit{
       }),
       catchError(err => {
         console.error('Eroare la încărcarea spitalelor', err);
-        return throwError(err);
+        return throwError(() => err);
       })
     ).subscribe();
-
   }
 
   // Deschide modalul pentru adăugare doctor
@@ -156,8 +158,10 @@ export class DoctorsComponent implements OnInit{
     const keyword = this.searchFormGroup.value.keyword;
     this.pageDoctors = this.doctorService.searchDoctors(keyword, this.currentPage, this.pageSize).pipe(
       catchError(err => {
-        this.errorMessage = err.message;
-        return throwError(err);
+        this.translate.get('ERROR.FETCH_DOCTORS').subscribe((res: string) => {
+          this.errorMessage = res;
+        });
+        return throwError(() => err);
       })
     );
   }
@@ -172,8 +176,10 @@ export class DoctorsComponent implements OnInit{
   fetchHospitals(): void {
     this.hospitals$ = this.hospitalService.findAllHospitals().pipe(
       catchError(err => {
-        this.errorMessageHospital = err.message;
-        return throwError(err);
+        this.translate.get('ERROR.FETCH_HOSPITALS').subscribe((res: string) => {
+          this.errorMessageHospital = res;
+        });
+        return throwError(() => err);
       })
     );
   }
@@ -182,27 +188,35 @@ export class DoctorsComponent implements OnInit{
   fetchSpecializations(): void {
     this.specializations$ = this.specializationService.findAllSpecializations().pipe(
       catchError(err => {
-        this.errorMessageSpecialization = err.message;
-        return throwError(err);
+        this.translate.get('ERROR.FETCH_SPECIALIZATIONS').subscribe((res: string) => {
+          this.errorMessageSpecialization = res;
+        });
+        return throwError(() => err);
       })
     );
   }
 
   // Șterge un doctor
   handleDeleteDoctor(d: Doctor): void {
-    const conf = confirm("Sunteți sigur că doriți să ștergeți acest doctor?");
-    if (!conf) return;
+    this.translate.get('CONFIRMATION.DELETE_DOCTOR').subscribe((confirmMessage: string) => {
+      const conf = confirm(confirmMessage);
+      if (!conf) return;
 
-    this.doctorService.deleteDoctor(d.doctorId).subscribe({
-      next: () => {
-        this.handleSearchDoctors();
-        this.loadDashboardData(); // Actualizează sumarul
-        alert("Doctorul a fost șters cu succes!");
-      },
-      error: err => {
-        alert("Eroare la ștergerea doctorului: " + err.message);
-        console.error(err);
-      }
+      this.doctorService.deleteDoctor(d.doctorId).subscribe({
+        next: () => {
+          this.handleSearchDoctors();
+          this.loadDashboardData(); // Actualizează sumarul
+          this.translate.get('SUCCESS.DOCTOR_DELETED').subscribe((successMessage: string) => {
+            alert(successMessage);
+          });
+        },
+        error: err => {
+          this.translate.get('ERROR.DELETE_DOCTOR').subscribe((errorMessage: string) => {
+            alert(errorMessage + ": " + err.message);
+          });
+          console.error(err);
+        }
+      });
     });
   }
 
@@ -234,7 +248,9 @@ export class DoctorsComponent implements OnInit{
 
     this.doctorService.saveDoctor(doctor).subscribe({
       next: () => {
-        alert("Doctor salvat cu succes!");
+        this.translate.get('SUCCESS.DOCTOR_CREATED').subscribe((successMessage: string) => {
+          alert(successMessage);
+        });
         this.handleSearchDoctors();
         this.loadDashboardData(); // Actualizează sumarul
         this.submitted = false;
@@ -242,7 +258,9 @@ export class DoctorsComponent implements OnInit{
         modal.close();
       },
       error: err => {
-        alert("Eroare la salvarea doctorului: " + err.message);
+        this.translate.get('ERROR.SAVE_DOCTOR').subscribe((errorMessage: string) => {
+          alert(errorMessage + ": " + err.message);
+        });
         console.error("Eroare salvare:", err);
       }
     });
@@ -283,14 +301,18 @@ export class DoctorsComponent implements OnInit{
 
     this.doctorService.updateDoctor(doctor, doctor.doctorId).subscribe({
       next: () => {
-        alert("Doctor actualizat cu succes!");
+        this.translate.get('SUCCESS.DOCTOR_UPDATED').subscribe((successMessage: string) => {
+          alert(successMessage);
+        });
         this.handleSearchDoctors();
         this.loadDashboardData(); // Actualizează sumarul
         this.submitted = false;
         updateModal.close();
       },
       error: err => {
-        alert("Eroare la actualizarea doctorului: " + err.message);
+        this.translate.get('ERROR.UPDATE_DOCTOR').subscribe((errorMessage: string) => {
+          alert(errorMessage + ": " + err.message);
+        });
       }
     });
   }
@@ -307,8 +329,10 @@ export class DoctorsComponent implements OnInit{
   handleSearchAppointments(d: Doctor): void {
     this.pageAppointment$ = this.appointmentService.getAppointmentByDoctor(d.doctorId, this.appointmentCurrentPage, this.appointmentPageSize).pipe(
       catchError(err => {
-        this.appointmentErrorMessage = err.message;
-        return throwError(err);
+        this.translate.get('ERROR.FETCH_DOCTOR_APPOINTMENTS').subscribe((errorMessage: string) => {
+          this.appointmentErrorMessage = errorMessage;
+        });
+        return throwError(() => err);
       })
     );
   }

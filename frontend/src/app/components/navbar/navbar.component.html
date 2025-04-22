@@ -9,7 +9,7 @@
             <path d="M19 3H5c-1.1 0-1.99.9-1.99 2L3 19c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-1 11h-4v4h-4v-4H6v-4h4V6h4v4h4v4z"/>
           </svg>
         </div>
-        <div class="sidebar-title">MedGuide</div>
+        <div class="sidebar-title">{{ 'COMMON.TITLE' | translate }}</div>
       </div>
 
       <!-- Logo mic pentru starea restrânsă -->
@@ -25,6 +25,9 @@
     <button class="toggle-btn" (click)="toggleSidebar()">
       <i class="fa-solid" [ngClass]="isCollapsed ? 'fa-angles-right' : 'fa-angles-left'"></i>
     </button>
+
+    <!-- Adăugăm selectorul de limbă dacă sidebar-ul nu este collapsed -->
+    <app-language-selector *ngIf="!isCollapsed"></app-language-selector>
   </div>
 
   <div class="sidebar-content">
@@ -33,35 +36,35 @@
       <li *ngIf="isAdmin" class="menu-item" [ngClass]="{'active-link': activeRoute === '/patients'}">
         <a routerLink="/patients" routerLinkActive="active">
           <div class="menu-icon"><i class="fa-solid fa-hospital-user"></i></div>
-          <span class="menu-text" *ngIf="!isCollapsed">Pacienți</span>
+          <span class="menu-text" *ngIf="!isCollapsed">{{ 'NAVIGATION.PATIENTS' | translate }}</span>
         </a>
       </li>
 
       <li *ngIf="isAdmin" class="menu-item" [ngClass]="{'active-link': activeRoute === '/appointments'}">
         <a routerLink="/appointments" routerLinkActive="active">
           <div class="menu-icon"><i class="fa-regular fa-calendar-check"></i></div>
-          <span class="menu-text" *ngIf="!isCollapsed">Programări</span>
+          <span class="menu-text" *ngIf="!isCollapsed">{{ 'NAVIGATION.APPOINTMENTS' | translate }}</span>
         </a>
       </li>
 
       <li *ngIf="isAdmin" class="menu-item" [ngClass]="{'active-link': activeRoute === '/doctors'}">
         <a routerLink="/doctors" routerLinkActive="active">
           <div class="menu-icon"><i class="fa-solid fa-user-doctor"></i></div>
-          <span class="menu-text" *ngIf="!isCollapsed">Doctori</span>
+          <span class="menu-text" *ngIf="!isCollapsed">{{ 'NAVIGATION.DOCTORS' | translate }}</span>
         </a>
       </li>
 
       <li *ngIf="isAdmin" class="menu-item" [ngClass]="{'active-link': activeRoute === '/hospitals'}">
         <a routerLink="/hospitals" routerLinkActive="active">
           <div class="menu-icon"><i class="fa-solid fa-hospital"></i></div>
-          <span class="menu-text" *ngIf="!isCollapsed">Spitale</span>
+          <span class="menu-text" *ngIf="!isCollapsed">{{ 'NAVIGATION.HOSPITALS' | translate }}</span>
         </a>
       </li>
 
       <li *ngIf="isAdmin" class="menu-item" [ngClass]="{'active-link': activeRoute === '/specializations'}">
         <a routerLink="/specializations" routerLinkActive="active">
           <div class="menu-icon"><i class="fa-solid fa-notes-medical"></i></div>
-          <span class="menu-text" *ngIf="!isCollapsed">Specializări</span>
+          <span class="menu-text" *ngIf="!isCollapsed">{{ 'NAVIGATION.SPECIALIZATIONS' | translate }}</span>
         </a>
       </li>
 
@@ -69,14 +72,14 @@
       <li *ngIf="isPatient" class="menu-item" [ngClass]="{'active-link': activeRoute.includes('/patient-appointments/')}">
         <a [routerLink]="['/patient-appointments/', patientId]" routerLinkActive="active">
           <div class="menu-icon"><i class="fa-solid fa-person-chalkboard"></i></div>
-          <span class="menu-text" *ngIf="!isCollapsed">Programările tale</span>
+          <span class="menu-text" *ngIf="!isCollapsed">{{ 'NAVIGATION.MY_APPOINTMENTS' | translate }}</span>
         </a>
       </li>
 
       <li *ngIf="isPatient" class="menu-item" [ngClass]="{'active-link': activeRoute.includes('/patient-consultations/')}">
         <a [routerLink]="['/patient-consultations/', patientId]" routerLinkActive="active">
           <div class="menu-icon"><i class="fa-solid fa-stethoscope"></i></div>
-          <span class="menu-text" *ngIf="!isCollapsed">Consultațiile tale</span>
+          <span class="menu-text" *ngIf="!isCollapsed">{{ 'NAVIGATION.CONSULTATIONS' | translate }}</span>
         </a>
       </li>
 
@@ -84,14 +87,14 @@
       <li *ngIf="isDoctor" class="menu-item" [ngClass]="{'active-link': activeRoute.includes('/doctor-appointments/')}">
         <a [routerLink]="['/doctor-appointments/', doctorId]" routerLinkActive="active">
           <div class="menu-icon"><i class="fa-solid fa-person-chalkboard"></i></div>
-          <span class="menu-text" *ngIf="!isCollapsed">Programările tale</span>
+          <span class="menu-text" *ngIf="!isCollapsed">{{ 'NAVIGATION.MY_APPOINTMENTS' | translate }}</span>
         </a>
       </li>
 
       <li *ngIf="isDoctor" class="menu-item" [ngClass]="{'active-link': activeRoute.includes('/doctor-consultations/')}">
         <a [routerLink]="['/doctor-consultations/', doctorId]" routerLinkActive="active">
           <div class="menu-icon"><i class="fa-solid fa-stethoscope"></i></div>
-          <span class="menu-text" *ngIf="!isCollapsed">Consultațiile tale</span>
+          <span class="menu-text" *ngIf="!isCollapsed">{{ 'NAVIGATION.CONSULTATIONS' | translate }}</span>
         </a>
       </li>
     </ul>
@@ -105,14 +108,14 @@
       </div>
       <div class="user-info" *ngIf="!isCollapsed">
         <span class="username">{{ userName }}</span>
-        <span class="role">{{ isDoctor ? 'Doctor' : (isPatient ? 'Pacient' : 'Utilizator') }}</span>
+        <span class="role">{{ isDoctor ? ('PROFILE.DOCTOR' | translate) : (isPatient ? ('PROFILE.PATIENT' | translate) : 'Admin') }}</span>
       </div>
     </div>
     <div class="user-menu" *ngIf="showUserMenu">
       <ul>
-        <li *ngIf="isDoctor" (click)="getModal(doctorContent)"><i class="fa-solid fa-id-card"></i> Actualizează Profilul</li>
-        <li *ngIf="isPatient" (click)="getModal(patientContent)"><i class="fa-solid fa-id-card"></i> Actualizează Profilul</li>
-        <li (click)="logout()"><i class="fa-solid fa-right-from-bracket"></i> Deconectare</li>
+        <li *ngIf="isDoctor" (click)="getModal(doctorContent)"><i class="fa-solid fa-id-card"></i> {{ 'PROFILE.UPDATE_PROFILE' | translate }}</li>
+        <li *ngIf="isPatient" (click)="getModal(patientContent)"><i class="fa-solid fa-id-card"></i> {{ 'PROFILE.UPDATE_PROFILE' | translate }}</li>
+        <li (click)="logout()"><i class="fa-solid fa-right-from-bracket"></i> {{ 'NAVIGATION.LOGOUT' | translate }}</li>
       </ul>
     </div>
   </div>
@@ -123,7 +126,7 @@
 <ng-template #patientContent let-modal>
   <div class="modal-header">
     <h5 class="modal-title">
-      <i class="fa-solid fa-user-pen"></i> Actualizare Profil
+      <i class="fa-solid fa-user-pen"></i> {{ 'PROFILE.UPDATE_PROFILE' | translate }}
     </h5>
     <button type="button" class="btn-close" aria-label="Închide" (click)="modal.dismiss('Cross click')"></button>
   </div>
@@ -133,7 +136,7 @@
         <i class="fa-solid fa-user"></i>
       </div>
       <div class="profile-role">
-        <span>Pacient</span>
+        <span>{{ 'PROFILE.PATIENT' | translate }}</span>
       </div>
     </div>
 
@@ -143,7 +146,7 @@
         <div class="input-icon">
           <i class="fa-solid fa-signature"></i>
         </div>
-        <label class="form-label">Prenume</label>
+        <label class="form-label">{{ 'PROFILE.FIRST_NAME' | translate }}</label>
         <input
           type="text"
           class="form-control"
@@ -151,7 +154,7 @@
           formControlName="firstName"
         >
         <div *ngIf="submitted && updatePatientFormGroup.get('firstName')?.invalid" class="invalid-feedback">
-          Prenumele este obligatoriu
+          {{ 'PATIENTS.FIRST_NAME' | translate }} {{ 'COMMON.ACTIONS.REQUIRED' | translate }}
         </div>
       </div>
 
@@ -160,7 +163,7 @@
         <div class="input-icon">
           <i class="fa-solid fa-signature"></i>
         </div>
-        <label class="form-label">Nume</label>
+        <label class="form-label">{{ 'PROFILE.LAST_NAME' | translate }}</label>
         <input
           type="text"
           class="form-control"
@@ -168,7 +171,7 @@
           formControlName="lastName"
         >
         <div *ngIf="submitted && updatePatientFormGroup.get('lastName')?.invalid" class="invalid-feedback">
-          Numele este obligatoriu
+          {{ 'PATIENTS.LAST_NAME' | translate }} {{ 'COMMON.ACTIONS.REQUIRED' | translate }}
         </div>
       </div>
 
@@ -177,24 +180,24 @@
         <div class="input-icon">
           <i class="fa-solid fa-virus"></i>
         </div>
-        <label class="form-label">Alergii</label>
+        <label class="form-label">{{ 'PROFILE.ALLERGIES' | translate }}</label>
         <textarea
           class="form-control custom-textarea"
           formControlName="allergies"
           rows="3"
         ></textarea>
         <small class="form-text text-muted">
-          <i class="fa-solid fa-circle-info"></i> Introduceți alergiile cunoscute (medicamente, alimente, etc.)
+          <i class="fa-solid fa-circle-info"></i> {{ 'PATIENTS.ALLERGIES_HINT' | translate }}
         </small>
       </div>
     </form>
   </div>
   <div class="modal-footer">
     <button type="button" class="btn btn-outline-secondary" (click)="onCloseModal(modal)">
-      <i class="fa-solid fa-xmark"></i> Anulează
+      <i class="fa-solid fa-xmark"></i> {{ 'COMMON.ACTIONS.CANCEL' | translate }}
     </button>
     <button type="button" class="btn btn-primary" (click)="onUpdatePatient(modal)">
-      <i class="fa-solid fa-floppy-disk"></i> Salvează modificările
+      <i class="fa-solid fa-floppy-disk"></i> {{ 'PROFILE.SAVE_CHANGES' | translate }}
     </button>
   </div>
 </ng-template>
@@ -205,7 +208,7 @@
 <ng-template #doctorContent let-modal>
   <div class="modal-header">
     <h5 class="modal-title">
-      <i class="fa-solid fa-user-doctor"></i> Actualizare Profil
+      <i class="fa-solid fa-user-doctor"></i> {{ 'PROFILE.UPDATE_PROFILE' | translate }}
     </h5>
     <button type="button" class="btn-close" aria-label="Închide" (click)="modal.dismiss('Cross click')"></button>
   </div>
@@ -215,7 +218,7 @@
         <i class="fa-solid fa-user-doctor"></i>
       </div>
       <div class="profile-role">
-        <span>Doctor</span>
+        <span>{{ 'PROFILE.DOCTOR' | translate }}</span>
       </div>
     </div>
 
@@ -225,7 +228,7 @@
         <div class="input-icon">
           <i class="fa-solid fa-signature"></i>
         </div>
-        <label class="form-label">Prenume</label>
+        <label class="form-label">{{ 'PROFILE.FIRST_NAME' | translate }}</label>
         <input
           type="text"
           class="form-control"
@@ -233,7 +236,7 @@
           formControlName="firstName"
         >
         <div *ngIf="submitted && updateDoctorFormGroup.get('firstName')?.invalid" class="invalid-feedback">
-          Prenumele este obligatoriu
+          {{ 'DOCTORS.FIRST_NAME' | translate }} {{ 'COMMON.ACTIONS.REQUIRED' | translate }}
         </div>
       </div>
 
@@ -242,7 +245,7 @@
         <div class="input-icon">
           <i class="fa-solid fa-signature"></i>
         </div>
-        <label class="form-label">Nume</label>
+        <label class="form-label">{{ 'PROFILE.LAST_NAME' | translate }}</label>
         <input
           type="text"
           class="form-control"
@@ -250,7 +253,7 @@
           formControlName="lastName"
         >
         <div *ngIf="submitted && updateDoctorFormGroup.get('lastName')?.invalid" class="invalid-feedback">
-          Numele este obligatoriu
+          {{ 'DOCTORS.LAST_NAME' | translate }} {{ 'COMMON.ACTIONS.REQUIRED' | translate }}
         </div>
       </div>
 
@@ -259,7 +262,7 @@
         <div class="input-icon">
           <i class="fa-solid fa-calendar-day"></i>
         </div>
-        <label class="form-label">Data Nașterii</label>
+        <label class="form-label">{{ 'PROFILE.BIRTH_DATE' | translate }}</label>
         <input
           type="date"
           class="form-control"
@@ -267,7 +270,7 @@
           formControlName="birthDate"
         >
         <div *ngIf="submitted && updateDoctorFormGroup.get('birthDate')?.invalid" class="invalid-feedback">
-          Data nașterii este obligatorie
+          {{ 'DOCTORS.BIRTH_DATE' | translate }} {{ 'COMMON.ACTIONS.REQUIRED' | translate }}
         </div>
       </div>
 
@@ -276,17 +279,17 @@
         <div class="input-icon">
           <i class="fa-solid fa-hospital"></i>
         </div>
-        <label class="form-label">Spital</label>
+        <label class="form-label">{{ 'PROFILE.HOSPITAL' | translate }}</label>
         <select
           class="form-select"
           [ngClass]="{'is-invalid': submitted && updateDoctorFormGroup.get('hospital')?.invalid}"
           formControlName="hospital"
         >
-          <option value="" disabled selected>Selectează</option>
+          <option value="" disabled selected>{{ 'COMMON.ACTIONS.SELECT' | translate }}</option>
           <option *ngFor="let h of hospitals$ | async" [ngValue]="h.hospitalId">{{ h.name }}</option>
         </select>
         <div *ngIf="submitted && updateDoctorFormGroup.get('hospital')?.invalid" class="invalid-feedback">
-          Spitalul este obligatoriu
+          {{ 'DOCTORS.HOSPITAL' | translate }} {{ 'COMMON.ACTIONS.REQUIRED' | translate }}
         </div>
       </div>
 
@@ -295,27 +298,27 @@
         <div class="input-icon">
           <i class="fa-solid fa-stethoscope"></i>
         </div>
-        <label class="form-label">Specializare</label>
+        <label class="form-label">{{ 'PROFILE.SPECIALIZATION' | translate }}</label>
         <select
           class="form-select"
           [ngClass]="{'is-invalid': submitted && updateDoctorFormGroup.get('specialization')?.invalid}"
           formControlName="specialization"
         >
-          <option value="" disabled selected>Selectează</option>
+          <option value="" disabled selected>{{ 'COMMON.ACTIONS.SELECT' | translate }}</option>
           <option *ngFor="let s of specializations$ | async" [ngValue]="s.specializationId">{{ s.description }}</option>
         </select>
         <div *ngIf="submitted && updateDoctorFormGroup.get('specialization')?.invalid" class="invalid-feedback">
-          Specializarea este obligatorie
+          {{ 'DOCTORS.SPECIALIZATION' | translate }} {{ 'COMMON.ACTIONS.REQUIRED' | translate }}
         </div>
       </div>
     </form>
   </div>
   <div class="modal-footer">
     <button type="button" class="btn btn-outline-secondary" (click)="onCloseModal(modal)">
-      <i class="fa-solid fa-xmark"></i> Anulează
+      <i class="fa-solid fa-xmark"></i> {{ 'COMMON.ACTIONS.CANCEL' | translate }}
     </button>
     <button type="button" class="btn btn-primary" (click)="onUpdateDoctor(modal)">
-      <i class="fa-solid fa-floppy-disk"></i> Salvează modificările
+      <i class="fa-solid fa-floppy-disk"></i> {{ 'PROFILE.SAVE_CHANGES' | translate }}
     </button>
   </div>
 </ng-template>

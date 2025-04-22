@@ -8,6 +8,7 @@ import {Hospital} from '../../model/hospital.model';
 import {AsyncPipe, NgClass, NgForOf, NgIf} from '@angular/common';
 import { GoogleMapsModule } from '@angular/google-maps';
 import {GoogleMapsService} from '../../services/google-maps.service';
+import {TranslateModule, TranslateService} from '@ngx-translate/core';
 
 declare var google: any;
 
@@ -21,14 +22,15 @@ declare var google: any;
     AsyncPipe,
     NgForOf,
     NgClass,
-    GoogleMapsModule
+    GoogleMapsModule,
+    TranslateModule
   ],
   styleUrl: './hospitals.component.scss'
 })
 export class HospitalsComponent implements OnInit, AfterViewInit, OnDestroy {
   searchFormGroup!: FormGroup;
   currentPage: number = 0;
-  pageSize: number = 10;
+  pageSize: number = 6;
   errorMessage!: String;
   pageHospitals!: Observable<PageRespone<Hospital>>;
   hospitalFormGroup!: FormGroup;
@@ -52,7 +54,8 @@ export class HospitalsComponent implements OnInit, AfterViewInit, OnDestroy {
     private fb: FormBuilder,
     private hospitalsService: HospitalsService,
     private ngZone: NgZone,
-    private googleMapsService: GoogleMapsService
+    private googleMapsService: GoogleMapsService,
+    private translate: TranslateService
   ) {}
 
   ngOnInit(): void {
@@ -342,7 +345,7 @@ export class HospitalsComponent implements OnInit, AfterViewInit, OnDestroy {
     modal.close();
     this.hospitalFormGroup.reset();
 
-    // Focus pe butonul „Adaugă spital”, dacă ai un astfel de element
+    // Focus pe butonul „Adaugă spital", dacă ai un astfel de element
     const addButton = document.getElementById('add-hospital-button');
     if (addButton) {
       addButton.focus();
@@ -369,14 +372,18 @@ export class HospitalsComponent implements OnInit, AfterViewInit, OnDestroy {
     console.log("Submiting hospital:", hospital);
     this.hospitalsService.createHospital(hospital).subscribe({
       next: () => {
-        alert("Hospital saved successfully");
+        this.translate.get('SUCCESS.HOSPITAL_CREATED').subscribe((successMessage: string) => {
+          alert(successMessage);
+        });
         this.handleSearchHospitals();
         this.submitted = false;
         this.hospitalFormGroup.reset();
         modal.close();
       },
       error: err => {
-        alert("Error saving hospital: " + err.message);
+        this.translate.get('ERROR.SAVE_HOSPITAL').subscribe((errorMessage: string) => {
+          alert(errorMessage + ": " + err.message);
+        });
         console.error("Save error:", err);
       }
     });
@@ -435,13 +442,17 @@ export class HospitalsComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.hospitalsService.updateHospital(hospital, hospital.hospitalId).subscribe({
       next: () => {
-        alert("Success updating Hospital");
+        this.translate.get('SUCCESS.HOSPITAL_UPDATED').subscribe((successMessage: string) => {
+          alert(successMessage);
+        });
         this.handleSearchHospitals();
         this.submitted = false;
         updateModal.close();
       },
       error: err => {
-        alert("Error updating hospital: " + err.message);
+        this.translate.get('ERROR.UPDATE_HOSPITAL').subscribe((errorMessage: string) => {
+          alert(errorMessage + ": " + err.message);
+        });
       }
     });
   }
@@ -450,28 +461,39 @@ export class HospitalsComponent implements OnInit, AfterViewInit, OnDestroy {
     let keyword = this.searchFormGroup.value.keyword;
     this.pageHospitals = this.hospitalsService.searchHospitals(keyword, this.currentPage, this.pageSize).pipe(
       catchError(err => {
-        this.errorMessage = err.message;
-        return throwError(err);
+        this.translate.get('ERROR.FETCH_HOSPITALS').subscribe((errorMessage: string) => {
+          this.errorMessage = errorMessage;
+        });
+        return throwError(() => err);
       })
     );
   }
 
   gotoPage(page: number) {
+    if (page < 0 || page >= this.pageSize) return;  // Validare pagina
     this.currentPage = page;
     this.handleSearchHospitals();
   }
 
   handleDeleteHospital(h: Hospital) {
-    let conf = confirm("Are you sure?");
-    if (!conf) return;
-    this.hospitalsService.deleteHospital(h.hospitalId).subscribe({
-      next: () => {
-        this.handleSearchHospitals();
-      },
-      error: err => {
-        alert(err.message);
-        console.log(err);
-      }
+    this.translate.get('CONFIRMATION.DELETE_HOSPITAL').subscribe((confirmMessage: string) => {
+      let conf = confirm(confirmMessage);
+      if (!conf) return;
+
+      this.hospitalsService.deleteHospital(h.hospitalId).subscribe({
+        next: () => {
+          this.translate.get('SUCCESS.HOSPITAL_DELETED').subscribe((successMessage: string) => {
+            alert(successMessage);
+          });
+          this.handleSearchHospitals();
+        },
+        error: err => {
+          this.translate.get('ERROR.DELETE_HOSPITAL').subscribe((errorMessage: string) => {
+            alert(errorMessage + ": " + err.message);
+          });
+          console.log(err);
+        }
+      });
     });
   }
 }

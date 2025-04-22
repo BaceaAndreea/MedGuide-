@@ -132,7 +132,7 @@ public class MyRunner implements CommandLineRunner {
     private void createAppointment() {
         for (int i = 0; i < 2; i++) {
             AppointmentDTO appointmentDTO = new AppointmentDTO();
-            appointmentDTO.setStatus("Appointment" + i);
+            appointmentDTO.setStatus("Confirmată");
             appointmentDTO.setReason("Reason" + i);
             LocalDate localDate = LocalDate.of(2025, 1, i + 1);
             appointmentDTO.setAppointmentDate(Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant()));

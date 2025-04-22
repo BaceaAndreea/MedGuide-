@@ -6,6 +6,7 @@ import {Consultation} from '../../model/consultation.model';
 import {ActivatedRoute} from '@angular/router';
 import {ConsultationsService} from '../../services/consultations.service';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {TranslateModule, TranslateService} from '@ngx-translate/core';
 
 @Component({
   selector: 'app-consultations-doctor',
@@ -15,7 +16,8 @@ import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
     NgForOf,
     NgIf,
     NgClass,
-    DatePipe
+    DatePipe,
+    TranslateModule
   ],
   templateUrl: './consultations-doctor.component.html',
   styleUrl: './consultations-doctor.component.scss'
@@ -32,7 +34,8 @@ export class ConsultationsDoctorComponent implements OnInit{
   constructor(
     private route: ActivatedRoute,
     private consultationService: ConsultationsService,
-    private modalService: NgbModal
+    private modalService: NgbModal,
+    private translate: TranslateService
   ) {}
 
   ngOnInit(): void {
@@ -46,7 +49,7 @@ export class ConsultationsDoctorComponent implements OnInit{
     ).pipe(
       catchError(error => {
         console.error("Error fetching consultations:", error);
-        this.errorMessage = "Failed to load consultations.";
+        this.errorMessage = this.translate.instant('ERROR.FETCH_CONSULTATIONS');
         return of({
           content: [],
           totalPages: 0,

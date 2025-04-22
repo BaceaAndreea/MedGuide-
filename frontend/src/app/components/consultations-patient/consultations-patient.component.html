@@ -9,7 +9,7 @@
 <div class="consultations-container">
   <div class="page-header-container">
     <div class="page-title-container">
-      <h1 class="page-title">Consultațiile tale</h1>
+      <h1 class="page-title">{{ 'CONSULTATIONS.PATIENT_CONSULTATIONS' | translate }}</h1>
     </div>
   </div>
 
@@ -19,10 +19,10 @@
         <table class="consultations-table">
           <thead>
           <tr>
-            <th>Doctor</th>
-            <th>Data</th>
-            <th>Locație</th>
-            <th>Detalii</th>
+            <th>{{ 'APPOINTMENTS.DOCTOR' | translate }}</th>
+            <th>{{ 'CONSULTATIONS.DATE' | translate }}</th>
+            <th>{{ 'CONSULTATIONS.LOCATION' | translate }}</th>
+            <th>{{ 'CONSULTATIONS.ACTIONS' | translate }}</th>
           </tr>
           </thead>
           <tbody>
@@ -32,7 +32,7 @@
             <td>{{ consultation.hospitalAddress }}</td>
             <td>
               <button (click)="openDetailsModal(consultation, detailsModal)" class="btn-view">
-                <i class="bi bi-eye"></i> Vezi Detalii
+                <i class="bi bi-eye"></i> {{ 'CONSULTATIONS.SEE_DETAILS' | translate }}
               </button>
             </td>
           </tr>
@@ -42,7 +42,7 @@
         <div class="pagination-controls" *ngIf="listConsultations.totalPages > 1">
           <ul class="pagination">
             <li class="page-item" [ngClass]="{'disabled': currentPage === 0}">
-              <a class="page-link" (click)="gotoPage(currentPage - 1)" aria-label="Înapoi">
+              <a class="page-link" (click)="gotoPage(currentPage - 1)" [attr.aria-label]="'Previous' | translate">
                 <i class="bi bi-chevron-left"></i>
               </a>
             </li>
@@ -52,7 +52,7 @@
               <a (click)="gotoPage(page)" class="page-link">{{ page + 1 }}</a>
             </li>
             <li class="page-item" [ngClass]="{'disabled': currentPage === listConsultations.totalPages - 1}">
-              <a class="page-link" (click)="gotoPage(currentPage + 1)" aria-label="Înainte">
+              <a class="page-link" (click)="gotoPage(currentPage + 1)" [attr.aria-label]="'Next' | translate">
                 <i class="bi bi-chevron-right"></i>
               </a>
             </li>
@@ -71,7 +71,7 @@
       <ng-template #loading>
         <div class="loading-indicator">
           <i class="bi bi-arrow-repeat spin"></i>
-          <span>Se încarcă consultațiile...</span>
+          <span>{{ 'LOADING.CONSULTATIONS' | translate }}</span>
         </div>
       </ng-template>
     </ng-template>
@@ -83,67 +83,67 @@
   <div class="modal-container">
     <div class="modal-header">
       <div class="modal-title">
-        <i class="bi bi-clipboard-pulse"></i> Detalii Consultație
+        <i class="bi bi-clipboard-pulse"></i> {{ 'CONSULTATIONS.CONSULTATION_DETAILS' | translate }}
       </div>
-      <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()">×</button>
+      <button type="button" class="btn-close" [attr.aria-label]="'COMMON.ACTIONS.CLOSE' | translate" (click)="modal.dismiss()">×</button>
     </div>
 
     <div class="modal-body">
       <div class="consultation-info">
         <div class="info-item">
-          <span class="info-label">Doctor:</span>
+          <span class="info-label">{{ 'APPOINTMENTS.DOCTOR' | translate }}:</span>
           <span class="info-value">Dr. {{ selectedConsultation?.doctorFirstName }} {{ selectedConsultation?.doctorLastName }}</span>
         </div>
         <div class="info-item">
-          <span class="info-label">Data:</span>
+          <span class="info-label">{{ 'CONSULTATIONS.DATE' | translate }}:</span>
           <span class="info-value">{{ selectedConsultation?.appointmentDate | date:'EEE, d MMM y, HH:mm' }}</span>
         </div>
         <div class="info-item">
-          <span class="info-label">Locație:</span>
+          <span class="info-label">{{ 'CONSULTATIONS.LOCATION' | translate }}:</span>
           <span class="info-value">{{ selectedConsultation?.hospitalAddress }}</span>
         </div>
       </div>
 
       <div class="consultation-results">
-        <h4 class="section-title">Rezultatele consultației</h4>
+        <h4 class="section-title">{{ 'CONSULTATIONS.RESULTS' | translate }}</h4>
 
         <div class="result-section">
           <div class="result-header">
             <i class="bi bi-clipboard-pulse"></i>
-            <h5>Diagnostic</h5>
+            <h5>{{ 'CONSULTATIONS.DIAGNOSTIC' | translate }}</h5>
           </div>
           <div class="result-content">
-            {{ selectedConsultation?.diagnosis || 'Nu a fost adăugat un diagnostic încă.' }}
+            {{ selectedConsultation?.diagnosis || ('CONSULTATIONS.NO_DIAGNOSIS' | translate) }}
           </div>
         </div>
 
         <div class="result-section">
           <div class="result-header">
             <i class="bi bi-activity"></i>
-            <h5>Simptome</h5>
+            <h5>{{ 'CONSULTATIONS.SYMPTOMS' | translate }}</h5>
           </div>
           <div class="result-content">
-            {{ selectedConsultation?.symptoms || 'Nu au fost înregistrate simptome.' }}
+            {{ selectedConsultation?.symptoms || ('CONSULTATIONS.NO_SYMPTOMS' | translate) }}
           </div>
         </div>
 
         <div class="result-section">
           <div class="result-header">
             <i class="bi bi-card-checklist"></i>
-            <h5>Recomandări</h5>
+            <h5>{{ 'CONSULTATIONS.RECOMMENDATIONS' | translate }}</h5>
           </div>
           <div class="result-content">
-            {{ selectedConsultation?.recommendations || 'Nu există recomandări momentan.' }}
+            {{ selectedConsultation?.recommendations || ('CONSULTATIONS.NO_RECOMMENDATIONS' | translate) }}
           </div>
         </div>
 
         <div class="result-section">
           <div class="result-header">
             <i class="bi bi-capsule"></i>
-            <h5>Medicamente prescrise</h5>
+            <h5>{{ 'CONSULTATIONS.PRESCRIPTIONS' | translate }}</h5>
           </div>
           <div class="result-content">
-            {{ selectedConsultation?.prescriptions || 'Nu au fost prescrise medicamente.' }}
+            {{ selectedConsultation?.prescriptions || ('CONSULTATIONS.NO_PRESCRIPTIONS' | translate) }}
           </div>
         </div>
       </div>
@@ -151,7 +151,7 @@
 
     <div class="modal-footer">
       <button type="button" class="btn-cancel" (click)="modal.dismiss()">
-        <i class="bi bi-x-circle"></i> Închide
+        <i class="bi bi-x-circle"></i> {{ 'COMMON.ACTIONS.CLOSE' | translate }}
       </button>
     </div>
   </div>

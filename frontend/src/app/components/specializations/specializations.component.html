@@ -8,13 +8,13 @@
 
 <div class="specializations-container">
   <div class="title-section">
-    <h1 class="main-title">Specializări</h1>
+    <h1 class="main-title">{{ 'SPECIALIZATIONS.TITLE' | translate }}</h1>
     <div class="underline"></div>
   </div>
 
   <div class="add-button-container">
-    <button class="btn-add-specialization" (click)="openModal(content)">
-      <i class="bi bi-plus-circle"></i> Adaugă specializare
+    <button class="btn-add-specialization" (click)="openModal(content)" id="add-specialization-button">
+      <i class="bi bi-plus-circle"></i> {{ 'SPECIALIZATIONS.ADD_SPECIALIZATION' | translate }}
     </button>
   </div>
 
@@ -22,9 +22,10 @@
     <div *ngIf="searchFormGroup" class="search-container">
       <form [formGroup]="searchFormGroup" (ngSubmit)="handleSearchSpecializations()">
         <div class="search-input-group">
-          <input type="search" formControlName="keyword" class="search-input" placeholder="Caută specializare..." aria-label="Search">
+          <input type="search" formControlName="keyword" class="search-input"
+                 [placeholder]="'SPECIALIZATIONS.SEARCH' | translate" aria-label="Search">
           <button type="submit" class="search-button">
-            Caută
+            {{ 'COMMON.ACTIONS.SEARCH' | translate }}
           </button>
         </div>
       </form>
@@ -34,9 +35,9 @@
       <table class="specializations-table">
         <thead>
         <tr>
-          <th>ID</th>
-          <th>DESCRIERE</th>
-          <th>ACȚIUNI</th>
+          <th>{{ 'SPECIALIZATIONS.ID' | translate }}</th>
+          <th>{{ 'SPECIALIZATIONS.DESCRIPTION' | translate }}</th>
+          <th>{{ 'SPECIALIZATIONS.ACTIONS' | translate }}</th>
         </tr>
         </thead>
         <tbody>
@@ -57,10 +58,20 @@
 
       <div class="pagination-controls" *ngIf="listSpecializations.totalPages > 1">
         <ul class="pagination">
+          <li class="page-item" [ngClass]="{'disabled': currentPage === 0}">
+            <a class="page-link" (click)="gotoPage(currentPage - 1)" aria-label="Previous">
+              <i class="bi bi-chevron-left"></i>
+            </a>
+          </li>
           <li *ngFor="let item of [].constructor(listSpecializations.totalPages); let page = index"
               class="page-item"
               [ngClass]="{'active': page === currentPage}">
-            <a (click)="gotoPage(page)" class="page-link">{{page}}</a>
+            <a (click)="gotoPage(page)" class="page-link">{{ page + 1 }}</a>
+          </li>
+          <li class="page-item" [ngClass]="{'disabled': currentPage === listSpecializations.totalPages - 1}">
+            <a class="page-link" (click)="gotoPage(currentPage + 1)" aria-label="Next">
+              <i class="bi bi-chevron-right"></i>
+            </a>
           </li>
         </ul>
       </div>
@@ -76,7 +87,7 @@
       <ng-template #loading>
         <div class="loading-indicator">
           <i class="bi bi-arrow-repeat spin"></i>
-          <span>Se încarcă specializările...</span>
+          <span>{{ 'LOADING.SPECIALIZATIONS' | translate }}</span>
         </div>
       </ng-template>
     </ng-template>
@@ -88,7 +99,7 @@
   <div class="modal-container">
     <div class="modal-header">
       <div class="modal-title">
-        <i class="bi bi-clipboard-plus"></i> Adăugare Specializare Nouă
+        <i class="bi bi-clipboard-plus"></i> {{ 'SPECIALIZATIONS.NEW_SPECIALIZATION_TITLE' | translate }}
       </div>
       <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')">×</button>
     </div>
@@ -97,12 +108,12 @@
       <div class="modal-body">
         <div class="form-row">
           <div class="form-group">
-            <label>Descriere</label>
+            <label>{{ 'SPECIALIZATIONS.DESCRIPTION' | translate }}</label>
             <textarea class="form-input"
                       [ngClass]="{'is-invalid': submitted && specializationFormGroup.controls['description'].errors}"
                       formControlName="description" rows="3"></textarea>
             <div *ngIf="submitted && specializationFormGroup.get('description')?.invalid" class="invalid-feedback">
-              <div *ngIf="specializationFormGroup.get('description')?.errors?.['required']">Descrierea este obligatorie</div>
+              <div *ngIf="specializationFormGroup.get('description')?.errors?.['required']">{{ 'VALIDATION.DESCRIPTION_REQUIRED' | translate }}</div>
             </div>
           </div>
         </div>
@@ -110,10 +121,10 @@
 
       <div class="modal-footer">
         <button type="button" class="btn-cancel" (click)="onCloseModal(modal)">
-          <i class="bi bi-x-circle"></i> Închide
+          <i class="bi bi-x-circle"></i> {{ 'COMMON.ACTIONS.CLOSE' | translate }}
         </button>
         <button type="button" class="btn-save" (click)="onSaveSpecialization(modal)">
-          <i class="bi bi-check-circle"></i> Salvează
+          <i class="bi bi-check-circle"></i> {{ 'COMMON.ACTIONS.SAVE' | translate }}
         </button>
       </div>
     </form>
@@ -125,7 +136,7 @@
   <div class="modal-container">
     <div class="modal-header">
       <div class="modal-title">
-        <i class="bi bi-clipboard-check"></i> Actualizare Specializare
+        <i class="bi bi-clipboard-check"></i> {{ 'SPECIALIZATIONS.UPDATE_SPECIALIZATION' | translate }}
       </div>
       <button type="button" class="btn-close" aria-label="Close" (click)="updateModal.dismiss('Cross click')">×</button>
     </div>
@@ -134,12 +145,12 @@
       <div class="modal-body">
         <div class="form-row">
           <div class="form-group">
-            <label>Descriere</label>
+            <label>{{ 'SPECIALIZATIONS.DESCRIPTION' | translate }}</label>
             <textarea class="form-input"
                       [ngClass]="{'is-invalid': submitted && updateSpecializationFormGroup.controls['description'].errors}"
                       formControlName="description" rows="3"></textarea>
             <div *ngIf="submitted && updateSpecializationFormGroup.get('description')?.invalid" class="invalid-feedback">
-              <div *ngIf="updateSpecializationFormGroup.get('description')?.errors?.['required']">Descrierea este obligatorie</div>
+              <div *ngIf="updateSpecializationFormGroup.get('description')?.errors?.['required']">{{ 'VALIDATION.DESCRIPTION_REQUIRED' | translate }}</div>
             </div>
           </div>
         </div>
@@ -147,10 +158,10 @@
 
       <div class="modal-footer">
         <button type="button" class="btn-cancel" (click)="onCloseModal(updateModal)">
-          <i class="bi bi-x-circle"></i> Închide
+          <i class="bi bi-x-circle"></i> {{ 'COMMON.ACTIONS.CLOSE' | translate }}
         </button>
         <button type="button" class="btn-save" (click)="onUpdateSpecialization(updateModal)">
-          <i class="bi bi-check-circle"></i> Salvează
+          <i class="bi bi-check-circle"></i> {{ 'COMMON.ACTIONS.SAVE' | translate }}
         </button>
       </div>
     </form>
