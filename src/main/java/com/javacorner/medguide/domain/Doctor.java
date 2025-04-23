@@ -24,6 +24,9 @@ public class Doctor {
     @Column(name = "birthdate", nullable = false, length = 50)
     private LocalDate birthDate;
 
+    @Column(name = "image_url", nullable = true)
+    private String imageUrl;
+
     @OneToOne (cascade = CascadeType.REMOVE)
     @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false)
     private User user;
@@ -42,13 +45,14 @@ public class Doctor {
     public Doctor() { //nonargument constructor
     }
 
-    public Doctor(String firstName, String lastName, LocalDate birthDate, User user, Specialization specialization, Hospital hospital) {
+    public Doctor(String firstName, String lastName, LocalDate birthDate, User user, Specialization specialization, Hospital hospital, String imageUrl) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.birthDate = birthDate;
         this.user = user;
         this.specialization = specialization;
         this.hospital = hospital;
+        this.imageUrl = imageUrl;
     }
 
     @Override
@@ -105,6 +109,14 @@ public class Doctor {
         this.user = user;
     }
 
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
     public Specialization getSpecialization() {
         return specialization;
     }
@@ -146,6 +158,7 @@ public class Doctor {
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", birthDate=" + birthDate +
+                ", imageUrl='" + imageUrl + '\'' +
                 '}';
     }
 }

@@ -156,7 +156,9 @@
     "FIRST_NAME_PLACEHOLDER": "Vorname des Arztes",
     "LAST_NAME_PLACEHOLDER": "Nachname des Arztes",
     "SELECT_HOSPITAL": "Krankenhaus auswählen",
-    "SELECT_SPECIALIZATION": "Fachgebiet auswählen"
+    "SELECT_SPECIALIZATION": "Fachgebiet auswählen",
+    "NO_RESULTS": "Es wurden keine Ärzte gefunden, die den ausgewählten Kriterien entsprechen.",
+    "SPECIALIZATION_LIST": "Liste der Fachgebiete"
   },
   "HOSPITALS": {
     "TITLE": "Krankenhäuser",
@@ -173,7 +175,9 @@
     "SATELLITE": "Satellit",
     "ADDRESS_PLACEHOLDER": "Beginnen Sie mit der Eingabe der Adresse...",
     "START_TYPING": "Beginnen Sie mit der Eingabe...",
-    "MAP_INSTRUCTIONS": "Klicken Sie auf die Karte, um einen Standort auszuwählen"
+    "MAP_INSTRUCTIONS": "Klicken Sie auf die Karte, um einen Standort auszuwählen",
+    "NO_RESULTS": "Derzeit sind keine Krankenhäuser verfügbar.",
+    "SEE_ON_MAP": "Auf der Karte anzeigen"
   },
   "SPECIALIZATIONS": {
     "TITLE": "Fachgebiete",
@@ -183,7 +187,34 @@
     "DESCRIPTION": "BESCHREIBUNG",
     "ACTIONS": "AKTIONEN",
     "NEW_SPECIALIZATION_TITLE": "Neues Fachgebiet hinzufügen",
-    "UPDATE_SPECIALIZATION": "Fachgebiet aktualisieren"
+    "UPDATE_SPECIALIZATION": "Fachgebiet aktualisieren",
+    "LIST": "Liste der Fachgebiete",
+    "NO_RESULTS": "Keine Fachgebiete gefunden.",
+    "PEDIATRICS": "Kinderheilkunde",
+    "DERMATOLOGY": "Dermatologie",
+    "CARDIOLOGY": "Kardiologie",
+    "NEUROLOGY": "Neurologie",
+    "OPHTHALMOLOGY": "Augenheilkunde",
+    "ORTHOPEDICS": "Orthopädie",
+    "PSYCHIATRY": "Psychiatrie",
+    "GYNECOLOGY": "Gynäkologie",
+    "UROLOGY": "Urologie",
+    "ONCOLOGY": "Onkologie",
+    "ENDOCRINOLOGY": "Endokrinologie",
+    "GASTROENTEROLOGY": "Gastroenterologie",
+    "RHEUMATOLOGY": "Rheumatologie",
+    "GENERAL_PRACTICE": "Allgemeinmedizin",
+    "INTERNAL_MEDICINE": "Innere Medizin",
+    "FAMILY_MEDICINE": "Familienmedizin",
+    "HEMATOLOGY": "Hämatologie",
+    "ALLERGY_IMMUNOLOGY": "Allergologie und Immunologie",
+    "INFECTIOUS_DISEASE": "Infektionskrankheiten",
+    "PULMONOLOGY": "Lungenheilkunde",
+    "NEPHROLOGY": "Nephrologie"
+  },
+  "SEARCH": {
+    "NO_RESULTS": "Keine Ergebnisse für Ihre Suche gefunden.",
+    "TRY_AGAIN": "Bitte versuchen Sie es mit anderen Suchkriterien."
   },
   "PROFILE": {
     "TITLE": "Mein Profil",
@@ -288,6 +319,8 @@
     "HOSPITALS": "Krankenhäuser werden geladen...",
     "SPECIALIZATIONS": "Fachgebiete werden geladen...",
     "CONSULTATIONS": "Konsultationen werden geladen...",
-    "CONSULTATION_DETAILS": "Konsultationsdetails werden geladen..."
+    "CONSULTATION_DETAILS": "Konsultationsdetails werden geladen...",
+    "SEARCHING": "Suche läuft...",
+    "FILTERING": "Ergebnisse werden gefiltert..."
   }
 }

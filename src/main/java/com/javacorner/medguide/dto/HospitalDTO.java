@@ -7,6 +7,7 @@ public class HospitalDTO {
     private String city;
     private Double lat;
     private Double lng;
+    private String imageUrl;
 
     public Double getLat() {
         return lat;
@@ -54,5 +55,13 @@ public class HospitalDTO {
 
     public void setCity(String city) {
         this.city = city;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }

@@ -3,7 +3,9 @@ package com.javacorner.medguide.service;
 import com.javacorner.medguide.domain.Doctor;
 import com.javacorner.medguide.dto.DoctorDTO;
 import org.springframework.data.domain.Page;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 public interface DoctorService {
@@ -22,5 +24,9 @@ public interface DoctorService {
     void removeDoctor(Long doctorId);
 
     public List<DoctorDTO> findDoctorsBySpecialization(Long specializationId);
+
+    String saveDoctorImage(Long doctorId, MultipartFile file) throws IOException;
+
+    List<DoctorDTO> findFeaturedDoctors();
 
 }

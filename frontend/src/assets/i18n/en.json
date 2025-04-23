@@ -43,6 +43,10 @@
       "LOGIN": "Login"
     }
   },
+  "SEARCH": {
+    "NO_RESULTS": "No results found for your search.",
+    "TRY_AGAIN": "Please try different search criteria."
+  },
   "NAVIGATION": {
     "PATIENTS": "Patients",
     "APPOINTMENTS": "Appointments",
@@ -156,7 +160,9 @@
     "FIRST_NAME_PLACEHOLDER": "Doctor's first name",
     "LAST_NAME_PLACEHOLDER": "Doctor's last name",
     "SELECT_HOSPITAL": "Select hospital",
-    "SELECT_SPECIALIZATION": "Select specialization"
+    "SELECT_SPECIALIZATION": "Select specialization",
+    "NO_RESULTS": "No doctors were found matching the selected criteria.",
+    "SPECIALIZATION_LIST": "List of specializations"
   },
   "HOSPITALS": {
     "TITLE": "Hospitals",
@@ -173,7 +179,9 @@
     "SATELLITE": "Satellite",
     "ADDRESS_PLACEHOLDER": "Start typing the address...",
     "START_TYPING": "Start typing...",
-    "MAP_INSTRUCTIONS": "Click on the map to select a location"
+    "MAP_INSTRUCTIONS": "Click on the map to select a location",
+    "NO_RESULTS": "No hospitals available at the moment.",
+    "SEE_ON_MAP": "See on map"
   },
   "SPECIALIZATIONS": {
     "TITLE": "Specializations",
@@ -183,7 +191,30 @@
     "DESCRIPTION": "DESCRIPTION",
     "ACTIONS": "ACTIONS",
     "NEW_SPECIALIZATION_TITLE": "Add New Specialization",
-    "UPDATE_SPECIALIZATION": "Update Specialization"
+    "UPDATE_SPECIALIZATION": "Update Specialization",
+    "LIST": "Specializations list",
+    "NO_RESULTS": "No specializations found.",
+    "PEDIATRICS": "Pediatrics",
+    "DERMATOLOGY": "Dermatology",
+    "CARDIOLOGY": "Cardiology",
+    "NEUROLOGY": "Neurology",
+    "OPHTHALMOLOGY": "Ophthalmology",
+    "ORTHOPEDICS": "Orthopedics",
+    "PSYCHIATRY": "Psychiatry",
+    "GYNECOLOGY": "Gynecology",
+    "UROLOGY": "Urology",
+    "ONCOLOGY": "Oncology",
+    "ENDOCRINOLOGY": "Endocrinology",
+    "GASTROENTEROLOGY": "Gastroenterology",
+    "RHEUMATOLOGY": "Rheumatology",
+    "GENERAL_PRACTICE": "General Practice",
+    "INTERNAL_MEDICINE": "Internal Medicine",
+    "FAMILY_MEDICINE": "Family Medicine",
+    "HEMATOLOGY": "Hematology",
+    "ALLERGY_IMMUNOLOGY": "Allergy & Immunology",
+    "INFECTIOUS_DISEASE": "Infectious Disease",
+    "PULMONOLOGY": "Pulmonology",
+    "NEPHROLOGY": "Nephrology"
   },
   "PROFILE": {
     "TITLE": "My Profile",
@@ -292,7 +323,9 @@
     "HOSPITALS": "Loading hospitals...",
     "SPECIALIZATIONS": "Loading specializations...",
     "CONSULTATIONS": "Loading consultations...",
-    "CONSULTATION_DETAILS": "Loading consultation details..."
+    "CONSULTATION_DETAILS": "Loading consultation details...",
+    "SEARCHING": "Searching...",
+    "FILTERING": "Filtering results..."
 
   }
 

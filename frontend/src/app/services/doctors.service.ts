@@ -59,4 +59,11 @@ export class DoctorsService {
     return this.http.get<Array<Doctor>>(`${environment.backendHost}/doctors/specialization/${specializationId}`);
   }
 
+  getFeaturedDoctors(): Observable<Doctor[]> {
+    return this.http.get<Doctor[]>(`${environment.backendHost}/doctors/featured`, {
+      headers: this.getHeaders() // Folosește metoda existentă pentru a adăuga token-ul de autorizare
+    });
+  }
+
+
 }

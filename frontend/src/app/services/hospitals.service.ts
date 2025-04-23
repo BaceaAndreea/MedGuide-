@@ -13,6 +13,14 @@ export class HospitalsService {
 
   constructor(private http : HttpClient) { }
 
+  private getHeaders(): HttpHeaders {
+    const token = localStorage.getItem('token'); // Obține token-ul la fiecare request
+    return new HttpHeaders({
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}`
+    });
+  }
+
   public searchHospitals(keyword: string, currentPage: number, pageSize: number): Observable<PageRespone<Hospital>> {
     return this.http.get<PageRespone<Hospital>>(
       environment.backendHost + "/hospitals/search/name?name=" + keyword + "&page=" + currentPage + "&size=" + pageSize
@@ -40,6 +48,13 @@ export class HospitalsService {
 
   public deleteHospital(hospitalId: number): Observable<void> {
     return this.http.delete<void>(environment.backendHost + "/hospitals/" + hospitalId);
+  }
+
+  // în hospitals.service.ts
+  getFeaturedHospitals(): Observable<Hospital[]> {
+    return this.http.get<Hospital[]>(`${environment.backendHost}/hospitals/featured`, {
+      headers: this.getHeaders() // Folosește metoda existentă pentru a adăuga token-ul de autorizare
+    });
   }
 
 }

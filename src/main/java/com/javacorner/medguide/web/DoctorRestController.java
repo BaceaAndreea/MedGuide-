@@ -9,10 +9,14 @@ import com.javacorner.medguide.service.ConsultationService;
 import com.javacorner.medguide.service.DoctorService;
 import com.javacorner.medguide.service.UserService;
 import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/doctors")
@@ -90,10 +94,30 @@ public class DoctorRestController {
     }
 
     @GetMapping("/specialization/{specializationId}")
-    @PreAuthorize("hasAnyAuthority('Admin', 'Doctor', 'Patient')")
     public List<DoctorDTO> findDoctorsBySpecialization(@PathVariable Long specializationId) {
         return doctorService.findDoctorsBySpecialization(specializationId);
     }
+
+    @PostMapping("/{doctorId}/image")
+    @PreAuthorize("hasAnyAuthority('Admin', 'Doctor') ")
+    public ResponseEntity<Map<String, String>> uploadDoctorImage(
+            @PathVariable Long doctorId,
+            @RequestParam("file") MultipartFile file) {
+        try {
+            String imageUrl = doctorService.saveDoctorImage(doctorId, file);
+            return ResponseEntity.ok(Map.of("imageUrl", imageUrl));
+        } catch (IOException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", "Failed to upload image: " + e.getMessage()));
+        }
+    }
+
+    // Endpoint nou pentru doctorii recomandați pentru pagina Home
+    @GetMapping("/featured")
+    public ResponseEntity<List<DoctorDTO>> getFeaturedDoctors() {
+        List<DoctorDTO> featuredDoctors = doctorService.findFeaturedDoctors();
+        return ResponseEntity.ok(featuredDoctors);
+    }
+
 
 
 }

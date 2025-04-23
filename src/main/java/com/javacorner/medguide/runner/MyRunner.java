@@ -44,7 +44,6 @@ public class MyRunner implements CommandLineRunner {
         createPatient();
         createAppointment();
         createConsultation();
-
     }
 
     private void createRoles() {
@@ -55,7 +54,6 @@ public class MyRunner implements CommandLineRunner {
         });
     }
 
-
     private void createAdmin() {
         if (userService.loadUserByEmail("admin@gmail.com") == null) {
             userService.createUser("admin@gmail.com", "parola1234");
@@ -63,21 +61,22 @@ public class MyRunner implements CommandLineRunner {
         }
     }
 
-
     private void createHospital() {
         // Creează câteva spitale pentru testare
-        for (int i = 1; i <= 3; i++) {
+        for (int i = 1; i <= 10; i++) {
             HospitalDTO hospitalDTO = new HospitalDTO();
             hospitalDTO.setName("Hospital " + i);
             hospitalDTO.setAddress(String.format("Street %d %s", i, i));
             hospitalDTO.setCity("City " + i);
+            // Set hospital image filename
+            hospitalDTO.setImageUrl("/assets/images/hospitals/hospital" + i + ".png");
             hospitalService.createHospital(hospitalDTO);
         }
     }
 
     private void createSpecialization() {
         // Creează câteva specializări folosind DTO-uri pentru testare
-        Arrays.asList("Cardiology", "Pediatrics", "Dermatology", "Neurology")
+        Arrays.asList("Cardiology", "Pediatrics", "Dermatology", "Neurology", "Ophthalmology", "Gynecology", "Oncology", "Endocrinology", "Orthopedics", "Rheumatology")
                 .forEach(specializationName -> {
                     SpecializationDTO specializationDTO = new SpecializationDTO();
                     specializationDTO.setDescription(specializationName);
@@ -92,17 +91,22 @@ public class MyRunner implements CommandLineRunner {
         List<HospitalDTO> hospitals = hospitalService.fetchHospitals();
         List<SpecializationDTO> specializations = specializationService.fetchAllSpecializations();
 
-        for (int i = 1; i < 3; i++) {
+        for (int i = 1; i < 10; i++) {
             DoctorDTO doctorDTO = new DoctorDTO();
             doctorDTO.setFirstName("Doctor" + i + "FN");
             doctorDTO.setLastName("Doctor" + i + "LN");
             doctorDTO.setBirthDate(LocalDate.now());
+            // Set doctor image filename
+            doctorDTO.setImageUrl("/assets/images/doctors/doctor" + i + ".png");
+
             HospitalDTO hospitalDTO = new HospitalDTO();
             hospitalDTO.setHospitalId(1L+i);
             doctorDTO.setHospital(hospitalDTO);
+
             SpecializationDTO specializationDTO = new SpecializationDTO();
             specializationDTO.setSpecializationId(1L+i);
             doctorDTO.setSpecialization(specializationDTO);
+
             UserDTO userDTO = new UserDTO();
             userDTO.setEmail("doctor" + i + "@gmail.com");
             userDTO.setPassword("parola1234");
@@ -125,7 +129,6 @@ public class MyRunner implements CommandLineRunner {
 
             // Apelează serviciul pentru a salva pacientul
             patientService.createPatient(patientDTO);
-
         }
     }
 
@@ -137,13 +140,12 @@ public class MyRunner implements CommandLineRunner {
             LocalDate localDate = LocalDate.of(2025, 1, i + 1);
             appointmentDTO.setAppointmentDate(Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant()));
             DoctorDTO doctorDTO = new DoctorDTO();
-            doctorDTO.setDoctorId(1L + i );
+            doctorDTO.setDoctorId(1L + i);
             appointmentDTO.setDoctor(doctorDTO);
             PatientDTO patientDTO = new PatientDTO();
             patientDTO.setPatientId(1L + i);
             appointmentDTO.setPatient(patientDTO);
             appointmentService.createAppointment(appointmentDTO);
-
         }
     }
 
@@ -172,6 +174,4 @@ public class MyRunner implements CommandLineRunner {
             consultationService.createConsultation(consultationDTO);
         }
     }
-
-
 }

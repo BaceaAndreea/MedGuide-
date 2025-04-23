@@ -49,7 +49,14 @@ public class SecurityConfiguration {
                         .requestMatchers("/refresh-token/**").permitAll()
                         .requestMatchers("/api/public/**").permitAll() // Endpointuri publice
                         .requestMatchers("/api/private/**").authenticated() // Endpointuri protejate
+                        // Permite acces public la endpoint-urile pentru homepage
+                        .requestMatchers("/doctors/featured").permitAll()
+                        .requestMatchers("/hospitals/featured").permitAll()
+                        // Permite acces la imaginile statice
+                        .requestMatchers("/assets/**").permitAll()
                         .requestMatchers("/users**").permitAll()
+                        .requestMatchers("/specializations/all").permitAll()
+                        .requestMatchers("/doctors/specialization/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/patients").permitAll()
                         .anyRequest().authenticated() // Orice alt request trebuie autentificat
                 )
