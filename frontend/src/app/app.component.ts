@@ -42,8 +42,6 @@ export class AppComponent implements OnInit {
         this.translate.use(browserLang?.match(/ro|en|de/) ? browserLang : 'ro');
       }
     } else {
-      // Dacă rulăm pe server (SSR), localStorage nu există,
-      // deci folosim direct limba default (sau alta, cum dorești)
       this.translate.use('ro');
     }
 

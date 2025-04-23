@@ -10,4 +10,5 @@ export interface Doctor {
   user : User;
   specialization : Specialization;
   hospital : Hospital;
+  imageUrl?: string;
 }

@@ -1,58 +1,136 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+// Variabile cu culorile principale
+$primary-color: #6a4de0; // Culoarea violet din pagina de autentificare
+$secondary-color: #f5f5f7;
+$text-color: #333;
+$light-gray: #f2f2f2;
+$white: #fff;
+
 .medguide-container {
-  width: 100%;
+  font-family: 'Poppins', sans-serif;
+  color: $text-color;
+  background-color: $white;
   min-height: 100vh;
-  background-color: #f5f8fa;
-  font-family: Arial, sans-serif;
+  position: relative;
 }
 
+// Header - modificat pentru logo mai mare
 .header {
-  background-color: #4a90e2;
-  color: white;
-  padding: 10px 0;
+  background-color: $white;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
 
 .header-content {
-  max-width: 1200px;
+  max-width: 1800px;
+  width: 100%;
   margin: 0 auto;
+  padding: 5px 20px;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
-  padding: 0 20px;
+  position: relative;
 }
 
-.logo {
-  font-size: 24px;
-  font-weight: bold;
+.header-right {
+  position: absolute;
+  right: 150px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
 }
 
-.auth-button {
-  .login-button {
-    background-color: transparent;
-    color: white;
-    border: 2px solid white;
-    padding: 8px 20px;
-    border-radius: 20px;
-    font-weight: bold;
-    cursor: pointer;
+.login-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 
-    &:hover {
-      background-color: rgba(255, 255, 255, 0.1);
-    }
+  /* Stiluri pentru a se potrivi cu butoanele de limbă */
+  height: 36px;         /* Ajustați la înălțimea exactă a butoanelor de limbă */
+  padding: 0 16px;      /* Reducere padding vertical, păstrare padding orizontal */
+  font-size: 15px;      /* Mărime text potrivită cu butoanele de limbă */
+  font-weight: 500;
+
+  background-color: $primary-color;
+  color: $white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.2s;
+
+  &:hover {
+    background-color: darken($primary-color, 10%);
+  }
+
+  .login-icon {
+    width: 15px;       /* Icon mai mic pentru a se potrivi cu înălțimea */
+    height: 16px;
+    fill: currentColor;
   }
 }
 
+
+.logo {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  margin-right: auto; // Forțează logo-ul să fie la stânga
+
+  .icon {
+    width: 48px; // Mărit de la 40px
+    height: 48px; // Mărit de la 40px
+    margin-right: 12px;
+
+    svg {
+      width: 100%;
+      height: 100%;
+      fill: $primary-color;
+    }
+  }
+
+  .logo-text {
+    font-size: 34px; // Mărit de la 28px
+    font-weight: 700;
+    color: $primary-color;
+    margin: 0;
+  }
+}
+
+
+// Butonul de login păstrat
+.login-button {
+  background-color: $primary-color;
+  color: $white;
+  border: none;
+  padding: 10px 24px; // Mărit padding-ul pentru un buton mai lat
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s;
+  font-size: 16px; // Mărit font-size
+
+  &:hover {
+    background-color: darken($primary-color, 10%);
+  }
+}
+
+// Bara de navigare - fără modificări majore
 .nav-menu {
-  background-color: white;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background-color: $white;
+  border-bottom: 1px solid #eee;
 }
 
 .nav-content {
   max-width: 1200px;
   margin: 0 auto;
+  padding: 10px 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 20px;
 }
 
 .nav-links {
@@ -60,70 +138,722 @@
   gap: 30px;
 
   span {
-    color: #333;
+    cursor: pointer;
+    padding: 5px 0;
+    position: relative;
     font-weight: 500;
-    cursor: pointer;
-    padding: 15px 0;
-    display: inline-block;
 
-    &:hover {
-      color: #4a90e2;
+    &:after {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 2px;
+      bottom: 0;
+      left: 0;
+      background-color: $primary-color;
+      transition: width 0.3s;
+    }
+
+    &:hover:after {
+      width: 100%;
     }
   }
 }
 
-.quick-schedule {
-  .schedule-button {
-    background-color: #4a90e2;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 20px;
-    font-weight: bold;
+.hero-section-v3 {
+  background-color: #7958e8;
+  padding: 40px 0 40px; /* Redus padding-bottom la 40px */
+  color: $white;
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 0; /* Eliminăm orice margin bottom */
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: -80px;
+    right: -80px;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.15);
+    z-index: 1;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -100px;
+    left: -100px;
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    z-index: 1;
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 2;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .hero-text {
+    text-align: center;
+    max-width: 700px;
+    margin-bottom: 10px; /* Redus de la valoarea implicită */
+
+    h1 {
+      font-size: 42px;
+      margin-bottom: 8px; /* Redus */
+      font-weight: 700;
+      color: $white;
+    }
+
+    h2 {
+      font-size: 20px;
+      margin-bottom: 10px; /* Redus */
+      font-weight: 500;
+      opacity: 0.95;
+      color: $white;
+    }
+
+    p {
+      font-size: 16px;
+      margin-bottom: 15px; /* Redus */
+      line-height: 1.4; /* Redus spacing-ul dintre linii */
+      color: rgba(255, 255, 255, 0.9);
+    }
+  }
+
+  .hero-features {
+    display: flex;
+    justify-content: center;
+    gap: 25px;
+    margin-top: 10px; /* Redus de la 20px */
+    flex-wrap: wrap;
+    width: 100%;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .feature {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 12px; /* Redus de la 15px */
+    width: 110px; /* Redus de la 130px */
+    height: 90px; /* Adăugat înălțime fixă pentru reducere */
+    transition: all 0.3s ease;
     cursor: pointer;
 
     &:hover {
-      background-color: #3a80d2;
+      transform: translateY(-3px);
+      background-color: rgba(255, 255, 255, 0.2);
+      box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+    }
+  }
+
+  .feature-icon {
+    width: 40px; /* Redus de la 50px */
+    height: 40px; /* Redus de la 50px */
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 8px; /* Redus de la 10px */
+    transition: all 0.3s ease;
+
+    img {
+      width: 20px;
+      height: 20px;
+      object-fit: contain;
+    }
+  }
+
+  .feature:hover .feature-icon {
+    background-color: rgba(255, 255, 255, 0.3);
+    transform: scale(1.05);
+  }
+
+  .feature-text {
+    font-weight: 500;
+    font-size: 13px; /* Redus de la 14px */
+    color: $white;
+    margin-top: auto; /* Aliniază textul în partea de jos */
+  }
+}
+
+/* Ajustare pentru secțiunea doctori pentru a o aduce mai sus */
+.doctors-section {
+  margin-top: 0;
+  padding-top: 40px; /* Redus padding-top */
+}
+
+/* Stilul pentru secțiunile featured (reducem margin-top) */
+.featured-section {
+  margin-top: 0;
+}
+
+// Media queries pentru responsivitate
+@media (max-width: 768px) {
+  .hero-section-v3 {
+    padding: 70px 0 100px;
+
+    .hero-text {
+      h1 {
+        font-size: 42px;
+      }
+
+      h2 {
+        font-size: 20px;
+      }
+
+      p {
+        font-size: 16px;
+      }
+    }
+
+    .hero-features {
+      gap: 20px;
+    }
+
+    .feature {
+      width: 160px;
+      padding: 20px 15px;
+    }
+
+    .feature-icon {
+      width: 60px;
+      height: 60px;
+
+      i {
+        font-size: 28px;
+      }
     }
   }
 }
 
-.content {
+@media (max-width: 480px) {
+  .hero-section-v3 {
+    padding: 50px 0 80px;
+
+    .hero-text {
+      h1 {
+        font-size: 36px;
+      }
+
+      h2 {
+        font-size: 18px;
+      }
+    }
+
+    .hero-features {
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .feature {
+      width: 80%;
+      max-width: 220px;
+    }
+  }
+}
+
+
+// Secțiunile Featured - stil îmbunătățit pentru filtru specializări
+
+.featured-section {
+  padding: 60px 20px;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 40px 20px;
+
+  // Stil de bază pentru toate secțiunile featured
+  background-color: rgba($secondary-color, 0.6); // Mov foarte deschis/pal și transparent
+  margin-top: 20px;
+  padding-top: 60px;
+  padding-bottom: 80px;
+  border-radius: 10px;
+
+  &.doctors-section {
+    background-color: rgba(lighten($primary-color, 20%), 0.2);
+  }
+
+
+  &.hospitals-section {
+    background-color: rgba(lighten($primary-color, 20%), 0.2);
+  }
+}
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+
+  h2 {
+    font-size: 32px;
+    font-weight: 600;
+    color: $primary-color;
+  }
 }
 
-.hero-section {
-  text-align: center;
-  max-width: 800px;
-  margin: 40px auto;
+.specialization-filter {
+  select {
+    padding: 10px 15px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    background-color: $white;
+    min-width: 200px;
+    font-family: inherit;
+    cursor: pointer;
+    color: #333; // Ensure text is visible
+    appearance: none; // Remove default styling
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image:
+      linear-gradient(45deg, transparent 50%, $primary-color 50%),
+      linear-gradient(135deg, $primary-color 50%, transparent 50%);
+    background-position:
+      calc(100% - 20px) calc(1em + 2px),
+      calc(100% - 15px) calc(1em + 2px);
+    background-size:
+      5px 5px,
+      5px 5px;
+    background-repeat: no-repeat;
 
-  h1 {
-    color: #2c3e50;
-    font-size: 36px;
-    margin-bottom: 20px;
+    &:focus {
+      outline: none;
+      border-color: $primary-color;
+      box-shadow: 0 0 0 1px rgba($primary-color, 0.5);
+    }
+
+    option {
+      padding: 8px;
+      background-color: $white;
+      color: #333;
+    }
+  }
+}
+
+.specialization-filter select option:checked {
+  background-color: $primary-color !important;
+  color: $white !important;
+}
+
+.carousel-container {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  // Ascunde controalele laterale complet
+  .carousel-control.prev,
+  .carousel-control.next {
+    display: none !important;
+  }
+}
+
+.cards-container {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  overflow-x: auto; // Permite scroll orizontal dacă sunt prea multe carduri
+  padding: 10px 0;
+  width: 100%;
+}
+
+.carousel-control {
+  background-color: rgba($primary-color, 0.8);
+  color: $white;
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  position: absolute;
+  z-index: 2;
+
+  &.prev {
+    left: -20px;
+  }
+
+  &.next {
+    right: -20px;
+  }
+
+  &:hover {
+    background-color: $primary-color;
+  }
+}
+
+// Carduri - neschimbate
+.doctor-card, .hospital-card {
+  background-color: $white;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s;
+  flex: 0 0 calc(25% - 15px);
+
+  &:hover {
+    transform: translateY(-5px);
+  }
+
+  .card-image {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin: 20px auto 0;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s;
+    }
+  }
+
+  &:hover .card-image img {
+    transform: scale(1.05);
+  }
+
+  .card-content {
+    padding: 20px;
+    text-align: center;
+
+    h3 {
+      font-size: 18px;
+      margin-bottom: 10px;
+      color: $primary-color;
+    }
+
+    p {
+      margin-bottom: 10px;
+      color: #666;
+
+      &.specialization, &.city {
+        font-weight: 500;
+        color: #444;
+      }
+    }
+
+    .appointment-button, .details-button {
+      width: 100%;
+      margin-top: 15px;
+      padding: 8px;
+    }
+  }
+}
+
+// Footer - neschimbat
+.footer {
+  background-color: #333;
+  color: $white;
+  padding: 60px 20px;
+  margin-top: 60px;
+}
+
+.footer-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.footer-logo {
+  flex: 0 0 300px;
+
+  span {
+    font-size: 24px;
+    font-weight: 600;
+    color: $white;
+    display: block;
+    margin-bottom: 10px;
   }
 
   p {
-    color: #5d6d7e;
-    font-size: 18px;
-    line-height: 1.6;
-    margin-bottom: 30px;
+    color: #bbb;
+    font-size: 14px;
   }
 }
 
-.services-button {
-  background-color: #4a90e2;
-  color: white;
+.footer-links {
+  display: flex;
+  gap: 40px;
+}
+
+.footer-column {
+  h4 {
+    font-size: 18px;
+    margin-bottom: 15px;
+    color: $white;
+  }
+
+  a {
+    display: block;
+    color: #bbb;
+    margin-bottom: 10px;
+    text-decoration: none;
+    transition: color 0.2s;
+
+    &:hover {
+      color: $white;
+    }
+  }
+}
+
+// Stiluri pentru mesajele "No Results" și indicatoare de încărcare
+.no-results-message {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 120px;
+  padding: 24px;
+  background-color: $secondary-color;
+  border-radius: 8px;
+  margin: 20px 0;
+
+  p {
+    color: $text-color;
+    font-size: 16px;
+    text-align: center;
+  }
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 120px;
+  padding: 24px;
+
+  .spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid rgba($primary-color, 0.2);
+    border-radius: 50%;
+    border-top-color: $primary-color;
+    animation: spin 1s ease-in-out infinite;
+    margin-bottom: 16px;
+  }
+
+  p {
+    color: $text-color;
+    font-size: 16px;
+  }
+}
+
+.filtering-message {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+  background-color: rgba($primary-color, 0.5);
+  border-radius: 4px;
+  margin-bottom: 16px;
+
+  .spinner-small {
+    width: 20px;
+    height: 20px;
+    border: 2px solid rgba($primary-color, 0.2);
+    border-radius: 50%;
+    border-top-color: $primary-color;
+    animation: spin 1s ease-in-out infinite;
+    margin-right: 12px;
+  }
+
+  p {
+    color: $primary-color;
+    font-size: 14px;
+    margin: 0;
+  }
+}
+
+// Animație pentru spinner
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+// Responsive - păstrat și îmbunătățit
+@media (max-width: 768px) {
+  .nav-links {
+    gap: 15px;
+  }
+
+  .hero-text h1 {
+    font-size: 36px;
+  }
+
+  .cards-container {
+    gap: 15px;
+  }
+
+  .doctor-card, .hospital-card {
+    flex: 0 0 calc(50% - 10px);
+  }
+
+  .footer-content {
+    flex-direction: column;
+    gap: 30px;
+  }
+
+  .footer-links {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .logo .logo-text {
+    font-size: 24px;
+  }
+}
+
+.pagination-container {
+  display: flex !important;
+  justify-content: center !important;
+  margin-top: 30px !important;
+  width: 100% !important;
+}
+.pagination {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 15px !important;
+  background-color: #fff !important;
+  padding: 10px 20px !important;
+  border-radius: 30px !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+}
+
+.pagination-arrow {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: $primary-color; /* Fundal mov utilizând variabila de culoare primară */
+  color: $white; /* Săgeată albă */
   border: none;
-  padding: 12px 25px;
-  border-radius: 25px;
-  font-weight: bold;
-  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
+  transition: all 0.2s;
 
   &:hover {
-    background-color: #3a80d2;
+    background-color: darken($primary-color, 10%); /* Puțin mai închis la hover */
   }
+
+  &:disabled {
+    background-color: lighten($primary-color, 20%); /* Mai deschis când e dezactivat */
+    color: rgba(255, 255, 255, 0.7); /* Săgeată semi-transparentă când e dezactivat */
+    cursor: not-allowed;
+  }
+
+  i, /* Pentru FontAwesome sau alte iconițe */
+  svg, /* Pentru svg direct */
+  &::before /* Pentru simboluri Unicode sau pseudo-elemente */ {
+    color: $white;
+    fill: $white; /* Pentru svg-uri */
+  }
+}
+
+.pagination-info {
+  font-size: 14px;
+  font-weight: 500;
+  color: $text-color;
+}
+
+
+@media (max-width: 480px) {
+  .header-content {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .nav-content {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .doctor-card, .hospital-card {
+    flex: 0 0 100%;
+  }
+
+  .section-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+
+  .logo {
+    margin-bottom: 10px;
+  }
+
+  .pagination {
+    padding: 8px 12px;
+    gap: 10px;
+  }
+
+  .pagination-arrow {
+    width: 32px;
+    height: 32px;
+  }
+
+  .pagination-info {
+    font-size: 12px;
+  }
+}
+
+.map-button-gradient {
+  width: 100%;
+  padding: 10px 0;
+  background: linear-gradient(45deg, #6849e4, #8e78da);
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.map-button-gradient:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transition: 0.5s;
+}
+
+.map-button-gradient:hover:before {
+  left: 100%;
+}
+
+.map-button-gradient:hover {
+  box-shadow: 0 5px 15px rgba(106, 77, 224, 0.4);
 }

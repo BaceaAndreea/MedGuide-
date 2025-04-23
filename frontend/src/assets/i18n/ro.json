@@ -156,7 +156,9 @@
     "FIRST_NAME_PLACEHOLDER": "Prenumele doctorului",
     "LAST_NAME_PLACEHOLDER": "Numele doctorului",
     "SELECT_HOSPITAL": "Alege spital",
-    "SELECT_SPECIALIZATION": "Alege specializare"
+    "SELECT_SPECIALIZATION": "Alege specializare",
+    "NO_RESULTS": "Nu au fost găsiți doctori care să corespundă criteriilor selectate.",
+    "SPECIALIZATION_LIST": "Lista specializărilor"
   },
   "HOSPITALS": {
     "TITLE": "Spitale",
@@ -173,7 +175,9 @@
     "SATELLITE": "Satelit",
     "ADDRESS_PLACEHOLDER": "Începe să scrii adresa...",
     "START_TYPING": "Începe să scrii...",
-    "MAP_INSTRUCTIONS": "Click pe hartă pentru a selecta o locație"
+    "MAP_INSTRUCTIONS": "Click pe hartă pentru a selecta o locație",
+    "NO_RESULTS": "Nu există spitale disponibile momentan.",
+    "SEE_ON_MAP": "Vezi pe hartă"
   },
   "SPECIALIZATIONS": {
     "TITLE": "Specializări",
@@ -183,7 +187,30 @@
     "DESCRIPTION": "DESCRIERE",
     "ACTIONS": "ACȚIUNI",
     "NEW_SPECIALIZATION_TITLE": "Adăugare Specializare Nouă",
-    "UPDATE_SPECIALIZATION": "Actualizare Specializare"
+    "UPDATE_SPECIALIZATION": "Actualizare Specializare",
+    "LIST": "Lista specializărilor",
+    "NO_RESULTS": "Nu au fost găsite specializări.",
+    "PEDIATRICS": "Pediatrie",
+    "DERMATOLOGY": "Dermatologie",
+    "CARDIOLOGY": "Cardiologie",
+    "NEUROLOGY": "Neurologie",
+    "OPHTHALMOLOGY": "Oftalmologie",
+    "ORTHOPEDICS": "Ortopedie",
+    "PSYCHIATRY": "Psihiatrie",
+    "GYNECOLOGY": "Ginecologie",
+    "UROLOGY": "Urologie",
+    "ONCOLOGY": "Oncologie",
+    "ENDOCRINOLOGY": "Endocrinologie",
+    "GASTROENTEROLOGY": "Gastroenterologie",
+    "RHEUMATOLOGY": "Reumatologie",
+    "GENERAL_PRACTICE": "Medicină Generală",
+    "INTERNAL_MEDICINE": "Medicină Internă",
+    "FAMILY_MEDICINE": "Medicină de Familie",
+    "HEMATOLOGY": "Hematologie",
+    "ALLERGY_IMMUNOLOGY": "Alergologie și Imunologie",
+    "INFECTIOUS_DISEASE": "Boli Infecțioase",
+    "PULMONOLOGY": "Pneumologie",
+    "NEPHROLOGY": "Nefrologie"
   },
   "PROFILE": {
     "TITLE": "Profilul meu",
@@ -204,6 +231,11 @@
     "CANCELED": "Anulată",
     "CONFIRMED": "Programată"
   },
+  "SEARCH": {
+    "NO_RESULTS": "Nu au fost găsite rezultate pentru căutarea dvs.",
+    "TRY_AGAIN": "Vă rugăm să încercați alte criterii de căutare."
+  },
+
   "VALIDATION": {
     "APPOINTMENT_DATE_REQUIRED": "Data programării este obligatorie",
     "APPOINTMENT_FUTURE_DATE": "Nu poți programa în trecut. Te rugăm să selectezi o dată viitoare.",
@@ -288,6 +320,8 @@
     "HOSPITALS": "Se încarcă spitalele...",
     "SPECIALIZATIONS": "Se încarcă specializările...",
     "CONSULTATIONS": "Se încarcă consultațiile...",
-    "CONSULTATION_DETAILS": "Se încarcă detaliile consultației..."
+    "CONSULTATION_DETAILS": "Se încarcă detaliile consultației...",
+    "SEARCHING": "Se caută...",
+    "FILTERING": "Se filtrează rezultatele..."
   }
 }

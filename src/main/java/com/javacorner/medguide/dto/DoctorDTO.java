@@ -10,6 +10,7 @@ public class DoctorDTO {
     private UserDTO user;
     private HospitalDTO hospital;
     private SpecializationDTO specialization;
+    private String imageUrl;
 
     public HospitalDTO getHospital() {
         return hospital;
@@ -65,5 +66,13 @@ public class DoctorDTO {
 
     public void setUser(UserDTO user) {
         this.user = user;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }

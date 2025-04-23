@@ -20,6 +20,7 @@ public class DoctorMapper {
         dto.setFirstName(doctor.getFirstName());
         dto.setLastName(doctor.getLastName());
         dto.setBirthDate(doctor.getBirthDate());
+        dto.setImageUrl(doctor.getImageUrl());
 
         // Adaugă datele despre spital
         if (doctor.getHospital() != null) {
@@ -56,6 +57,7 @@ public class DoctorMapper {
     public Doctor fromDoctorDTO(DoctorDTO doctorDTO) {
         Doctor doctor = new Doctor();
         BeanUtils.copyProperties(doctorDTO, doctor);
+        doctor.setImageUrl(doctorDTO.getImageUrl());
         return doctor;
     }
 }

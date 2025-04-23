@@ -10,12 +10,14 @@ public class HospitalMappper {
     public HospitalDTO fromHospital(Hospital hospital) {
         HospitalDTO hospitalDTO = new HospitalDTO();
         BeanUtils.copyProperties(hospital, hospitalDTO);
+        hospitalDTO.setImageUrl(hospital.getImageUrl());
         return hospitalDTO;
     }
 
     public Hospital fromHospitalDTO(HospitalDTO hospitalDTO) {
         Hospital hospital = new Hospital();
         BeanUtils.copyProperties(hospitalDTO, hospital);
+        hospital.setImageUrl(hospitalDTO.getImageUrl());
         return hospital;
     }
 }

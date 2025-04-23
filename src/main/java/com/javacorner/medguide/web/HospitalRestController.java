@@ -4,10 +4,14 @@ package com.javacorner.medguide.web;
 import com.javacorner.medguide.dto.HospitalDTO;
 import com.javacorner.medguide.service.HospitalService;
 import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/hospitals")
@@ -59,6 +63,27 @@ public class HospitalRestController {
     @PreAuthorize("hasAuthority('Admin')")
     public void deleteHospital(@PathVariable Long hospitalId) {
         hospitalService.removeHospital(hospitalId);
+    }
+
+    // Endpoint nou pentru încărcarea imaginilor spitalelor
+    @PostMapping("/{hospitalId}/image")
+    @PreAuthorize("hasAuthority('Admin')")
+    public ResponseEntity<Map<String, String>> uploadHospitalImage(
+            @PathVariable Long hospitalId,
+            @RequestParam("file") MultipartFile file) {
+        try {
+            String imageUrl = hospitalService.saveHospitalImage(hospitalId, file);
+            return ResponseEntity.ok(Map.of("imageUrl", imageUrl));
+        } catch (IOException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", "Failed to upload image: " + e.getMessage()));
+        }
+    }
+
+    // Endpoint nou pentru spitalele recomandate pentru pagina Home
+    @GetMapping("/featured")
+    public ResponseEntity<List<HospitalDTO>> getFeaturedHospitals() {
+        List<HospitalDTO> featuredHospitals = hospitalService.findFeaturedHospitals();
+        return ResponseEntity.ok(featuredHospitals);
     }
 
 }

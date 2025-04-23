@@ -32,7 +32,6 @@ public class SpecializationRestController {
     }
 
     @GetMapping("/all")
-    @PreAuthorize("hasAnyAuthority('Admin', 'Doctor', 'Patient')")
     public List<SpecializationDTO> findAllSpecializations() {
         return specializationService.fetchAllSpecializations();
     }

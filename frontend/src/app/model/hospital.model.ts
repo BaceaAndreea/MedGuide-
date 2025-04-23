@@ -5,4 +5,5 @@ export interface Hospital {
   city: string;
   lat?: number;
   lng?: number;
+  imageUrl?: string;
 }

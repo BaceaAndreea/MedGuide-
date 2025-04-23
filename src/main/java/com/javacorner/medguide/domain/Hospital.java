@@ -35,15 +35,19 @@ public class Hospital {
     @Column(name = "lng")
     private Double lng;
 
+    @Column(name = "image_url", nullable = true)
+    private String imageUrl;
+
     public Hospital() {
     }
 
-    public Hospital(String name, String address, String city, Double lat, Double lng) {
+    public Hospital(String name, String address, String city, Double lat, Double lng, String imageUrl) {
         this.name = name;
         this.address = address;
         this.city = city;
         this.lat = lat;
         this.lng = lng;
+        this.imageUrl = imageUrl;
     }
 
     @Override
@@ -99,6 +103,14 @@ public class Hospital {
         this.doctors = doctors;
     }
 
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
     public Double getLat() {
         return lat;
     }
@@ -125,6 +137,7 @@ public class Hospital {
                 ", doctors=" + doctors +
                 ", lat=" + lat +
                 ", lng=" + lng +
+                ", imageUrl='" + imageUrl + '\'' +
                 '}';
     }
 }
