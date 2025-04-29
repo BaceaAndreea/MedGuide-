@@ -43,6 +43,11 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
                 DecodedJWT decodedJWT = jwtVerifier.verify(accessToken);
                 String email = decodedJWT.getSubject();
                 String[] roles = decodedJWT.getClaim("roles").asArray(String.class);
+                Boolean passwordTemporary = decodedJWT.getClaim("passwordTemporary").asBoolean();
+                if (passwordTemporary != null && passwordTemporary) {
+                    // Set an attribute or header indicating password change is required
+                    request.setAttribute("passwordChangeRequired", true);
+                }
                 //now convert these roles into a collection of type grantedAuthority
                 Collection<GrantedAuthority> authorities = new ArrayList<>();
                 for (String role : roles) {

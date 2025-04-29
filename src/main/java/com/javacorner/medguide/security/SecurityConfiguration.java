@@ -3,6 +3,7 @@ package com.javacorner.medguide.security;
 import com.javacorner.medguide.filter.JWTAuthenticationFilter;
 import com.javacorner.medguide.filter.JWTAuthorizationFilter;
 import com.javacorner.medguide.helper.JWTHelper;
+import com.javacorner.medguide.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -39,7 +40,7 @@ public class SecurityConfiguration {
     //the information about the logged-in user, as well as their role, will be inside a token that is sent to
     // the frontend application. The stateless authentication id the opposite of the statefull athentication
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http, UserService userService) throws Exception {
         http
                 .csrf(csrf -> csrf.disable()) // Dezactivare CSRF
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
@@ -58,9 +59,12 @@ public class SecurityConfiguration {
                         .requestMatchers("/specializations/all").permitAll()
                         .requestMatchers("/doctors/specialization/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/patients").permitAll()
+                        .requestMatchers("/doctors/{doctorId}/ratings/summary").permitAll()
+                        .requestMatchers("/auth/send-temporary-password").permitAll() // Endpoint pentru solicitare parolă temporară
+                        .requestMatchers("/auth/change-password").authenticated() // Endpoint pentru schimbare parolă (necesită autentificare)
                         .anyRequest().authenticated() // Orice alt request trebuie autentificat
                 )
-                .addFilter(new JWTAuthenticationFilter(authenticationManager(http.getSharedObject(AuthenticationConfiguration.class)), jwtHelper))
+                .addFilter(new JWTAuthenticationFilter(authenticationManager(http.getSharedObject(AuthenticationConfiguration.class)), jwtHelper, userService))
                 .addFilterBefore(new JWTAuthorizationFilter(jwtHelper), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }

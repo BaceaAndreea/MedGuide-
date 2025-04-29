@@ -1,6 +1,7 @@
 package com.javacorner.medguide.service;
 
 import com.javacorner.medguide.domain.Doctor;
+import com.javacorner.medguide.dto.ConsultationDTO;
 import com.javacorner.medguide.dto.DoctorDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.web.multipart.MultipartFile;
@@ -28,5 +29,10 @@ public interface DoctorService {
     String saveDoctorImage(Long doctorId, MultipartFile file) throws IOException;
 
     List<DoctorDTO> findFeaturedDoctors();
+
+    double getDoctorAverageRating(Long doctorId);
+    int getDoctorTotalReviews(Long doctorId);
+    int getDoctorRatingCount(Long doctorId, int ratingValue);
+    List<ConsultationDTO> getDoctorRatings(Long doctorId);
 
 }

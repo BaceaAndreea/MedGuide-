@@ -100,24 +100,6 @@ $white: #fff;
   }
 }
 
-
-// Butonul de login păstrat
-.login-button {
-  background-color: $primary-color;
-  color: $white;
-  border: none;
-  padding: 10px 24px; // Mărit padding-ul pentru un buton mai lat
-  border-radius: 5px;
-  cursor: pointer;
-  font-weight: 500;
-  transition: all 0.2s;
-  font-size: 16px; // Mărit font-size
-
-  &:hover {
-    background-color: darken($primary-color, 10%);
-  }
-}
-
 // Bara de navigare - fără modificări majore
 .nav-menu {
   background-color: $white;
@@ -306,7 +288,7 @@ $white: #fff;
   margin-top: 0;
 }
 
-// Media queries pentru responsivitate
+// Media queries pentru responsivitate pentru hero section
 @media (max-width: 768px) {
   .hero-section-v3 {
     padding: 70px 0 100px;
@@ -500,8 +482,156 @@ $white: #fff;
   }
 }
 
-// Carduri - neschimbate
-.doctor-card, .hospital-card {
+// Stilul actualizat pentru cardul doctorului cu înălțime fixă
+.doctor-card {
+  background-color: $white;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s;
+  flex: 0 0 calc(25% - 15px);
+  display: flex;
+  flex-direction: column;
+  height: 430px; // Înălțime fixă pentru toate cardurile
+
+  &:hover {
+    transform: translateY(-5px);
+  }
+
+  .card-image {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin: 20px auto 0;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s;
+    }
+  }
+
+  &:hover .card-image img {
+    transform: scale(1.05);
+  }
+
+  .card-content {
+    padding: 20px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1; // Permite conținutului să ocupe spațiul disponibil
+    justify-content: space-between; // Distribuie elementele uniform pe verticală
+
+    h3 {
+      font-size: 18px;
+      margin-bottom: 10px;
+      color: $primary-color;
+    }
+
+    p {
+      margin-bottom: 10px;
+      color: #666;
+
+      &.specialization, &.city {
+        font-weight: 500;
+        color: #444;
+      }
+    }
+  }
+}
+
+// Container cu înălțime fixă pentru rating
+.rating-container {
+  height: 45px; // Înălțime fixă pentru zona de rating
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 15px 0;
+}
+
+// Stilul pentru butonul de programare cu gradient, similar cu "Vezi pe hartă"
+.appointment-button-gradient {
+  width: 100%;
+  padding: 10px 0;
+  background: linear-gradient(45deg, #6849e4, #8e78da);
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  margin-top: auto; // Împinge butonul la baza card-ului
+}
+
+.appointment-button-gradient:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transition: 0.5s;
+}
+
+.appointment-button-gradient:hover:before {
+  left: 100%;
+}
+
+.appointment-button-gradient:hover {
+  box-shadow: 0 5px 15px rgba(106, 77, 224, 0.4);
+}
+
+// Îmbunătățiri pentru sistemul de rating
+.doctor-rating {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  .stars {
+    display: flex;
+    gap: 2px;
+    margin-bottom: 4px;
+
+    i.fas.fa-star {
+      color: #ddd; // Culoare pentru stele necompletate
+
+      &.filled {
+        color: #ffc107; // Culoare galbenă pentru stele completate
+      }
+    }
+  }
+
+  .rating-value {
+    font-weight: 600;
+    color: #333;
+    margin-right: 5px;
+  }
+
+  .review-count {
+    color: #777;
+    font-size: 0.9em;
+  }
+}
+
+.no-rating {
+  color: #888;
+  font-style: italic;
+  font-size: 0.9em;
+}
+
+// Stiluri pentru cardul de spital (păstrat din original)
+.hospital-card {
   background-color: $white;
   border-radius: 10px;
   overflow: hidden;
@@ -550,12 +680,6 @@ $white: #fff;
         font-weight: 500;
         color: #444;
       }
-    }
-
-    .appointment-button, .details-button {
-      width: 100%;
-      margin-top: 15px;
-      padding: 8px;
     }
   }
 }
@@ -693,39 +817,45 @@ $white: #fff;
   }
 }
 
-// Responsive - păstrat și îmbunătățit
-@media (max-width: 768px) {
-  .nav-links {
-    gap: 15px;
-  }
-
-  .hero-text h1 {
-    font-size: 36px;
-  }
-
-  .cards-container {
-    gap: 15px;
-  }
-
-  .doctor-card, .hospital-card {
-    flex: 0 0 calc(50% - 10px);
-  }
-
-  .footer-content {
-    flex-direction: column;
-    gap: 30px;
-  }
-
-  .footer-links {
-    width: 100%;
-    justify-content: space-between;
-  }
-
-  .logo .logo-text {
-    font-size: 24px;
-  }
+// Stiluri pentru butonul "Vezi pe hartă"
+.map-button-gradient {
+  width: 100%;
+  padding: 10px 0;
+  background: linear-gradient(45deg, #6849e4, #8e78da);
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
 }
 
+.map-button-gradient:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transition: 0.5s;
+}
+
+.map-button-gradient:hover:before {
+  left: 100%;
+}
+
+.map-button-gradient:hover {
+  box-shadow: 0 5px 15px rgba(106, 77, 224, 0.4);
+}
+
+// Stiluri pentru paginare
 .pagination-container {
   display: flex !important;
   justify-content: center !important;
@@ -780,6 +910,42 @@ $white: #fff;
   color: $text-color;
 }
 
+// Responsivitate pentru toate elementele
+@media (max-width: 768px) {
+  .nav-links {
+    gap: 15px;
+  }
+
+  .hero-text h1 {
+    font-size: 36px;
+  }
+
+  .cards-container {
+    gap: 15px;
+  }
+
+  .doctor-card, .hospital-card {
+    flex: 0 0 calc(50% - 10px);
+  }
+
+  .doctor-card {
+    height: 410px; // Ajustează înălțimea pentru ecrane mai mici
+  }
+
+  .footer-content {
+    flex-direction: column;
+    gap: 30px;
+  }
+
+  .footer-links {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .logo .logo-text {
+    font-size: 24px;
+  }
+}
 
 @media (max-width: 480px) {
   .header-content {
@@ -794,6 +960,10 @@ $white: #fff;
 
   .doctor-card, .hospital-card {
     flex: 0 0 100%;
+  }
+
+  .doctor-card {
+    height: 400px; // Ajustează înălțimea pentru mobile
   }
 
   .section-header {
@@ -819,41 +989,4 @@ $white: #fff;
   .pagination-info {
     font-size: 12px;
   }
-}
-
-.map-button-gradient {
-  width: 100%;
-  padding: 10px 0;
-  background: linear-gradient(45deg, #6849e4, #8e78da);
-  color: #fff;
-  border: none;
-  border-radius: 5px;
-  font-weight: 500;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
-}
-
-.map-button-gradient:before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-  transition: 0.5s;
-}
-
-.map-button-gradient:hover:before {
-  left: 100%;
-}
-
-.map-button-gradient:hover {
-  box-shadow: 0 5px 15px rgba(106, 77, 224, 0.4);
 }

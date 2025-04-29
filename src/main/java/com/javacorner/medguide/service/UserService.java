@@ -8,4 +8,8 @@ public interface UserService {
     User createUser(String email, String password);
 
     void assignRoleToUser(String email, String roleName);
+
+    void sendTemporaryPassword(String email);
+
+    boolean changePassword(String email, String oldPassword, String newPassword);
 }

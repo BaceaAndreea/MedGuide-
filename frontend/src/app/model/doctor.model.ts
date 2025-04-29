@@ -11,4 +11,6 @@ export interface Doctor {
   specialization : Specialization;
   hospital : Hospital;
   imageUrl?: string;
+  rating?: number;
+  reviewCount?: number;
 }

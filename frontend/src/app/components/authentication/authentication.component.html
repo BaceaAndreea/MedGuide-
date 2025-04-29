@@ -1,3 +1,4 @@
+<!-- Authentication Component Template -->
 <div class="login-container">
   <div class="language-selector-container">
     <app-language-selector></app-language-selector>
@@ -33,10 +34,10 @@
       <div class="decorative-shape shape-3"></div>
     </div>
 
-    <!-- Right panel - Changes based on login/signup state -->
+    <!-- Right panel - Changes based on login/signup/forgot password state -->
     <div class="right-panel">
       <!-- Login Form -->
-      <div *ngIf="showLoginForm; else signupFormTemplate">
+      <div *ngIf="showLoginForm && !showForgotPassword">
         <div class="login-header">
           <h2>{{ 'AUTH.LOGIN.TITLE' | translate }}</h2>
           <p>{{ 'AUTH.LOGIN.SUBTITLE' | translate }}</p>
@@ -91,7 +92,7 @@
               <label for="remember">{{ 'AUTH.LOGIN.REMEMBER_ME' | translate }}</label>
             </div>
             <div class="forgot">
-              <a href="#">{{ 'AUTH.LOGIN.FORGOT_PASSWORD' | translate }}</a>
+              <a href="javascript:void(0)" (click)="showForgotPasswordForm()">{{ 'AUTH.LOGIN.FORGOT_PASSWORD' | translate }}</a>
             </div>
           </div>
 
@@ -113,8 +114,102 @@
         </ng-container>
       </div>
 
+      <!-- Forgot Password Form -->
+      <div *ngIf="showForgotPassword" class="form-container">
+        <app-forgot-password
+          (backToLogin)="closeForgotPasswordForm()">
+        </app-forgot-password>
+      </div>
+
+      <!-- Change Password Form -->
+      <div *ngIf="showChangePassword" class="form-container">
+        <div class="change-password-container">
+          <div class="login-header">
+            <h2>{{ 'AUTH.CHANGE_PASSWORD.TITLE' | translate }}</h2>
+            <p>{{ 'AUTH.CHANGE_PASSWORD.TEMP_SUBTITLE' | translate }}</p>
+          </div>
+
+          <form [formGroup]="changePasswordForm" class="login-form">
+            <div class="form-group">
+              <label for="oldPassword">{{ 'AUTH.CHANGE_PASSWORD.OLD_PASSWORD' | translate }}</label>
+              <div class="input-with-icon">
+                <i class="input-icon password-icon"></i>
+                <input
+                  type="password"
+                  id="oldPassword"
+                  placeholder="{{ 'AUTH.CHANGE_PASSWORD.OLD_PASSWORD' | translate }}"
+                  formControlName="oldPassword"
+                  [ngClass]="{'is-invalid': oldPassword?.invalid && oldPassword?.touched}">
+              </div>
+              <div *ngIf="oldPassword?.invalid && oldPassword?.touched" class="invalid-feedback">
+                <div *ngIf="oldPassword?.errors?.['required']">{{ 'AUTH.VALIDATION.PASSWORD_REQUIRED' | translate }}</div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="newPassword">{{ 'AUTH.CHANGE_PASSWORD.NEW_PASSWORD' | translate }}</label>
+              <div class="input-with-icon">
+                <i class="input-icon password-icon"></i>
+                <input
+                  type="password"
+                  id="newPassword"
+                  placeholder="{{ 'AUTH.CHANGE_PASSWORD.NEW_PASSWORD' | translate }}"
+                  formControlName="newPassword"
+                  [ngClass]="{'is-invalid': newPassword?.invalid && newPassword?.touched}">
+              </div>
+              <div *ngIf="newPassword?.invalid && newPassword?.touched" class="invalid-feedback">
+                <div *ngIf="newPassword?.errors?.['required']">{{ 'AUTH.VALIDATION.NEW_PASSWORD_REQUIRED' | translate }}</div>
+                <div *ngIf="newPassword?.errors?.['minlength']">{{ 'AUTH.VALIDATION.PASSWORD_LENGTH' | translate }}</div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="confirmPassword">{{ 'AUTH.CHANGE_PASSWORD.CONFIRM_PASSWORD' | translate }}</label>
+              <div class="input-with-icon">
+                <i class="input-icon password-icon"></i>
+                <input
+                  type="password"
+                  id="confirmPassword"
+                  placeholder="{{ 'AUTH.CHANGE_PASSWORD.CONFIRM_PASSWORD' | translate }}"
+                  formControlName="confirmPassword"
+                  [ngClass]="{'is-invalid': (confirmPassword?.invalid && confirmPassword?.touched) ||
+                                  (changePasswordForm.hasError('passwordsMismatch') && confirmPassword?.touched)}">
+              </div>
+              <div *ngIf="confirmPassword?.invalid && confirmPassword?.touched" class="invalid-feedback">
+                <div *ngIf="confirmPassword?.errors?.['required']">{{ 'AUTH.VALIDATION.CONFIRM_PASSWORD_REQUIRED' | translate }}</div>
+              </div>
+              <div *ngIf="changePasswordForm.hasError('passwordsMismatch') && confirmPassword?.touched" class="invalid-feedback">
+                <div>{{ 'AUTH.VALIDATION.PASSWORDS_MISMATCH' | translate }}</div>
+              </div>
+            </div>
+
+            <button type="button"
+                    (click)="onChangePasswordSubmit()"
+                    class="login-button"
+                    [disabled]="changePasswordForm.invalid || isSubmitting">
+              <span>{{ isSubmitting ? ('AUTH.COMMON.PROCESSING' | translate) : ('AUTH.CHANGE_PASSWORD.SUBMIT' | translate) }}</span>
+              <i class="button-icon arrow-icon"></i>
+            </button>
+          </form>
+
+          <ng-container *ngIf="successMessage">
+            <div class="alert-success">
+              {{successMessage}}
+            </div>
+          </ng-container>
+
+          <ng-container *ngIf="errorMessage">
+            <div class="alert-error">
+              {{errorMessage}}
+            </div>
+          </ng-container>
+        </div>
+      </div>
+
+
+
       <!-- Signup Form Template -->
-      <ng-template #signupFormTemplate>
+      <div *ngIf="!showLoginForm && !showForgotPassword && !showChangePassword">
         <div class="login-header">
           <h2>{{ 'AUTH.REGISTER.TITLE' | translate }}</h2>
           <p>{{ 'AUTH.REGISTER.SUBTITLE' | translate }}</p>
@@ -217,7 +312,7 @@
             <button type="button" class="link-button" (click)="toggleForm()">{{ 'AUTH.REGISTER.LOGIN' | translate }}</button>
           </div>
         </form>
-      </ng-template>
+      </div>
     </div>
   </div>
 </div>

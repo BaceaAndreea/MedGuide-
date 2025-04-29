@@ -8,6 +8,7 @@ import {ConsultationsService} from '../../services/consultations.service';
 import {AsyncPipe, DatePipe, NgClass, NgForOf, NgIf} from '@angular/common';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {TranslateModule, TranslateService} from '@ngx-translate/core';
+import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 
 @Component({
   selector: 'app-consultations-patient',
@@ -18,7 +19,8 @@ import {TranslateModule, TranslateService} from '@ngx-translate/core';
     NgIf,
     NgClass,
     DatePipe,
-    TranslateModule
+    TranslateModule,
+    ReactiveFormsModule
   ],
   templateUrl: './consultations-patient.component.html',
   styleUrl: './consultations-patient.component.scss'
@@ -32,14 +34,27 @@ export class ConsultationsPatientComponent implements OnInit {
   errorMessage: string = '';
   selectedConsultation: Consultation | null = null;
 
+  // Rating form
+  ratingForm: FormGroup;
+  ratingSubmitted = false;
+  ratingSuccess = false;
+  ratingError = false;
+
   constructor(
     private route: ActivatedRoute,
     private consultationService: ConsultationsService,
     private modalService: NgbModal,
-    private translate: TranslateService // Inject TranslateService
+    private translate: TranslateService,
+    private fb: FormBuilder
   ) {
     // Initialize language settings
     this.translate.setDefaultLang('ro');
+
+    // Initialize rating form
+    this.ratingForm = this.fb.group({
+      rating: [null, [Validators.required, Validators.min(1), Validators.max(10)]],
+      reviewComment: ['', Validators.maxLength(500)]
+    });
   }
 
   ngOnInit(): void {
@@ -53,18 +68,6 @@ export class ConsultationsPatientComponent implements OnInit {
     ).pipe(
       tap(response => {
         console.log('Loaded consultations:', response);
-
-        // Check if all required fields are present
-        if (response.content && response.content.length > 0) {
-          response.content.forEach(consultation => {
-            console.log('Consultation details:', {
-              id: consultation.consultationId,
-              symptoms: consultation.symptoms,
-              recommendations: consultation.recommendations,
-              prescriptions: consultation.prescriptions
-            });
-          });
-        }
       }),
       catchError(error => {
         console.error("Error fetching consultations:", error);
@@ -86,9 +89,9 @@ export class ConsultationsPatientComponent implements OnInit {
   }
 
   openDetailsModal(consultation: Consultation, modal: any) {
-    console.log('Opening modal for consultation:', consultation);
+    console.log('Opening details modal for consultation:', consultation);
 
-    // Instead of creating a copy, load the complete consultation from backend
+    // Load the complete consultation from backend
     this.consultationService.getConsultationById(consultation.consultationId).subscribe({
       next: (fullConsultation) => {
         console.log('Loaded full consultation details:', fullConsultation);
@@ -121,7 +124,11 @@ export class ConsultationsPatientComponent implements OnInit {
           hospitalAddress: consultation.hospitalAddress || '',
           symptoms: consultation.symptoms || this.translate.instant('CONSULTATIONS.NO_SYMPTOMS'),
           recommendations: consultation.recommendations || this.translate.instant('CONSULTATIONS.NO_RECOMMENDATIONS'),
-          prescriptions: consultation.prescriptions || this.translate.instant('CONSULTATIONS.NO_PRESCRIPTIONS')
+          prescriptions: consultation.prescriptions || this.translate.instant('CONSULTATIONS.NO_PRESCRIPTIONS'),
+          rating: consultation.rating,
+          reviewComment: consultation.reviewComment,
+          reviewDate: consultation.reviewDate,
+          isReviewed: consultation.isReviewed
         };
 
         // Open modal anyway with whatever info we have
@@ -134,8 +141,109 @@ export class ConsultationsPatientComponent implements OnInit {
     });
   }
 
+  openReviewModal(consultation: Consultation, modal: any) {
+    console.log('Opening review modal for consultation:', consultation);
+
+    // Reset form and status flags
+    this.ratingForm.reset();
+    this.ratingSubmitted = false;
+    this.ratingSuccess = false;
+    this.ratingError = false;
+
+    // Load the complete consultation from backend
+    this.consultationService.getConsultationById(consultation.consultationId).subscribe({
+      next: (fullConsultation) => {
+        console.log('Loaded full consultation details for review:', fullConsultation);
+
+        // Set the complete consultation with all details
+        this.selectedConsultation = fullConsultation;
+
+        // Open modal
+        this.modalService.open(modal, {
+          centered: true,
+          backdrop: 'static',
+          size: 'md'
+        });
+      },
+      error: (err) => {
+        console.error('Error loading consultation details for review:', err);
+
+        // In case of error, use what we already have
+        this.selectedConsultation = {
+          ...consultation,
+          rating: consultation.rating,
+          reviewComment: consultation.reviewComment,
+          reviewDate: consultation.reviewDate,
+          isReviewed: consultation.isReviewed
+        };
+
+        // Open modal anyway with whatever info we have
+        this.modalService.open(modal, {
+          centered: true,
+          backdrop: 'static',
+          size: 'md'
+        });
+      }
+    });
+  }
+
   // Check if a field exists and is not empty
   hasValue(value: string | null | undefined): boolean {
     return value !== null && value !== undefined && value !== '';
+  }
+
+  // Submit rating
+  submitRating() {
+    this.ratingSubmitted = true;
+
+    if (this.ratingForm.invalid || !this.selectedConsultation) {
+      return;
+    }
+
+    const ratingData = {
+      consultationId: this.selectedConsultation.consultationId,
+      rating: this.ratingForm.value.rating,
+      reviewComment: this.ratingForm.value.reviewComment
+    };
+
+    this.consultationService.addRating(this.selectedConsultation.consultationId, ratingData)
+      .subscribe({
+        next: (response) => {
+          console.log('Rating submitted successfully:', response);
+          this.ratingSuccess = true;
+          this.ratingError = false;
+
+          // Update the selected consultation with the new rating data
+          if (this.selectedConsultation) {
+            this.selectedConsultation = {
+              ...this.selectedConsultation,
+              rating: ratingData.rating,
+              reviewComment: ratingData.reviewComment,
+              reviewDate: new Date().toISOString(),
+              isReviewed: true
+            };
+          }
+
+          // Reload consultations to refresh the list
+          this.loadConsultations();
+        },
+        error: (error) => {
+          console.error('Error submitting rating:', error);
+          this.ratingSuccess = false;
+          this.ratingError = true;
+        }
+      });
+  }
+
+  // Get stars array for display
+  getStarsArray(rating: number | undefined | null): number[] {
+    const safeRating = rating || 0;
+    return Array(safeRating).fill(0);
+  }
+
+  // Get empty stars array for display
+  getEmptyStarsArray(rating: number | undefined | null): number[] {
+    const safeRating = rating || 0;
+    return Array(10 - safeRating).fill(0);
   }
 }

@@ -3,6 +3,7 @@ package com.javacorner.medguide.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.javacorner.medguide.helper.JWTHelper;
+import com.javacorner.medguide.service.UserService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -22,10 +23,13 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     private AuthenticationManager authenticationManager;
     private JWTHelper jwtHelper;
+    private UserService userService;
 
-    public JWTAuthenticationFilter(AuthenticationManager authenticationManager, JWTHelper jwtHelper) {
+    public JWTAuthenticationFilter(AuthenticationManager authenticationManager, JWTHelper jwtHelper, UserService userService) {
         this.authenticationManager = authenticationManager;
         this.jwtHelper = jwtHelper;
+        this.userService = userService;
+
     }
 
 
@@ -41,7 +45,8 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
         User user = (User) authResult.getPrincipal();
-        String jwtAccessToken = jwtHelper.generateAccessToken(user.getUsername(), user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()));
+        com.javacorner.medguide.domain.User appUser = userService.loadUserByEmail(user.getUsername());
+        String jwtAccessToken = jwtHelper.generateAccessToken(user.getUsername(), user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()), appUser.getPasswordTemporary());
         String jwtRefreshToken = jwtHelper.generateRefreshToken(user.getUsername());
         response.setContentType("application/json");
         new ObjectMapper().writeValue(response.getOutputStream(), jwtHelper.getTokensMap(jwtAccessToken, jwtRefreshToken));

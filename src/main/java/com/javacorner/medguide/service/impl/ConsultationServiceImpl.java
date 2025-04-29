@@ -100,6 +100,12 @@ public class ConsultationServiceImpl implements ConsultationService {
         );
     }
 
+    @Override
+    public Consultation updateConsultationEntity(Consultation consultation) {
+        return consultationDao.save(consultation);
+    }
+
+
 
 
 }

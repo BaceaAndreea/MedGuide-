@@ -22,6 +22,8 @@
             <th>{{ 'APPOINTMENTS.DOCTOR' | translate }}</th>
             <th>{{ 'CONSULTATIONS.DATE' | translate }}</th>
             <th>{{ 'CONSULTATIONS.LOCATION' | translate }}</th>
+            <th>{{ 'CONSULTATIONS.RATING' | translate }}</th>
+            <th>{{ 'CONSULTATIONS.REVIEW' | translate }}</th>
             <th>{{ 'CONSULTATIONS.ACTIONS' | translate }}</th>
           </tr>
           </thead>
@@ -30,6 +32,34 @@
             <td>Dr. {{ consultation.doctorFirstName }} {{ consultation.doctorLastName }}</td>
             <td>{{ consultation.appointmentDate | date:'EEE, MMM d, y, h:mm a' }}</td>
             <td>{{ consultation.hospitalAddress }}</td>
+            <td>
+              <!-- Show rating if it exists -->
+              <div *ngIf="consultation.isReviewed" class="rating-display">
+                <div class="stars">
+                  <ng-container *ngFor="let star of getStarsArray(consultation.rating || 0)">
+                    <i class="bi bi-star-fill"></i>
+                  </ng-container>
+                  <ng-container *ngFor="let star of getEmptyStarsArray(consultation.rating || 0)">
+                    <i class="bi bi-star"></i>
+                  </ng-container>
+                </div>
+                <div class="rating-value">{{ consultation.rating || 0 }}/10</div>
+              </div>
+              <!-- Show "Not Rated" if no rating exists -->
+              <span *ngIf="!consultation.isReviewed" class="not-rated">
+                {{ 'CONSULTATIONS.NOT_RATED' | translate }}
+              </span>
+            </td>
+            <td>
+              <!-- Review button -->
+              <button *ngIf="!consultation.isReviewed" (click)="openReviewModal(consultation, reviewModal)" class="btn-review">
+                <i class="bi bi-star"></i> {{ 'CONSULTATIONS.ADD_REVIEW' | translate }}
+              </button>
+              <!-- Show review success if already reviewed -->
+              <button *ngIf="consultation.isReviewed" class="btn-reviewed" disabled>
+                <i class="bi bi-check-circle"></i> {{ 'CONSULTATIONS.REVIEWED' | translate }}
+              </button>
+            </td>
             <td>
               <button (click)="openDetailsModal(consultation, detailsModal)" class="btn-view">
                 <i class="bi bi-eye"></i> {{ 'CONSULTATIONS.SEE_DETAILS' | translate }}
@@ -147,11 +177,181 @@
           </div>
         </div>
       </div>
+
+      <!-- Rating Section -->
+      <div class="rating-section">
+        <h4 class="section-title">{{ 'CONSULTATIONS.RATING' | translate }}</h4>
+
+        <!-- Show existing rating if consultation has been reviewed -->
+        <div *ngIf="selectedConsultation?.isReviewed" class="existing-rating">
+          <div class="rating-display">
+            <div class="stars">
+              <ng-container *ngFor="let star of getStarsArray(selectedConsultation?.rating || 0)">
+                <i class="bi bi-star-fill"></i>
+              </ng-container>
+              <ng-container *ngFor="let star of getEmptyStarsArray(selectedConsultation?.rating || 0)">
+                <i class="bi bi-star"></i>
+              </ng-container>
+            </div>
+            <div class="rating-value">{{ selectedConsultation?.rating }}/10</div>
+          </div>
+          <div *ngIf="selectedConsultation?.reviewComment" class="review-comment">
+            <p>"{{ selectedConsultation?.reviewComment }}"</p>
+          </div>
+          <div class="review-date">
+            {{ 'CONSULTATIONS.REVIEWED_ON' | translate }}: {{ selectedConsultation?.reviewDate | date:'medium' }}
+          </div>
+        </div>
+
+        <!-- Show rating form if consultation has not been reviewed -->
+        <div *ngIf="!selectedConsultation?.isReviewed" class="rating-form-container">
+          <form [formGroup]="ratingForm" (ngSubmit)="submitRating()" class="rating-form">
+            <!-- Success message -->
+            <div *ngIf="ratingSuccess" class="alert alert-success">
+              <i class="bi bi-check-circle"></i>
+              {{ 'CONSULTATIONS.RATING_SUCCESS' | translate }}
+            </div>
+
+            <!-- Error message -->
+            <div *ngIf="ratingError" class="alert alert-danger">
+              <i class="bi bi-exclamation-circle"></i>
+              {{ 'CONSULTATIONS.RATING_ERROR' | translate }}
+            </div>
+
+            <div class="form-group">
+              <label for="rating">{{ 'CONSULTATIONS.SELECT_RATING' | translate }}</label>
+              <div class="rating-input">
+                <div class="rating-stars">
+                  <ng-container *ngFor="let value of [10, 9, 8, 7, 6, 5, 4, 3, 2, 1]">
+                    <label class="rating-star">
+                      <input
+                        type="radio"
+                        [value]="value"
+                        formControlName="rating"
+                        name="rating"
+                      >
+                      <i class="bi" [ngClass]="{'bi-star-fill': ratingForm.get('rating')?.value >= value, 'bi-star': ratingForm.get('rating')?.value < value}"></i>
+                    </label>
+                  </ng-container>
+                </div>
+                <span class="rating-number">{{ ratingForm.get('rating')?.value || 0 }}/10</span>
+              </div>
+              <div *ngIf="ratingForm.get('rating')?.invalid && (ratingForm.get('rating')?.dirty || ratingForm.get('rating')?.touched || ratingSubmitted)" class="error-message">
+                {{ 'CONSULTATIONS.RATING_REQUIRED' | translate }}
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="reviewComment">{{ 'CONSULTATIONS.COMMENT' | translate }}</label>
+              <textarea
+                id="reviewComment"
+                formControlName="reviewComment"
+                class="form-control"
+                placeholder="{{ 'CONSULTATIONS.COMMENT_PLACEHOLDER' | translate }}"
+                rows="3"
+              ></textarea>
+              <div *ngIf="ratingForm.get('reviewComment')?.invalid && (ratingForm.get('reviewComment')?.dirty || ratingForm.get('reviewComment')?.touched)" class="error-message">
+                {{ 'CONSULTATIONS.COMMENT_TOO_LONG' | translate }}
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <button type="submit" class="btn-submit" [disabled]="ratingSuccess">
+                <i class="bi bi-star"></i> {{ 'CONSULTATIONS.SUBMIT_RATING' | translate }}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
     </div>
 
     <div class="modal-footer">
       <button type="button" class="btn-cancel" (click)="modal.dismiss()">
         <i class="bi bi-x-circle"></i> {{ 'COMMON.ACTIONS.CLOSE' | translate }}
+      </button>
+    </div>
+  </div>
+</ng-template>
+
+<!-- Review Modal Template -->
+<ng-template #reviewModal let-modal>
+  <div class="modal-container">
+    <div class="modal-header">
+      <div class="modal-title">
+        <i class="bi bi-star"></i> {{ 'CONSULTATIONS.ADD_REVIEW' | translate }}
+      </div>
+      <button type="button" class="btn-close" [attr.aria-label]="'COMMON.ACTIONS.CLOSE' | translate" (click)="modal.dismiss()">×</button>
+    </div>
+
+    <div class="modal-body">
+      <div class="consultation-info">
+        <div class="info-item">
+          <span class="info-label">{{ 'APPOINTMENTS.DOCTOR' | translate }}:</span>
+          <span class="info-value">Dr. {{ selectedConsultation?.doctorFirstName }} {{ selectedConsultation?.doctorLastName }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">{{ 'CONSULTATIONS.DATE' | translate }}:</span>
+          <span class="info-value">{{ selectedConsultation?.appointmentDate | date:'EEE, d MMM y, HH:mm' }}</span>
+        </div>
+      </div>
+
+      <div class="rating-form-container">
+        <form [formGroup]="ratingForm" (ngSubmit)="submitRating()" class="rating-form">
+          <!-- Success message -->
+          <div *ngIf="ratingSuccess" class="alert alert-success">
+            <i class="bi bi-check-circle"></i>
+            {{ 'CONSULTATIONS.RATING_SUCCESS' | translate }}
+          </div>
+
+          <!-- Error message -->
+          <div *ngIf="ratingError" class="alert alert-danger">
+            <i class="bi bi-exclamation-circle"></i>
+            {{ 'CONSULTATIONS.RATING_ERROR' | translate }}
+          </div>
+
+          <div class="form-group">
+            <label for="rating">{{ 'CONSULTATIONS.SELECT_RATING' | translate }}</label>
+            <div class="rating-input">
+              <div class="rating-stars">
+                <ng-container *ngFor="let value of [10, 9, 8, 7, 6, 5, 4, 3, 2, 1]">
+                  <label class="rating-star">
+                    <input
+                      type="radio"
+                      [value]="value"
+                      formControlName="rating"
+                      name="rating"
+                    >
+                    <i class="bi" [ngClass]="{'bi-star-fill': ratingForm.get('rating')?.value >= value, 'bi-star': ratingForm.get('rating')?.value < value}"></i>
+                  </label>
+                </ng-container>
+              </div>
+              <span class="rating-number">{{ ratingForm.get('rating')?.value || 0 }}/10</span>
+            </div>
+            <div *ngIf="ratingForm.get('rating')?.invalid && (ratingForm.get('rating')?.dirty || ratingForm.get('rating')?.touched || ratingSubmitted)" class="error-message">
+              {{ 'CONSULTATIONS.RATING_REQUIRED' | translate }}
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="reviewComment">{{ 'CONSULTATIONS.COMMENT' | translate }}</label>
+            <textarea
+              id="reviewComment"
+              formControlName="reviewComment"
+              class="form-control"
+              placeholder="{{ 'CONSULTATIONS.COMMENT_PLACEHOLDER' | translate }}"
+              rows="3"
+            ></textarea>
+            <div *ngIf="ratingForm.get('reviewComment')?.invalid && (ratingForm.get('reviewComment')?.dirty || ratingForm.get('reviewComment')?.touched)" class="error-message">
+              {{ 'CONSULTATIONS.COMMENT_TOO_LONG' | translate }}
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button type="button" class="btn-submit" [disabled]="ratingForm.invalid || ratingSuccess" (click)="submitRating()">
+        <i class="bi bi-star"></i> {{ 'CONSULTATIONS.SUBMIT_RATING' | translate }}
       </button>
     </div>
   </div>

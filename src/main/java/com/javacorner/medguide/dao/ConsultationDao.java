@@ -23,8 +23,15 @@ public interface ConsultationDao extends JpaRepository<Consultation, Long> {
 
     Consultation findConsultationByDiagnosis(String diagnosis);
 
-    @Transactional
-    @Modifying
-    @Query("DELETE FROM Consultation c WHERE c.appointment.appointmentId = :appointmentId")
-    void deleteByAppointmentId(@Param("appointmentId") Long appointmentId);
+    @Query("SELECT c FROM Consultation c WHERE c.rating IS NOT NULL AND c.appointment.doctor.doctorId = :doctorId")
+    List<Consultation> findConsultationsWithRatingsByDoctorId(@Param("doctorId") Long doctorId);
+
+    @Query("SELECT COUNT(c) FROM Consultation c WHERE c.rating = :rating AND c.appointment.doctor.doctorId = :doctorId")
+    Integer countRatingsByDoctorIdAndRating(@Param("doctorId") Long doctorId, @Param("rating") Integer rating);
+
+    @Query("SELECT AVG(c.rating) FROM Consultation c WHERE c.appointment.doctor.doctorId = :doctorId AND c.rating IS NOT NULL")
+    Double findAverageRatingByDoctorId(@Param("doctorId") Long doctorId);
+
+    @Query("SELECT COUNT(c) FROM Consultation c WHERE c.appointment.doctor.doctorId = :doctorId AND c.rating IS NOT NULL")
+    Integer countRatingsByDoctorId(@Param("doctorId") Long doctorId);
 }

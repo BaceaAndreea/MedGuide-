@@ -21,4 +21,6 @@ public interface ConsultationService {
 
     Page<ConsultationDTO> findConsultationsByDoctorId(Long doctorId, int page, int size);
 
+    Consultation updateConsultationEntity(Consultation consultation);
+
 }

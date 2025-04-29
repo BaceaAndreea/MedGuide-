@@ -41,6 +41,22 @@
       "BUTTON": "Register",
       "HAVE_ACCOUNT": "Already have an account?",
       "LOGIN": "Login"
+    },
+    "FORGOT_PASSWORD": {
+      "TITLE": "Password recovery",
+      "SUBTITLE": "Enter your email address to receive a temporary password",
+      "EMAIL": "Email",
+      "SUBMIT": "Send temporary password",
+      "BACK_TO_LOGIN": "Back to login"
+    },
+    "CHANGE_PASSWORD": {
+      "TITLE": "Change password",
+      "SUBTITLE": "Fill in the form to change your password",
+      "TEMP_SUBTITLE": "You need to change your temporary password",
+      "OLD_PASSWORD": "Current password",
+      "NEW_PASSWORD": "New password",
+      "CONFIRM_PASSWORD": "Confirm new password",
+      "SUBMIT": "Change password"
     }
   },
   "SEARCH": {
@@ -134,7 +150,20 @@
     "NO_DIAGNOSIS": "No diagnosis has been added yet.",
     "NO_SYMPTOMS": "No symptoms have been recorded.",
     "NO_RECOMMENDATIONS": "No recommendations available at the moment.",
-    "NO_PRESCRIPTIONS": "No medications have been prescribed."
+    "NO_PRESCRIPTIONS": "No medications have been prescribed.",
+    "RATING": "Rating",
+    "NOT_RATED": "Not rated",
+    "SELECT_RATING": "Select rating (1-10)",
+    "COMMENT": "Comment (optional)",
+    "COMMENT_PLACEHOLDER": "Write your comment about the consultation here...",
+    "SUBMIT_RATING": "Submit rating",
+    "RATING_SUCCESS": "Rating submitted successfully!",
+    "RATING_ERROR": "An error occurred while submitting the rating. Please try again.",
+    "RATING_REQUIRED": "Rating is required",
+    "COMMENT_TOO_LONG": "Comment is too long (maximum 500 characters)",
+    "REVIEWED_ON": "Reviewed on",
+    "ADD_REVIEW": "Add review",
+    "REVIEWED": "Review added"
   },
   "DOCTORS": {
     "TITLE": "Doctors",

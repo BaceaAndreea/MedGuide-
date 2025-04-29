@@ -1,10 +1,13 @@
 package com.javacorner.medguide.service.impl;
 
+import com.javacorner.medguide.dao.ConsultationDao;
 import com.javacorner.medguide.dao.DoctorDao;
 import com.javacorner.medguide.dao.HospitalDao;
 import com.javacorner.medguide.dao.SpecializationDao;
 import com.javacorner.medguide.domain.*;
+import com.javacorner.medguide.dto.ConsultationDTO;
 import com.javacorner.medguide.dto.DoctorDTO;
+import com.javacorner.medguide.mapper.ConsultationMapper;
 import com.javacorner.medguide.mapper.DoctorMapper;
 import com.javacorner.medguide.service.AppointmentService;
 import com.javacorner.medguide.service.DoctorService;
@@ -40,14 +43,19 @@ public class DoctorServiceImpl implements DoctorService {
     private SpecializationDao specializationDao;
     @Value("${app.upload.dir:${user.home}/medguide/uploads/images/doctors}")
     private String uploadDir;
+    private ConsultationDao consultationDao;
+    private ConsultationMapper consultationMapper;
 
-    public DoctorServiceImpl(DoctorDao doctorDao, DoctorMapper doctorMapper, UserService userService, AppointmentService appointmentService, HospitalDao hospitalDao, SpecializationDao specializationDao) {
+    public DoctorServiceImpl(DoctorDao doctorDao, DoctorMapper doctorMapper, UserService userService, AppointmentService appointmentService, HospitalDao hospitalDao, SpecializationDao specializationDao,
+                             ConsultationDao consultationDao, ConsultationMapper consultationMapper) {
         this.doctorDao = doctorDao;
         this.doctorMapper = doctorMapper;
         this.userService = userService;
         this.appointmentService = appointmentService;
         this.hospitalDao = hospitalDao;
         this.specializationDao = specializationDao;
+        this.consultationDao = consultationDao;
+        this.consultationMapper = consultationMapper;
     }
 
     @Override
@@ -203,6 +211,35 @@ public class DoctorServiceImpl implements DoctorService {
                     }
                     return dto;
                 })
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public double getDoctorAverageRating(Long doctorId) {
+        Double averageRating = consultationDao.findAverageRatingByDoctorId(doctorId);
+        return averageRating != null ? averageRating : 0.0;
+    }
+
+    @Override
+    public int getDoctorTotalReviews(Long doctorId) {
+        Integer count = consultationDao.countRatingsByDoctorId(doctorId);
+        return count != null ? count : 0;
+    }
+
+    @Override
+    public int getDoctorRatingCount(Long doctorId, int ratingValue) {
+        if (ratingValue < 1 || ratingValue > 10) {
+            throw new IllegalArgumentException("Rating value must be between 1 and 10");
+        }
+        Integer count = consultationDao.countRatingsByDoctorIdAndRating(doctorId, ratingValue);
+        return count != null ? count : 0;
+    }
+
+    @Override
+    public List<ConsultationDTO> getDoctorRatings(Long doctorId) {
+        return consultationDao.findConsultationsWithRatingsByDoctorId(doctorId)
+                .stream()
+                .map(consultationMapper::fromConsultation)
                 .collect(Collectors.toList());
     }
 

@@ -7,7 +7,8 @@ export class LoggedUser{
               private _token : string,
               public _expiration : Date,
               public patient : Patient | undefined,
-              public doctor : Doctor | undefined) {
+              public doctor : Doctor | undefined,
+              public passwordTemporary: boolean = false) {
   }
 
   get token(){
