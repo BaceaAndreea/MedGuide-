@@ -15,6 +15,8 @@ import {UsersService} from '../../services/users.service';
 import {PatientsService} from '../../services/patients.service';
 import {LanguageSelectorComponent} from '../language-selector/language-selector.component';
 import {TranslateModule} from '@ngx-translate/core';
+import {ForgotPasswordComponent} from '../forgot-password/forgot-password.component';
+
 
 @Component({
   selector: 'app-authentication',
@@ -25,6 +27,7 @@ import {TranslateModule} from '@ngx-translate/core';
     NgIf,
     TranslateModule,
     LanguageSelectorComponent,
+    ForgotPasswordComponent
   ],
   templateUrl: './authentication.component.html',
   styleUrl: './authentication.component.scss'
@@ -37,10 +40,16 @@ export class AuthenticationComponent  implements OnInit {
   loginFormGroup!: FormGroup;
   submitted = false;
   errorMessage = '';
+  successMessage = '';
 
   // Signup form properties
   signUpForm!: FormGroup;
   loading = false;
+  showForgotPassword = false;
+  showChangePassword = false;
+  changePasswordForm!: FormGroup;
+  isSubmitting = false;
+  userEmail = '';
 
   constructor(
     private router: Router,
@@ -52,6 +61,18 @@ export class AuthenticationComponent  implements OnInit {
   ngOnInit(): void {
     this.initLoginForm();
     this.initSignupForm();
+  }
+
+  showForgotPasswordForm(): void {
+    this.showForgotPassword = true;
+    this.showLoginForm = false;
+    this.errorMessage = '';
+  }
+
+  closeForgotPasswordForm(): void {
+    this.showForgotPassword = false;
+    this.showLoginForm = true;
+    this.errorMessage = '';
   }
 
   initLoginForm(): void {
@@ -87,6 +108,17 @@ export class AuthenticationComponent  implements OnInit {
     );
   }
 
+  initChangePasswordForm(): void {
+    this.changePasswordForm = new FormGroup({
+      oldPassword: new FormControl('', [Validators.required]),
+      newPassword: new FormControl('', [
+        Validators.required,
+        Validators.minLength(6)
+      ]),
+      confirmPassword: new FormControl('', [Validators.required])
+    }, { validators: this.passwordsMatchValidator });
+  }
+
   // Toggle between login and signup forms
   toggleForm(): void {
     this.showLoginForm = !this.showLoginForm;
@@ -101,20 +133,94 @@ export class AuthenticationComponent  implements OnInit {
     }
   }
 
-
-  onLogin() {
+  onLogin(): void {
     this.submitted = true;
-    if(this.loginFormGroup.invalid) return;
-    this.authService.login(this.loginFormGroup.value).subscribe({
-      next: loginResponse => {
-        this.authService.saveToken(loginResponse);
-        console.log(loginResponse)
+    if (this.loginFormGroup.invalid) {
+      return;
+    }
+
+    this.authService.login(this.loginFormGroup.value)
+      .subscribe({
+        next: loggedUser => {
+          if (loggedUser.passwordTemporary) {
+            // Store email for password change component
+            this.userEmail = this.loginFormGroup.value.username;
+
+            // Option 1: Use the built-in changePassword form in the authentication component
+            this.initChangePasswordForm();
+            this.showChangePassword = true;
+            this.showLoginForm = false;
+
+            // Option 2: Or navigate to dedicated change password component (uncomment if using this approach)
+            // this.router.navigate(['/change-password'], {
+            //   queryParams: {
+            //     email: this.loginFormGroup.value.username,
+            //     isTemporary: 'true'
+            //   }
+            // });
+          } else {
+            // Normal login flow
+            this.authService.saveToken(loggedUser);
+          }
+        },
+        error: err => {
+          console.error(err);
+          this.errorMessage = 'An error occurred';
+        }
+      });
+  }
+
+
+  onChangePasswordSubmit() {
+    if (this.changePasswordForm.invalid) {
+      return;
+    }
+
+    this.isSubmitting = true;
+    this.successMessage = '';
+    this.errorMessage = '';
+
+    this.authService.changePassword(
+      this.userEmail,
+      this.oldPassword?.value,
+      this.newPassword?.value
+    ).subscribe({
+      next: () => {
+        this.isSubmitting = false;
+        this.successMessage = 'Password has been changed successfully.';
+
+        // If it was a temporary password, we need to update the local storage
+        const userData = JSON.parse(localStorage.getItem('userData')!);
+        if (userData) {
+          userData.passwordTemporary = false;
+          localStorage.setItem('userData', JSON.stringify(userData));
+        }
+
+        // Redirect after a short delay
+        setTimeout(() => {
+          // Navigate based on user role
+          if (userData.roles.includes('Admin')) {
+            this.router.navigate(['/appointments']);
+          } else if (userData.roles.includes('Doctor')) {
+            this.router.navigate(['/doctor-appointments/' + userData.doctor?.doctorId]);
+          } else if (userData.roles.includes('Patient')) {
+            this.router.navigate(['/patient-appointments/' + userData.patient?.patientId]);
+          } else {
+            // Default fallback route
+            this.router.navigate(['/']);
+          }
+        }, 2000);
       },
-      error : err => {
-        console.log(err);
-        this.errorMessage = "An error occurred"
+      error: (err) => {
+        this.isSubmitting = false;
+        if (err.status === 401) {
+          this.errorMessage = 'Current password is incorrect.';
+        } else {
+          this.errorMessage = 'An error occurred. Please try again later.';
+        }
+        console.error('Error changing password:', err);
       }
-    })
+    });
   }
 
   // Signup form submission
@@ -144,7 +250,6 @@ export class AuthenticationComponent  implements OnInit {
         // Show success message and redirect to login
         this.errorMessage = '';
         this.showLoginForm = true;
-        // You might want to show a success message here
       },
       error: (err) => {
         console.error('Error creating patient:', err);
@@ -156,7 +261,7 @@ export class AuthenticationComponent  implements OnInit {
 
   // Password match validator
   passwordsMatchValidator(control: AbstractControl): ValidationErrors | null {
-    const password = control.get('password')?.value;
+    const password = control.get('newPassword')?.value || control.get('password')?.value;
     const confirmPassword = control.get('confirmPassword')?.value;
 
     if (password && confirmPassword && password !== confirmPassword) {
@@ -183,8 +288,14 @@ export class AuthenticationComponent  implements OnInit {
   }
 
   get confirmPassword() {
-    return this.signUpForm.get('confirmPassword');
+    return this.changePasswordForm ? this.changePasswordForm.get('confirmPassword') : this.signUpForm.get('confirmPassword');
+  }
+
+  get oldPassword() {
+    return this.changePasswordForm.get('oldPassword');
+  }
+
+  get newPassword() {
+    return this.changePasswordForm.get('newPassword');
   }
 }
-
-

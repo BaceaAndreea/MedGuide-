@@ -30,6 +30,10 @@ public class User {
     @OneToOne(mappedBy = "user")
     private Patient patient; //relatie de 1-1
 
+    @Basic
+    @Column(name = "password_temporary", nullable = false)
+    private Boolean passwordTemporary = false;
+
 
     public User() {
     }
@@ -108,6 +112,14 @@ public class User {
     public void removeRoleFromUser(Role role) {
         roles.remove(role);
         role.getUsers().remove(this);
+    }
+
+    public Boolean getPasswordTemporary() {
+        return passwordTemporary;
+    }
+
+    public void setPasswordTemporary(Boolean passwordTemporary) {
+        this.passwordTemporary = passwordTemporary;
     }
 
     @Override

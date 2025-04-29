@@ -13,6 +13,8 @@ import {AuthenticationComponent} from './components/authentication/authenticatio
 import {AuthGardService} from './services/auth.gard.service';
 import {DoctorPatientGuardService} from './services/doctor-patient.guard.service';
 import {HomeComponent} from './components/home/home.component';
+import {ChangePasswordComponent} from './components/change-password/change-password.component';
+import {ForgotPasswordComponent} from './components/forgot-password/forgot-password.component';
 
 
 
@@ -29,5 +31,7 @@ export const routes: Routes = [
   { path: 'doctor-consultations/:id', component: ConsultationsDoctorComponent, canActivate: [AuthGardService, DoctorPatientGuardService], data: {role : 'Doctor'}},
   { path: 'auth', component: AuthenticationComponent},
   { path: 'navbar', component: NavbarComponent },
-  { path: 'home', component: HomeComponent}
+  { path: 'home', component: HomeComponent},
+  { path: 'change-password', component: ChangePasswordComponent},
+  { path: 'forgot-password', component: ForgotPasswordComponent}
 ];

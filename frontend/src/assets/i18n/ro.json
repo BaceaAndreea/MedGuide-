@@ -41,6 +41,22 @@
       "BUTTON": "Înregistrare",
       "HAVE_ACCOUNT": "Ai deja un cont?",
       "LOGIN": "Conectează-te"
+    },
+    "FORGOT_PASSWORD": {
+      "TITLE": "Recuperare parolă",
+      "SUBTITLE": "Introdu adresa de email pentru a primi o parolă temporară",
+      "EMAIL": "Email",
+      "SUBMIT": "Trimite parola temporară",
+      "BACK_TO_LOGIN": "Înapoi la autentificare"
+    },
+    "CHANGE_PASSWORD": {
+      "TITLE": "Schimbă parola",
+      "SUBTITLE": "Completează formularul pentru a-ți schimba parola",
+      "TEMP_SUBTITLE": "Trebuie să-ți schimbi parola temporară",
+      "OLD_PASSWORD": "Parola actuală",
+      "NEW_PASSWORD": "Parola nouă",
+      "CONFIRM_PASSWORD": "Confirmă parola nouă",
+      "SUBMIT": "Schimbă parola"
     }
   },
   "NAVIGATION": {
@@ -130,7 +146,22 @@
     "NO_DIAGNOSIS": "Nu a fost adăugat un diagnostic încă.",
     "NO_SYMPTOMS": "Nu au fost înregistrate simptome.",
     "NO_RECOMMENDATIONS": "Nu există recomandări momentan.",
-    "NO_PRESCRIPTIONS": "Nu au fost prescrise medicamente."
+    "NO_PRESCRIPTIONS": "Nu au fost prescrise medicamente.",
+    "RATING": "Evaluare",
+    "REVIEW": "Recenzie",
+    "ADD_REVIEW": "Adaugă o recenzie",
+    "REVIEWED": "Recenzie adăugată",
+    "NOT_RATED": "Neevaluat",
+    "SELECT_RATING": "Selectează evaluarea (1-10)",
+    "COMMENT": "Comentariu (opțional)",
+    "COMMENT_PLACEHOLDER": "Scrie aici comentariul tău despre consultație...",
+    "SUBMIT_RATING": "Trimite evaluarea",
+    "RATING_SUCCESS": "Evaluarea a fost trimisă cu succes!",
+    "RATING_ERROR": "A apărut o eroare la trimiterea evaluării. Încearcă din nou.",
+    "RATING_REQUIRED": "Evaluarea este obligatorie",
+    "COMMENT_TOO_LONG": "Comentariul este prea lung (maxim 500 caractere)",
+    "REVIEWED_ON": "Evaluat la"
+
   },
   "DOCTORS": {
     "TITLE": "Doctori",

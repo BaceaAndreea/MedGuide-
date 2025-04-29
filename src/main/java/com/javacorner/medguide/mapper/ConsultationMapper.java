@@ -14,6 +14,9 @@ public class ConsultationMapper {
         consultationDTO.setSymptoms(consultation.getSymptoms());
         consultationDTO.setRecommendations(consultation.getRecommendations());
         consultationDTO.setPrescriptions(consultation.getPrescriptions());
+        consultationDTO.setRating(consultation.getRating());
+        consultationDTO.setReviewComment(consultation.getReviewComment());
+        consultationDTO.setReviewDate(consultation.getReviewDate());
 
 
         if (consultation.getAppointment() != null) {
@@ -52,6 +55,9 @@ public class ConsultationMapper {
         consultation.setSymptoms(consultationDTO.getSymptoms());
         consultation.setPrescriptions(consultationDTO.getPrescriptions());
         consultation.setRecommendations(consultationDTO.getRecommendations());
+        consultation.setRating(consultationDTO.getRating());
+        consultation.setReviewComment(consultationDTO.getReviewComment());
+        consultation.setReviewDate(consultationDTO.getReviewDate());
         // Appointment va fi setat separat în service
         return consultation;
     }

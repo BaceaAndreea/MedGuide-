@@ -41,6 +41,22 @@
       "BUTTON": "Registrieren",
       "HAVE_ACCOUNT": "Haben Sie bereits ein Konto?",
       "LOGIN": "Anmelden"
+    },
+    "FORGOT_PASSWORD": {
+      "TITLE": "Passwort wiederherstellen",
+      "SUBTITLE": "Geben Sie Ihre E-Mail-Adresse ein, um ein temporäres Passwort zu erhalten",
+      "EMAIL": "E-Mail",
+      "SUBMIT": "Temporäres Passwort senden",
+      "BACK_TO_LOGIN": "Zurück zur Anmeldung"
+    },
+    "CHANGE_PASSWORD": {
+      "TITLE": "Passwort ändern",
+      "SUBTITLE": "Füllen Sie das Formular aus, um Ihr Passwort zu ändern",
+      "TEMP_SUBTITLE": "Sie müssen Ihr temporäres Passwort ändern",
+      "OLD_PASSWORD": "Aktuelles Passwort",
+      "NEW_PASSWORD": "Neues Passwort",
+      "CONFIRM_PASSWORD": "Neues Passwort bestätigen",
+      "SUBMIT": "Passwort ändern"
     }
   },
   "NAVIGATION": {
@@ -130,7 +146,21 @@
     "NO_DIAGNOSIS": "Es wurde noch keine Diagnose hinzugefügt.",
     "NO_SYMPTOMS": "Es wurden keine Symptome erfasst.",
     "NO_RECOMMENDATIONS": "Keine Empfehlungen verfügbar im Moment.",
-    "NO_PRESCRIPTIONS": "Es wurden keine Medikamente verschrieben."
+    "NO_PRESCRIPTIONS": "Es wurden keine Medikamente verschrieben.",
+    "RATING": "Bewertung",
+    "REVIEW": "Rezension",
+    "ADD_REVIEW": "Rezension hinzufügen",
+    "REVIEWED": "Rezension hinzugefügt",
+    "NOT_RATED": "Nicht bewertet",
+    "SELECT_RATING": "Bewertung auswählen (1–10)",
+    "COMMENT": "Kommentar (optional)",
+    "COMMENT_PLACEHOLDER": "Schreibe hier deinen Kommentar zur Konsultation...",
+    "SUBMIT_RATING": "Bewertung absenden",
+    "RATING_SUCCESS": "Bewertung erfolgreich übermittelt!",
+    "RATING_ERROR": "Fehler beim Senden der Bewertung. Bitte versuche es erneut.",
+    "RATING_REQUIRED": "Bewertung ist erforderlich",
+    "COMMENT_TOO_LONG": "Kommentar ist zu lang (maximal 500 Zeichen)",
+    "REVIEWED_ON": "Bewertet am"
   },
   "DOCTORS": {
     "TITLE": "Ärzte",

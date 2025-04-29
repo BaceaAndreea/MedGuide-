@@ -151,6 +151,52 @@ public class Doctor {
         appointment.getDoctor();
     }
 
+    public double getAverageRating() {
+        long ratingCount = 0;
+        double ratingSum = 0;
+
+        for (Appointment appointment : appointments) {
+            if (appointment.getConsultation() != null &&
+                    appointment.getConsultation().getRating() != null) {
+                ratingSum += appointment.getConsultation().getRating();
+                ratingCount++;
+            }
+        }
+
+        return ratingCount > 0 ? ratingSum / ratingCount : 0;
+    }
+    public int getReviewCount() {
+        int count = 0;
+
+        for (Appointment appointment : appointments) {
+            if (appointment.getConsultation() != null &&
+                    appointment.getConsultation().getRating() != null) {
+                count++;
+            }
+        }
+
+        return count;
+    }
+
+    public int getRatingCount(int ratingValue) {
+        if (ratingValue < 1 || ratingValue > 10) {
+            throw new IllegalArgumentException("Rating value must be between 1 and 10");
+        }
+
+        int count = 0;
+
+        for (Appointment appointment : appointments) {
+            if (appointment.getConsultation() != null &&
+                    appointment.getConsultation().getRating() != null &&
+                    appointment.getConsultation().getRating() == ratingValue) {
+                count++;
+            }
+        }
+
+        return count;
+    }
+
+
     @Override
     public String toString() {
         return "Doctor{" +

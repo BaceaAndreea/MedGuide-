@@ -146,11 +146,6 @@ export class HomeComponent implements OnInit {
     this.router.navigate(['/auth']);
   }
 
-  // Metodă pentru schimbarea limbii - va fi folosită prin app.component
-  switchLanguage(lang: string): void {
-    this.currentLang = lang;
-    this.translate.use(lang);
-  }
 
   loadFeaturedDoctors(): void {
     this.loadingDoctors = true;
@@ -162,7 +157,9 @@ export class HomeComponent implements OnInit {
         console.log('Doctori primiți:', data);
         this.doctors = data;
 
+        // Procesare URLs imagini
         this.doctors.forEach(doctor => {
+          // Procesare imagini
           if (doctor.imageUrl) {
             if (!doctor.imageUrl.startsWith('http') && !doctor.imageUrl.startsWith('/assets')) {
               doctor.imageUrl = `${environment.backendHost}/${doctor.imageUrl}`;
@@ -170,6 +167,9 @@ export class HomeComponent implements OnInit {
               doctor.imageUrl = doctor.imageUrl.replace('/assets', `${environment.backendHost}/assets`);
             }
           }
+
+          // Obține ratingurile pentru fiecare doctor
+          this.loadDoctorRatings(doctor);
         });
 
         this.filteredDoctors = [...this.doctors];
@@ -184,11 +184,30 @@ export class HomeComponent implements OnInit {
     });
   }
 
+  loadDoctorRatings(doctor: Doctor): void {
+    this.http.get<any>(`${environment.backendHost}/doctors/${doctor.doctorId}/ratings/summary`).subscribe({
+      next: (summary) => {
+        if (summary) {
+          doctor.rating = summary.averageRating;
+          doctor.reviewCount = summary.totalReviews;
+          console.log(`Doctor ${doctor.firstName} ${doctor.lastName}: Rating ${doctor.rating} din ${doctor.reviewCount} recenzii`);
+        } else {
+          doctor.rating = undefined;
+          doctor.reviewCount = 0;
+        }
+      },
+      error: (error) => {
+        console.error(`Error fetching ratings for doctor ${doctor.doctorId}:`, error);
+        doctor.rating = undefined;
+        doctor.reviewCount = 0;
+      }
+    });
+  }
+
   loadFeaturedHospitals(): void {
     this.loadingHospitals = true;
     this.errorFetchingHospitals = false;
 
-    // Direct API call without authentication headers
     this.http.get<Hospital[]>(`${environment.backendHost}/hospitals/featured`).subscribe({
       next: (data) => {
         console.log('Spitale primite:', data);

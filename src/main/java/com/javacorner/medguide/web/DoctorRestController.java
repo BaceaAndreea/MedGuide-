@@ -1,5 +1,6 @@
 package com.javacorner.medguide.web;
 
+import com.javacorner.medguide.domain.Doctor;
 import com.javacorner.medguide.domain.User;
 import com.javacorner.medguide.dto.AppointmentDTO;
 import com.javacorner.medguide.dto.ConsultationDTO;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -116,6 +118,27 @@ public class DoctorRestController {
     public ResponseEntity<List<DoctorDTO>> getFeaturedDoctors() {
         List<DoctorDTO> featuredDoctors = doctorService.findFeaturedDoctors();
         return ResponseEntity.ok(featuredDoctors);
+    }
+
+    @PreAuthorize("permitAll()")
+    @GetMapping("/{doctorId}/ratings/summary")
+    public ResponseEntity<Map<String, Object>> getDoctorRatingSummary(@PathVariable Long doctorId) {
+        Map<String, Object> summary = new HashMap<>();
+        summary.put("averageRating", doctorService.getDoctorAverageRating(doctorId));
+        summary.put("totalReviews", doctorService.getDoctorTotalReviews(doctorId));
+
+        Map<Integer, Integer> ratingCounts = new HashMap<>();
+        for (int i = 1; i <= 10; i++) {
+            ratingCounts.put(i, doctorService.getDoctorRatingCount(doctorId, i));
+        }
+        summary.put("ratingCounts", ratingCounts);
+
+        return ResponseEntity.ok(summary);
+    }
+
+    @GetMapping("/{doctorId}/ratings")
+    public ResponseEntity<List<ConsultationDTO>> getDoctorRatings(@PathVariable Long doctorId) {
+        return ResponseEntity.ok(doctorService.getDoctorRatings(doctorId));
     }
 
 

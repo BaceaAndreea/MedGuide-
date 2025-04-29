@@ -14,5 +14,9 @@ export interface Consultation {
   symptoms: string;
   recommendations: string;
   prescriptions: string;
+  rating?: number;
+  reviewComment?: string;
+  reviewDate?: string;
+  isReviewed?: boolean;
 }
 

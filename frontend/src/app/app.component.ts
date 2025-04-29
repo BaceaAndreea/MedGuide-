@@ -48,7 +48,7 @@ export class AppComponent implements OnInit {
     // Abonare la evenimentele Router-ului
     this.router.events.subscribe(() => {
       // Listează rutele unde vrei să ascunzi sidebar-ul
-      const hiddenRoutes = ['/home', '/auth', '/patient-appointments'];
+      const hiddenRoutes = ['/home', '/auth', '/change-password', '/patient-appointments'];
       this.showNavbar = !hiddenRoutes.includes(this.router.url);
     });
   }

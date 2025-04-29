@@ -10,6 +10,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.Date;
@@ -167,9 +168,29 @@ public class MyRunner implements CommandLineRunner {
             consultationDTO.setPatientId(appointment.getPatient().getPatientId());
             consultationDTO.setDoctorId(appointment.getDoctor().getDoctorId());
 
+            // Add a sample rating to every consultation
+            if (appointment.getAppointmentId() % 2 == 0) {
+                // Even appointment IDs get a 9 or 10 rating
+                consultationDTO.setRating(9 + (int)(appointment.getAppointmentId() % 2));
+                consultationDTO.setReviewComment("Excellent doctor! Very professional and caring.");
+                consultationDTO.setReviewDate(LocalDateTime.now());
+            } else if (appointment.getAppointmentId() % 3 == 0) {
+                // Divisible by 3 gets a 7 or 8 rating
+                consultationDTO.setRating(7 + (int)(appointment.getAppointmentId() % 2));
+                consultationDTO.setReviewComment("Good doctor, helped me with my issue.");
+                consultationDTO.setReviewDate(LocalDateTime.now());
+            } else if (appointment.getAppointmentId() % 5 == 0) {
+                // Divisible by 5 gets a 4-6 rating
+                consultationDTO.setRating(4 + (int)(appointment.getAppointmentId() % 3));
+                consultationDTO.setReviewComment("Doctor was okay, but could improve communication.");
+                consultationDTO.setReviewDate(LocalDateTime.now());
+            }
+            // The rest won't have ratings initially
+
             System.out.println("Creating consultation for appointment ID " + appointment.getAppointmentId() +
                     " with doctor ID " + appointment.getDoctor().getDoctorId() +
-                    " and patient ID " + appointment.getPatient().getPatientId());
+                    " and patient ID " + appointment.getPatient().getPatientId() +
+                    (consultationDTO.getRating() != null ? " and rating " + consultationDTO.getRating() : ""));
 
             consultationService.createConsultation(consultationDTO);
         }

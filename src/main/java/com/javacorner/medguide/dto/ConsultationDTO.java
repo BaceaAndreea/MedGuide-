@@ -1,5 +1,7 @@
 package com.javacorner.medguide.dto;
 
+import java.time.LocalDateTime;
+
 public class ConsultationDTO {
     private Long consultationId;
     private String diagnosis;
@@ -12,6 +14,9 @@ public class ConsultationDTO {
     private Long doctorId;
     private String doctorFirstName;
     private String doctorLastName;
+    private Integer rating;
+    private String reviewComment;
+    private LocalDateTime reviewDate;
 
     public String getSymptoms() {
         return symptoms;
@@ -141,5 +146,29 @@ public class ConsultationDTO {
 
     public void setConsultationId(Long consultationId) {
         this.consultationId = consultationId;
+    }
+
+    public Integer getRating() {
+        return rating;
+    }
+
+    public void setRating(Integer rating) {
+        this.rating = rating;
+    }
+
+    public String getReviewComment() {
+        return reviewComment;
+    }
+
+    public void setReviewComment(String reviewComment) {
+        this.reviewComment = reviewComment;
+    }
+
+    public LocalDateTime getReviewDate() {
+        return reviewDate;
+    }
+
+    public void setReviewDate(LocalDateTime reviewDate) {
+        this.reviewDate = reviewDate;
     }
 }

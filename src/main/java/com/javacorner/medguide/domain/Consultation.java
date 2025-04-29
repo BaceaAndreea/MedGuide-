@@ -2,6 +2,7 @@ package com.javacorner.medguide.domain;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
@@ -26,15 +27,28 @@ public class Consultation {
     @Column(name = "prescriptions",nullable = false, length = 255)
     private String prescriptions;
 
+    @Column(name = "rating")
+    private Integer rating;
+
+    @Column(name = "review_comment", length = 500)
+    private String reviewComment;
+
+    @Column(name = "review_date")
+    private LocalDateTime reviewDate;
+
+
 
 
     public Consultation() {}
 
-    public Consultation( String diagnosis, String symptoms, String recommendations, String prescriptions) {
+    public Consultation( String diagnosis, String symptoms, String recommendations, String prescriptions, Integer rating, String reviewComment, LocalDateTime reviewDate) {
         this.diagnosis = diagnosis;
         this.symptoms = symptoms;
         this.recommendations = recommendations;
         this.prescriptions = prescriptions;
+        this.rating = rating;
+        this.reviewComment = reviewComment;
+        this.reviewDate = reviewDate;
 
     }
 
@@ -108,6 +122,45 @@ public class Consultation {
     public void setPrescriptions(String prescriptions) {
         this.prescriptions = prescriptions;
     }
+    public Integer getRating() {
+        return rating;
+    }
+
+    public void setRating(Integer rating) {
+        if (rating != null && (rating < 1 || rating > 10)) {
+            throw new IllegalArgumentException("Rating must be between 1 and 10");
+        }
+        this.rating = rating;
+    }
+
+    public String getReviewComment() {
+        return reviewComment;
+    }
+
+    public void setReviewComment(String reviewComment) {
+        this.reviewComment = reviewComment;
+    }
+
+    public LocalDateTime getReviewDate() {
+        return reviewDate;
+    }
+
+    public void setReviewDate(LocalDateTime reviewDate) {
+        this.reviewDate = reviewDate;
+    }
+
+    public void addReview(Integer rating, String comment) {
+        if (rating == null || rating < 1 || rating > 10) {
+            throw new IllegalArgumentException("Rating must be between 1 and 10");
+        }
+        this.rating = rating;
+        this.reviewComment = comment;
+        this.reviewDate = LocalDateTime.now();
+    }
+
+    public boolean isReviewed() {
+        return this.rating != null;
+    }
 
     @Override
     public String toString() {
@@ -118,6 +171,9 @@ public class Consultation {
                 ", symptoms='" + symptoms + '\'' +
                 ", recommendations='" + recommendations + '\'' +
                 ", prescriptions='" + prescriptions + '\'' +
+                ", rating=" + rating +
+                ", reviewComment='" + reviewComment + '\'' +
+                ", reviewDate=" + reviewDate +
                 '}';
     }
 }

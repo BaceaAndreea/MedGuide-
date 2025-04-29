@@ -26,7 +26,12 @@ export class ConsultationsService {
       patientFirstName: consultation.patientFirstName || '',
       patientLastName: consultation.patientLastName || '',
       appointmentDate: consultation.appointmentDate || new Date(),
-      hospitalAddress: consultation.hospitalAddress || ''
+      hospitalAddress: consultation.hospitalAddress || '',
+      // Add rating fields
+      rating: consultation.rating || null,
+      reviewComment: consultation.reviewComment || '',
+      reviewDate: consultation.reviewDate || null,
+      isReviewed: consultation.rating != null || (consultation.reviewComment ?? '').trim().length > 0
     };
   }
 
@@ -36,17 +41,29 @@ export class ConsultationsService {
     return this.http.get<Consultation[]>(`${environment.backendHost}/consultations/all`);
   }
 
-  getConsultationsByPatient(patientId: number, page: number, size: number): Observable<PageRespone<Consultation>> {
-    return this.http.get<PageRespone<Consultation>>(
-      `${environment.backendHost}/patients/${patientId}/consultations?page=${page}&size=${size}`
-    ).pipe(
-      tap(response => console.log('Consultations response:', response)),
-      catchError((error) => {
-        console.error('Error fetching consultations:', error);
-        return throwError(() => error);
-      })
-    );
+  // consultations.service.ts
+
+  getConsultationsByPatient(patientId: number, page: number, size: number)
+    : Observable<PageRespone<Consultation>> {
+    return this.http
+      .get<PageRespone<Consultation>>(
+        `${environment.backendHost}/patients/${patientId}/consultations?page=${page}&size=${size}`
+      )
+      .pipe(
+        // aici intră normalizeConsultationData pentru fiecare element
+        map(pageResp => {
+          const normalized = pageResp.content.map(item =>
+            this.normalizeConsultationData(item)
+          );
+          return {
+            ...pageResp,
+            content: normalized
+          };
+        }),
+        tap(resp => console.log('Normalized page:', resp))
+      );
   }
+
 
   getConsultationsByDoctor(doctorId: number, page: number, size: number): Observable<PageRespone<Consultation>> {
     return this.http.get<PageRespone<Consultation>>(
@@ -106,11 +123,36 @@ export class ConsultationsService {
         map(consultation => this.normalizeConsultationData(consultation)),
         tap(normalizedConsultation => console.log('Normalized consultation details:', normalizedConsultation)),
         catchError((error) => {
-          console.error('Error fetching consultations:', error);
+          console.error('Error fetching consultation details:', error);
           return throwError(() => error);
         })
       );
   }
 
+  // Add rating to a consultation
+  addRating(consultationId: number, ratingData: any): Observable<Consultation> {
+    return this.http.post<Consultation>(
+      `${environment.backendHost}/consultations/${consultationId}/rating`,
+      ratingData
+    ).pipe(
+      tap(response => console.log('Rating submission response:', response)),
+      map(consultation => this.normalizeConsultationData(consultation)),
+      catchError((error) => {
+        console.error('Error submitting rating:', error);
+        return throwError(() => error);
+      })
+    );
+  }
 
+  // Check if a consultation has a rating
+  hasRating(consultationId: number): Observable<boolean> {
+    return this.http.get<boolean>(
+      `${environment.backendHost}/consultations/${consultationId}/has-rating`
+    ).pipe(
+      catchError((error) => {
+        console.error('Error checking rating status:', error);
+        return throwError(() => error);
+      })
+    );
+  }
 }

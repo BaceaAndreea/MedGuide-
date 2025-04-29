@@ -26,6 +26,16 @@ public class JWTHelper {
                 .sign(algorithm);
     }
 
+    public String generateAccessToken(String email, List<String> roles, boolean passwordTemporary) {
+        return JWT.create()
+                .withSubject(email)
+                .withExpiresAt(new Date(System.currentTimeMillis() + EXPIRE_ACCESS_TOKEN))
+                .withIssuer(ISSUER)
+                .withClaim("roles", roles)
+                .withClaim("passwordTemporary", passwordTemporary)
+                .sign(algorithm);
+    }
+
     //generate the refresh token = when the access token is expired, we use a new token, has longer validity with a greater expiration date,
     //such as an hour or a day. the user can use it just when the access token is expired
     public String generateRefreshToken(String email) {
