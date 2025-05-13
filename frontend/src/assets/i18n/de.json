@@ -68,7 +68,9 @@
     "SPECIALIZATIONS": "Fachgebiete",
     "LOGOUT": "Abmelden",
     "PROFILE": "Profil",
-    "CONSULTATIONS": "Ihre Konsultationen"
+    "CONSULTATIONS": "Ihre Konsultationen",
+    "LEARN": "Lernen",
+    "LOGIN": "Anmelden"
   },
   "PATIENTS": {
     "TITLE": "Patienten",
@@ -313,7 +315,8 @@
     "SAVE_SPECIALIZATION": "Fehler beim Speichern des Fachgebiets",
     "UPDATE_SPECIALIZATION": "Fehler beim Aktualisieren des Fachgebiets",
     "DELETE_SPECIALIZATION": "Fehler beim Löschen des Fachgebiets",
-    "FETCH_CONSULTATIONS": "Fehler beim Laden der Konsultationen!"
+    "FETCH_CONSULTATIONS": "Fehler beim Laden der Konsultationen!",
+    "FETCH_PROGRAMS": "Beim Laden der Bildungsprogramme ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut."
   },
 
   "SUCCESS": {
@@ -352,5 +355,58 @@
     "CONSULTATION_DETAILS": "Konsultationsdetails werden geladen...",
     "SEARCHING": "Suche läuft...",
     "FILTERING": "Ergebnisse werden gefiltert..."
+  },
+
+  "EDUCATIONAL_PROGRAMS": {
+    "TITLE": "Bildungsprogramme",
+    "SUBTITLE": "Bildungsmaterialien, die Ihnen helfen, Ihre Gesundheit besser zu verstehen",
+    "SHOW_MORE": "Mehr Programme anzeigen",
+    "SHOW_LESS": "Weniger Programme anzeigen",
+    "AVAILABLE_LANGUAGES": "Verfügbare Sprachen",
+    "START_COURSE": "Kurs beginnen",
+    "FREE": "Kostenlos",
+    "RATE_COURSE": "Bewerten Sie diesen Kurs",
+    "REVIEW_PLACEHOLDER": "Schreiben Sie Ihre Eindrücke zu diesem Kurs...",
+    "SUBMIT_REVIEW": "Bewertung absenden",
+    "REVIEW_SUBMITTED": "Vielen Dank für Ihre Bewertung!",
+    "NO_RESULTS": "Keine Bildungsprogramme gefunden",
+    "PROGRAMS": {
+      "BREAST_CANCER": {
+        "TITLE": "Prävention von Brustkrebs",
+        "DESCRIPTION": "Alles, was Sie über Risikofaktoren und regelmäßige Untersuchungen wissen müssen."
+      },
+      "HEART_HEALTH": {
+        "TITLE": "Herzgesundheit",
+        "DESCRIPTION": "Umfassender Leitfaden zur Erhaltung der Herzgesundheit und Vorbeugung von Herzerkrankungen."
+      },
+      "HEALTHY_DIET": {
+        "TITLE": "Gesunde Ernährung",
+        "DESCRIPTION": "Ernährungsprinzipien und praktische Ratschläge für eine ausgewogene und gesunde Ernährung."
+      },
+      "MENTAL_HEALTH": {
+        "TITLE": "Psychische Gesundheit und emotionales Wohlbefinden",
+        "DESCRIPTION": "Strategien zur Verbesserung der psychischen Gesundheit und Stressbewältigung."
+      },
+      "DIABETES": {
+        "TITLE": "Diabetes und Stoffwechselstörungen",
+        "DESCRIPTION": "Verständnis, Prävention und Management von Diabetes."
+      },
+      "RESPIRATORY": {
+        "TITLE": "Atemwegserkrankungen und Lungengesundheit",
+        "DESCRIPTION": "Prävention und Behandlung häufiger Atemwegserkrankungen."
+      },
+      "PUBLIC_HEALTH": {
+        "TITLE": "Öffentliche Gesundheit und Epidemiologie",
+        "DESCRIPTION": "Grundsätze der öffentlichen Gesundheit und Prävention von Infektionskrankheiten."
+      },
+      "TELEMEDICINE": {
+        "TITLE": "Telemedizin und digitale Gesundheit",
+        "DESCRIPTION": "Leitfaden für die effektive Nutzung von Telemedizindiensten und digitalen Technologien im Gesundheitswesen."
+      }
+    }
+  },
+  "HERO": {
+    "TAGLINE": "Wir sind für Sie da, wenn Sie uns brauchen — für jede medizinische Versorgung.",
+    "DESCRIPTION": "Entdecken Sie die beste personalisierte medizinische Versorgung für Sie und Ihre Familie."
   }
 }

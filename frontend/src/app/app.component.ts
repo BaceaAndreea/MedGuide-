@@ -21,11 +21,13 @@ import {LanguageSelectorComponent} from './components/language-selector/language
 export class AppComponent implements OnInit {
   title = 'frontend';
   showNavbar = true;
+  showLanguageSelector = true;
 
   constructor(
     private authService: AuthService,
     private router: Router,
     private translate: TranslateService,
+
     @Inject(PLATFORM_ID) private platformId: object
   ) {
     // Configurare traduceri
@@ -47,9 +49,12 @@ export class AppComponent implements OnInit {
 
     // Abonare la evenimentele Router-ului
     this.router.events.subscribe(() => {
-      // Listează rutele unde vrei să ascunzi sidebar-ul
+      // Listează rutele unde vrei să ascunzi navbar-ul
       const hiddenRoutes = ['/home', '/auth', '/change-password', '/patient-appointments'];
       this.showNavbar = !hiddenRoutes.includes(this.router.url);
+
+      // Ascunde selectorul de limbă doar pe pagina Home
+      this.showLanguageSelector = this.router.url !== '/home';
     });
   }
 

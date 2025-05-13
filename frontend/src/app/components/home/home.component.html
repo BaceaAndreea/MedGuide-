@@ -1,68 +1,78 @@
 <div class="medguide-container">
-  <!-- Header cu logo și buton de autentificare -->
+  <!-- Header modernizat cu navigare și selector de limbă -->
   <div class="header">
     <div class="header-content">
       <div class="logo">
-        <div class="icon">
-          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path d="M19 3H5c-1.1 0-1.99.9-1.99 2L3 19c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-1 11h-4v4h-4v-4H6v-4h4V6h4v4h4v4z"/>
-          </svg>
-        </div>
-        <h1 class="logo-text">MedGuide</h1>
+        <a href="/" class="logo-link">
+          <div class="icon">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M19 3H5c-1.1 0-1.99.9-1.99 2L3 19c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-1 11h-4v4h-4v-4H6v-4h4V6h4v4h4v4z"/>
+            </svg>
+          </div>
+          <h1 class="logo-text">MedGuide</h1>
+        </a>
       </div>
+
+      <!-- Bara de navigare integrată în header -->
+      <div class="main-nav">
+        <div class="nav-links">
+          <a (click)="scrollToSection(doctorsSection)" class="nav-link">{{ 'NAVIGATION.DOCTORS' | translate }}</a>
+          <a (click)="scrollToSection(hospitalsSection)" class="nav-link">{{ 'NAVIGATION.HOSPITALS' | translate }}</a>
+          <a (click)="scrollToSection(specializationsSection)" class="nav-link">{{ 'NAVIGATION.SPECIALIZATIONS' | translate }}</a>
+          <a (click)="scrollToSection(educationalSection)" class="nav-link">{{ 'NAVIGATION.LEARN' | translate }}</a>
+        </div>
+      </div>
+
       <div class="header-right">
+        <!-- Selectorul de limbă -->
+        <div class="language-selector">
+          <button class="language-button" (click)="toggleLanguageDropdown()">
+            <span class="globe-icon">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M8 0C3.6 0 0 3.6 0 8C0 12.4 3.6 16 8 16C12.4 16 16 12.4 16 8C16 3.6 12.4 0 8 0ZM13.9 6H11.5C11.3 4.7 11 3.6 10.5 2.7C12.1 3.3 13.3 4.5 13.9 6ZM8 2C8.7 2 9.4 3.2 9.8 5H6.2C6.6 3.2 7.3 2 8 2ZM2.1 10C2 9.4 2 8.7 2 8C2 7.3 2 6.6 2.1 6H4.8C4.7 6.7 4.7 7.3 4.7 8C4.7 8.7 4.7 9.3 4.8 10H2.1ZM2.1 10H4.8C4.9 10.7 5 11.3 5.2 12H2.9C2.4 11.4 2.2 10.7 2.1 10ZM2.9 4H5.2C5 4.7 4.9 5.3 4.8 6H2.1C2.2 5.3 2.4 4.6 2.9 4ZM8 14C7.3 14 6.6 12.8 6.2 11H9.8C9.4 12.8 8.7 14 8 14ZM10.1 10H5.9C5.8 9.3 5.8 8.7 5.8 8C5.8 7.3 5.8 6.7 5.9 6H10.1C10.2 6.7 10.2 7.3 10.2 8C10.2 8.7 10.2 9.3 10.1 10ZM10.5 13.3C11 12.4 11.3 11.3 11.5 10H13.9C13.3 11.5 12.1 12.7 10.5 13.3ZM11.7 8C11.7 8.7 11.7 9.3 11.6 10H14.3C14.4 9.4 14.4 8.7 14.4 8C14.4 7.3 14.4 6.6 14.3 6H11.6C11.7 6.7 11.7 7.3 11.7 8Z" fill="currentColor"/>
+              </svg>
+            </span>
+            <span class="current-language">{{ currentLanguage | uppercase }}</span>
+            <span class="dropdown-arrow">
+              <svg width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+          </button>
+          <div class="language-dropdown" [class.visible]="showLanguageDropdown">
+            <a href="#" class="language-option" [class.active]="currentLanguage === 'ro'" (click)="changeLanguage('ro')">RO</a>
+            <a href="#" class="language-option" [class.active]="currentLanguage === 'en'" (click)="changeLanguage('en')">EN</a>
+            <a href="#" class="language-option" [class.active]="currentLanguage === 'de'" (click)="changeLanguage('de')">DE</a>
+          </div>
+        </div>
+
+        <!-- Butonul de autentificare -->
         <button class="login-button" (click)="navigateToAuth()">
           <svg class="login-icon" viewBox="0 0 24 24">
             <path d="M12 12a4 4 0 1 0-4-4 4 4 0 0 0 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
           </svg>
-          <span>Intra in cont</span>
+          <span>{{ 'NAVIGATION.LOGIN' | translate }}</span>
         </button>
       </div>
     </div>
   </div>
 
-  <!-- Bara de navigare -->
-  <div class="nav-menu">
-    <div class="nav-content">
-      <div class="nav-links">
-        <span>{{ 'NAVIGATION.DOCTORS' | translate }}</span>
-        <span>{{ 'NAVIGATION.HOSPITALS' | translate }}</span>
-        <span>{{ 'NAVIGATION.SPECIALIZATIONS' | translate }}</span>
+  <!-- Secțiunea Hero - Înlocuiește complet secțiunea mov -->
+  <div class="hero-banner" id="specializations-section">
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <div class="hero-text-container">
+        <h1>MedGuide</h1>
+        <h2>{{ 'HERO.TAGLINE' | translate }}</h2>
+        <p>{{ 'HERO.DESCRIPTION' | translate }}</p>
       </div>
     </div>
   </div>
 
-  <div class="hero-section-v3">
-    <div class="hero-content">
-      <div class="hero-text">
-        <h1>{{ 'COMMON.TITLE' | translate }}</h1>
-        <h2>{{ 'COMMON.SUBTITLE' | translate }}</h2>
-      </div>
-      <div class="hero-features">
-        <div class="feature">
-          <div class="feature-icon">
-            <i class="fa-solid fa-user-doctor"></i>
-          </div>
-          <div class="feature-text">{{ 'NAVIGATION.DOCTORS' | translate }}</div>
-        </div>
-        <div class="feature">
-          <div class="feature-icon">
-            <i class="fa-solid fa-hospital"></i>
-          </div>
-          <div class="feature-text">{{ 'NAVIGATION.HOSPITALS' | translate }}</div>
-        </div>
-        <div class="feature">
-          <div class="feature-icon">
-            <i class="fa-solid fa-notes-medical"></i>
-          </div>
-          <div class="feature-text">{{ 'NAVIGATION.SPECIALIZATIONS' | translate }}</div>
-        </div>
-      </div>
-    </div>
-  </div>
+
 
   <!-- Secțiunea Doctori -->
-  <div class="featured-section doctors-section">
+  <div id="doctors-section" class="featured-section doctors-section">
     <div class="section-header">
       <h2>{{ 'DOCTORS.TITLE' | translate }}</h2>
       <div class="specialization-filter">
@@ -94,7 +104,6 @@
 
       <div class="cards-container">
         <!-- Card Doctor cu condiții corecte pentru rating -->
-        <!-- Card Doctor cu înălțime fixă și buton gradient -->
         <div class="doctor-card" *ngFor="let doctor of visibleDoctors">
           <div class="card-image">
             <img [src]="doctor.imageUrl || '/assets/images/doctors/default-doctor.png'"
@@ -163,7 +172,7 @@
   </div>
 
   <!-- Secțiunea Spitale -->
-  <div class="featured-section hospitals-section">
+  <div id="hospitals-section" class="featured-section educational-programs-section">
     <div class="section-header">
       <h2>{{ 'HOSPITALS.TITLE' | translate }}</h2>
     </div>
@@ -233,6 +242,121 @@
       <p>{{ 'HOSPITALS.NO_RESULTS' | translate }}</p>
     </div>
   </div>
+
+
+  <!-- Secțiunea Programe Educaționale cu Carousel-->
+  <<div id="educational-section" class="featured-section educational-programs-section">
+  <div class="section-header">
+    <h2>{{ 'EDUCATIONAL_PROGRAMS.TITLE' | translate }}</h2>
+  </div>
+
+    <!-- Loading indicator -->
+    <div class="loading-container" *ngIf="loadingPrograms">
+      <div class="spinner"></div>
+      <p>{{ 'LOADING.SEARCHING' | translate }}</p>
+    </div>
+
+    <!-- Error message -->
+    <div class="error-message" *ngIf="errorFetchingPrograms && !loadingPrograms && educationalPrograms.length === 0">
+      <p>{{ 'ERROR.FETCH_PROGRAMS' | translate }}</p>
+    </div>
+
+    <!-- Carousel de programe educaționale - fără săgeți laterale -->
+    <div class="educational-programs-carousel" *ngIf="!loadingPrograms && educationalPrograms.length > 0">
+      <!-- Container pentru cardurile vizibile -->
+      <div class="programs-cards-container">
+        <div class="program-card" *ngFor="let program of visiblePrograms">
+          <div class="program-category-indicator" [ngClass]="program.categoryClass"></div>
+          <div class="program-content">
+            <h3>{{ program.title }}</h3>
+            <p class="program-description">{{ program.description }}</p>
+
+            <div class="program-meta">
+            <span class="program-rating" *ngIf="program.rating">
+              <i class="fas fa-star"></i> {{ program.rating }} ({{ program.reviewCount }} {{ program.reviewCount === 1 ? 'recenzie' : 'recenzii' }})
+            </span>
+            </div>
+
+            <div class="language-options">
+              <div class="language-label">{{ 'EDUCATIONAL_PROGRAMS.AVAILABLE_LANGUAGES' | translate }}:</div>
+              <div class="language-buttons">
+                <button class="language-button" *ngFor="let lang of program.languages"
+                        [class.active]="lang.code === selectedLanguage"
+                        (click)="openProgramContent(program, lang.code)">
+                  {{ lang.name }}
+                </button>
+              </div>
+            </div>
+
+            <div class="program-actions">
+              <button class="start-course-button" (click)="openProgramContent(program, selectedLanguage)">
+                {{ 'EDUCATIONAL_PROGRAMS.START_COURSE' | translate }}
+                <i class="fas fa-arrow-right"></i>
+              </button>
+              <span class="program-price">{{ program.isFree ? ('EDUCATIONAL_PROGRAMS.FREE' | translate) : (program.price ?? '') | translate }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Indicator de pagină - păstrați navigarea doar aici -->
+    <div class="pagination-container" *ngIf="educationalPrograms.length > 0">
+      <div class="pagination">
+        <button class="pagination-arrow" [disabled]="programsStartIndex === 0" (click)="prevPrograms()">
+          <i class="fas fa-chevron-left"></i>
+        </button>
+
+        <span class="pagination-info">
+        Pagina {{ getCurrentProgramPage() }} din {{ getTotalProgramPages() }}
+      </span>
+
+        <button class="pagination-arrow" [disabled]="programsStartIndex + programsPerPage >= educationalPrograms.length" (click)="nextPrograms()">
+          <i class="fas fa-chevron-right"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- No results message -->
+    <div class="no-results-message" *ngIf="!loadingPrograms && educationalPrograms.length === 0 && !errorFetchingPrograms">
+      <p>{{ 'EDUCATIONAL_PROGRAMS.NO_RESULTS' | translate }}</p>
+    </div>
+  </div>
+
+  <!-- Modal pentru vizualizarea PDF-ului -->
+  <div class="pdf-viewer-modal" *ngIf="showPdfViewer">
+    <div class="pdf-viewer-container">
+      <div class="pdf-viewer-header">
+        <h3>{{ currentProgram?.title }}</h3>
+        <button class="close-button" (click)="closePdfViewer()">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+
+      <div class="pdf-content">
+        <!-- Aici va fi încorporat PDF-ul - folosim iframe pentru simplitate -->
+        <iframe [src]="safeUrl" width="100%" height="100%" frameborder="0"></iframe>
+      </div>
+
+      <!-- Secțiune pentru evaluări - vizibilă doar dacă utilizatorul a parcurs PDF-ul complet -->
+      <div class="review-section" *ngIf="pdfCompleted">
+        <h4>{{ 'EDUCATIONAL_PROGRAMS.RATE_COURSE' | translate }}</h4>
+        <div class="rating-stars">
+          <i class="far fa-star" *ngFor="let star of [1,2,3,4,5]"
+             [class.fas]="userRating >= star"
+             (click)="rateProgram(star)"></i>
+        </div>
+        <textarea
+          placeholder="{{ 'EDUCATIONAL_PROGRAMS.REVIEW_PLACEHOLDER' | translate }}"
+          [(ngModel)]="userReview"
+          rows="3"></textarea>
+        <button class="submit-review-button" (click)="submitReview()" [disabled]="!userRating">
+          {{ 'EDUCATIONAL_PROGRAMS.SUBMIT_REVIEW' | translate }}
+        </button>
+      </div>
+    </div>
+  </div>
+
 
   <!-- Footer -->
   <footer class="footer">
