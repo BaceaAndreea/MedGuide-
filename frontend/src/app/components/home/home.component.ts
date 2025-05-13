@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, HostListener} from '@angular/core';
 import {Router} from '@angular/router';
 import {Doctor} from '../../model/doctor.model';
 import {Hospital} from '../../model/hospital.model';
@@ -11,7 +11,30 @@ import {FormsModule} from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Inject, PLATFORM_ID } from '@angular/core';
 import { environment } from '../../../environments/environment';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import {SafePipe} from '../../pipes/safe.pipe';
 
+// Interfețe pentru programele educaționale
+interface LanguageOption {
+  code: string;
+  name: string;
+  pdfUrl: string;
+}
+
+interface EducationalProgram {
+  id: number;
+  title: string;
+  description: string;
+  modules: number;
+  duration: string;
+  category: string;
+  categoryClass: string;
+  isFree: boolean;
+  price?: string;
+  rating?: number;
+  reviewCount?: number;
+  languages: LanguageOption[];
+}
 
 @Component({
   selector: 'app-home',
@@ -23,6 +46,13 @@ import { environment } from '../../../environments/environment';
 export class HomeComponent implements OnInit {
   // Date pentru translatare
   currentLang = 'ro';
+
+  // Header și navigare
+  showLanguageDropdown = false;
+  currentLanguage = 'ro';
+  doctorsSection = 'doctors-section';
+  hospitalsSection = 'hospitals-section';
+  specializationsSection = 'specializations-section';
 
   // Date pentru doctori
   doctors: Doctor[] = [];
@@ -57,17 +87,34 @@ export class HomeComponent implements OnInit {
   // Favorite spitale
   favoriteHospitals: number[] = [];
 
+  // Date pentru programe educaționale
+  educationalPrograms: EducationalProgram[] = [];
+  loadingPrograms = false;
+  errorFetchingPrograms = false;
+  selectedLanguage = 'ro'; // Limba implicită
+  visiblePrograms: EducationalProgram[] = [];
+  programsStartIndex = 0;
+  programsPerPage = 2;
+
+  // Pentru vizualizarea PDF-urilor
+  showPdfViewer = false;
+  currentProgram: EducationalProgram | null = null;
+  pdfUrl: SafeResourceUrl | null = null;
+  pdfCompleted = false;
+  userRating = 0;
+  userReview = '';
+  // Adaugă la variabilele de secțiune
+  educationalSection = 'educational-section';
+
   constructor(
     private router: Router,
     private translate: TranslateService,
-    private doctorsService: DoctorsService,
-    private hospitalsService: HospitalsService,
     private http: HttpClient,
+    private sanitizer: DomSanitizer,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {
     // Inițializează serviciul de translatare
-    this.translate.setDefaultLang('ro');
-    this.translate.use('ro');
+    this.currentLanguage = this.translate.currentLang || 'ro';
 
     // Încărcăm favoritele direct din localStorage (va funcționa doar în browser)
     this.loadFavoriteHospitals();
@@ -77,6 +124,79 @@ export class HomeComponent implements OnInit {
     this.loadFeaturedDoctors();
     this.loadFeaturedHospitals();
     this.loadSpecializations();
+    this.loadEducationalPrograms();
+
+    this.translate.onLangChange.subscribe(event => {
+      this.currentLanguage = event.lang;
+    });
+
+    // Adaugă ID-uri la secțiuni pentru navigare
+    setTimeout(() => {
+      this.addSectionIds();
+    }, 100);
+  }
+
+  // Adaugă ID-uri la secțiuni pentru navigare
+  private addSectionIds(): void {
+    // Verificăm dacă suntem în browser
+    if (isPlatformBrowser(this.platformId)) {
+      try {
+        const doctorsEl = document.querySelector('.doctors-section');
+        const hospitalsEl = document.querySelector('.featured-section.educational-programs-section');
+        const specializationsEl = document.querySelector('.hero-section-v3');
+        const educationalEl = document.querySelector('.educational-programs-section:last-of-type');
+
+        if (doctorsEl) doctorsEl.id = this.doctorsSection;
+        if (hospitalsEl) hospitalsEl.id = this.hospitalsSection;
+        if (specializationsEl) specializationsEl.id = this.specializationsSection;
+        if (educationalEl) educationalEl.id = this.educationalSection;
+
+        console.log('Section IDs added successfully');
+      } catch (error) {
+        console.error('Error adding section IDs:', error);
+      }
+    }
+  }
+
+  // Închide dropdown-ul de limbă când se face click în afara lui
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent): void {
+    const targetElement = event.target as HTMLElement;
+    const isLanguageButton = targetElement.closest('.language-button');
+
+    if (!isLanguageButton) {
+      this.showLanguageDropdown = false;
+    }
+  }
+
+  // Toggle dropdown limbă
+  toggleLanguageDropdown(): void {
+    this.showLanguageDropdown = !this.showLanguageDropdown;
+  }
+
+  // Schimbă limba
+  changeLanguage(lang: string): void {
+    console.log('Changing language in HomeComponent to:', lang);
+    this.currentLanguage = lang;
+    this.selectedLanguage = lang;
+
+    // Folosește doar serviciul de traducere
+    this.translate.use(lang);
+
+    // Salvează limba preferată în localStorage
+    if (isPlatformBrowser(this.platformId)) {
+      localStorage.setItem('preferredLanguage', lang);
+    }
+
+    this.showLanguageDropdown = false;
+  }
+
+  // Metodă pentru scrolling smooth la secțiuni
+  scrollToSection(sectionId: string): void {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
   }
 
   // Metode pentru gestionarea localStorage (funcționalitate simplificată)
@@ -358,6 +478,34 @@ export class HomeComponent implements OnInit {
     return Math.ceil(this.hospitals.length / this.hospitalsPerPage);
   }
 
+  // Metode pentru carousel-ul de programe educaționale
+  updateVisiblePrograms(): void {
+    const endIndex = Math.min(this.programsStartIndex + this.programsPerPage, this.educationalPrograms.length);
+    this.visiblePrograms = this.educationalPrograms.slice(this.programsStartIndex, endIndex);
+  }
+
+  nextPrograms(): void {
+    if (this.programsStartIndex + this.programsPerPage < this.educationalPrograms.length) {
+      this.programsStartIndex += this.programsPerPage;
+      this.updateVisiblePrograms();
+    }
+  }
+
+  prevPrograms(): void {
+    if (this.programsStartIndex > 0) {
+      this.programsStartIndex = Math.max(0, this.programsStartIndex - this.programsPerPage);
+      this.updateVisiblePrograms();
+    }
+  }
+
+  getCurrentProgramPage(): number {
+    return Math.floor(this.programsStartIndex / this.programsPerPage) + 1;
+  }
+
+  getTotalProgramPages(): number {
+    return Math.ceil(this.educationalPrograms.length / this.programsPerPage);
+  }
+
   openHospitalInMaps(hospital: Hospital): void {
     if (isPlatformBrowser(this.platformId)) {
       let mapsUrl: string;
@@ -370,5 +518,319 @@ export class HomeComponent implements OnInit {
       }
       window.open(mapsUrl, '_blank');
     }
+  }
+
+  loadEducationalPrograms(): void {
+    this.loadingPrograms = true;
+    this.errorFetchingPrograms = false;
+
+    setTimeout(() => {
+      this.educationalPrograms = [
+        {
+          id: 1,
+          title: this.translate.instant('EDUCATIONAL_PROGRAMS.PROGRAMS.BREAST_CANCER.TITLE'),
+          description: this.translate.instant('EDUCATIONAL_PROGRAMS.PROGRAMS.BREAST_CANCER.DESCRIPTION'),
+          modules: 5,
+          duration: '2',
+          category: 'cancer-prevention',
+          categoryClass: 'category-green',
+          isFree: true,
+          rating: 4.8,
+          reviewCount: 143,
+          languages: [
+            {
+              code: 'ro',
+              name: 'Română',
+              pdfUrl: `/assets/pdfs/preventie-cancer-ro.pdf`
+            },
+            {
+              code: 'en',
+              name: 'English',
+              pdfUrl: `/assets/pdfs/preventie-cancer-en.pdf`
+            },
+            {
+              code: 'de',
+              name: 'Deutsch',
+              pdfUrl: `/assets/pdfs/preventie-cancer-de.pdf`
+            }
+          ]
+        },
+        {
+          id: 2,
+          title: this.translate.instant('EDUCATIONAL_PROGRAMS.PROGRAMS.HEART_HEALTH.TITLE'),
+          description: this.translate.instant('EDUCATIONAL_PROGRAMS.PROGRAMS.HEART_HEALTH.DESCRIPTION'),
+          modules: 8,
+          duration: '3.5',
+          category: 'heart-health',
+          categoryClass: 'category-blue',
+          isFree: true,
+          rating: 4.9,
+          reviewCount: 215,
+          languages: [
+            {
+              code: 'ro',
+              name: 'Română',
+              pdfUrl: `/assets/pdfs/sanatate-inima-ro.pdf`
+            },
+            {
+              code: 'en',
+              name: 'English',
+              pdfUrl: `/assets/pdfs/sanatate-inima-en.pdf`
+            },
+            {
+              code: 'de',
+              name: 'Deutsch',
+              pdfUrl: `/assets/pdfs/sanatate-inima-de.pdf`
+            }
+          ]
+        },
+        {
+          id: 3,
+          title: this.translate.instant('EDUCATIONAL_PROGRAMS.PROGRAMS.HEALTHY_DIET.TITLE'),
+          description: this.translate.instant('EDUCATIONAL_PROGRAMS.PROGRAMS.HEALTHY_DIET.DESCRIPTION'),
+          modules: 6,
+          duration: '2.5',
+          category: 'healthy-diet',
+          categoryClass: 'category-red',
+          isFree: true,
+          rating: 4.7,
+          reviewCount: 178,
+          languages: [
+            {
+              code: 'ro',
+              name: 'Română',
+              pdfUrl: `/assets/pdfs/alimentatie-ro.pdf`
+            },
+            {
+              code: 'en',
+              name: 'English',
+              pdfUrl: `/assets/pdfs/alimentatie-en.pdf`
+            },
+            {
+              code: 'de',
+              name: 'Deutsch',
+              pdfUrl: `/assets/pdfs/alimentatie-de.pdf`
+            }
+          ]
+        },
+        {
+          id: 4,
+          title: this.translate.instant('EDUCATIONAL_PROGRAMS.PROGRAMS.MENTAL_HEALTH.TITLE'),
+          description: this.translate.instant('EDUCATIONAL_PROGRAMS.PROGRAMS.MENTAL_HEALTH.DESCRIPTION'),
+          modules: 7,
+          duration: '3',
+          category: 'mental-health',
+          categoryClass: 'category-purple',
+          isFree: true,
+          rating: 4.9,
+          reviewCount: 230,
+          languages: [
+            {
+              code: 'ro',
+              name: 'Română',
+              pdfUrl: `/assets/pdfs/sanatate_mintala_ro.pdf`
+            },
+            {
+              code: 'en',
+              name: 'English',
+              pdfUrl: `/assets/pdfs/sanatate_mintala_en.pdf`
+            },
+            {
+              code: 'de',
+              name: 'Deutsch',
+              pdfUrl: `/assets/pdfs/sanatate_mintala_de.pdf`
+            }
+          ]
+        },
+        {
+          id: 5,
+          title: this.translate.instant('EDUCATIONAL_PROGRAMS.PROGRAMS.DIABETES.TITLE'),
+          description: this.translate.instant('EDUCATIONAL_PROGRAMS.PROGRAMS.DIABETES.DESCRIPTION'),
+          modules: 8,
+          duration: '4',
+          category: 'diabetes',
+          categoryClass: 'category-orange',
+          isFree: true,
+          rating: 4.8,
+          reviewCount: 185,
+          languages: [
+            {
+              code: 'ro',
+              name: 'Română',
+              pdfUrl: `/assets/pdfs/diabet_ro.pdf`
+            },
+            {
+              code: 'en',
+              name: 'English',
+              pdfUrl: `/assets/pdfs/diabet_en.pdf`
+            },
+            {
+              code: 'de',
+              name: 'Deutsch',
+              pdfUrl: `/assets/pdfs/diabet_de.pdf`
+            }
+          ]
+        },
+        {
+          id: 6,
+          title: this.translate.instant('EDUCATIONAL_PROGRAMS.PROGRAMS.RESPIRATORY.TITLE'),
+          description: this.translate.instant('EDUCATIONAL_PROGRAMS.PROGRAMS.RESPIRATORY.DESCRIPTION'),
+          modules: 6,
+          duration: '2.5',
+          category: 'respiratory',
+          categoryClass: 'category-lightblue',
+          isFree: true,
+          rating: 4.7,
+          reviewCount: 165,
+          languages: [
+            {
+              code: 'ro',
+              name: 'Română',
+              pdfUrl: `/assets/pdfs/tulburari_respiratorii_ro.pdf`
+            },
+            {
+              code: 'en',
+              name: 'English',
+              pdfUrl: `/assets/pdfs/tulburari_respiratorii_en.pdf`
+            },
+            {
+              code: 'de',
+              name: 'Deutsch',
+              pdfUrl: `/assets/pdfs/tulburari_respiratorii_de.pdf`
+            }
+          ]
+        },
+        {
+          id: 7,
+          title: this.translate.instant('EDUCATIONAL_PROGRAMS.PROGRAMS.PUBLIC_HEALTH.TITLE'),
+          description: this.translate.instant('EDUCATIONAL_PROGRAMS.PROGRAMS.PUBLIC_HEALTH.DESCRIPTION'),
+          modules: 7,
+          duration: '3.5',
+          category: 'public-health',
+          categoryClass: 'category-teal',
+          isFree: true,
+          rating: 4.6,
+          reviewCount: 140,
+          languages: [
+            {
+              code: 'ro',
+              name: 'Română',
+              pdfUrl: `/assets/pdfs/sanatate_publica_ro.pdf`
+            },
+            {
+              code: 'en',
+              name: 'English',
+              pdfUrl: `/assets/pdfs/sanatate_publica_en.pdf`
+            },
+            {
+              code: 'de',
+              name: 'Deutsch',
+              pdfUrl: `/assets/pdfs/sanatate_publica_de.pdf`
+            }
+          ]
+        },
+        {
+          id: 8,
+          title: this.translate.instant('EDUCATIONAL_PROGRAMS.PROGRAMS.TELEMEDICINE.TITLE'),
+          description: this.translate.instant('EDUCATIONAL_PROGRAMS.PROGRAMS.TELEMEDICINE.DESCRIPTION'),
+          modules: 5,
+          duration: '2',
+          category: 'telemedicine',
+          categoryClass: 'category-purple',
+          isFree: true,
+          rating: 4.7,
+          reviewCount: 152,
+          languages: [
+            {
+              code: 'ro',
+              name: 'Română',
+              pdfUrl: `/assets/pdfs/telemedicina_ro.pdf`
+            },
+            {
+              code: 'en',
+              name: 'English',
+              pdfUrl: `/assets/pdfs/telemedicina_en.pdf`
+            },
+            {
+              code: 'de',
+              name: 'Deutsch',
+              pdfUrl: `/assets/pdfs/telemedicina_de.pdf`
+            }
+          ]
+        }
+      ];
+
+      // Inițializăm programele vizibile
+      this.updateVisiblePrograms();
+      this.loadingPrograms = false;
+    }, 1000); // Simulăm un delay de încărcare
+  }
+
+  // Metodă pentru deschiderea conținutului programului educațional
+  openProgramContent(program: EducationalProgram, languageCode: string): void {
+    // Verifică dacă utilizatorul este autentificat (dacă este necesar)
+    // Pentru acum, permitem accesul gratuit pentru toți
+
+    this.currentProgram = program;
+    this.selectedLanguage = languageCode;
+
+    // Găsește URL-ul PDF-ului pentru limba selectată
+    const languageOption = program.languages.find(lang => lang.code === languageCode);
+    if (languageOption) {
+      this.pdfUrl = this.sanitizer.bypassSecurityTrustResourceUrl(languageOption.pdfUrl);
+      this.showPdfViewer = true;
+
+      // Resetează starea evaluării
+      this.pdfCompleted = false;
+      this.userRating = 0;
+      this.userReview = '';
+
+      // Simulăm completarea PDF-ului după un timp
+      // În aplicația reală, ai folosi evenimente JavaScript pentru a detecta când utilizatorul a ajuns la sfârșitul PDF-ului
+      setTimeout(() => {
+        this.pdfCompleted = true;
+      }, 10000); // După 10 secunde, considerăm că utilizatorul a parcurs PDF-ul
+    }
+  }
+
+  // Închide vizualizatorul de PDF
+  closePdfViewer(): void {
+    this.showPdfViewer = false;
+    this.currentProgram = null;
+    this.pdfUrl = null;
+  }
+
+  // Metodă pentru evaluarea programului
+  rateProgram(rating: number): void {
+    this.userRating = rating;
+  }
+
+  // Metodă pentru trimiterea evaluării
+  submitReview(): void {
+    if (!this.userRating || !this.currentProgram) {
+      return;
+    }
+
+    // În aplicația reală, aici ai face un API call pentru a salva evaluarea
+    console.log(`Evaluare pentru programul ${this.currentProgram.id}: ${this.userRating} stele`);
+    console.log(`Comentariu: ${this.userReview}`);
+
+    // Actualizăm statisticile local pentru demonstrație
+    if (this.currentProgram) {
+      const program = this.educationalPrograms.find(p => p.id === this.currentProgram?.id);
+      if (program) {
+        const oldTotalRating = (program.rating || 0) * (program.reviewCount || 0);
+        program.reviewCount = (program.reviewCount || 0) + 1;
+        program.rating = (oldTotalRating + this.userRating) / program.reviewCount;
+      }
+    }
+
+    // Afișăm un mesaj de confirmare și închidem modalul
+    alert(this.translate.instant('EDUCATIONAL_PROGRAMS.REVIEW_SUBMITTED'));
+    this.closePdfViewer();
+  }
+
+  get safeUrl(): SafeResourceUrl {
+    return this.pdfUrl || this.sanitizer.bypassSecurityTrustResourceUrl('about:blank');
   }
 }

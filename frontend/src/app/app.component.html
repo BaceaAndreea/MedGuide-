@@ -19,12 +19,14 @@
 <div class="glow-point"></div>
 <div class="glow-point"></div>
 <div class="glow-point"></div>
+
 <app-navbar *ngIf="showNavbar"></app-navbar>
+
 <div class="content">
   <router-outlet></router-outlet>
 </div>
 
-<div class="language-selector-container">
+<!-- Doar un singur selector de limbă cu condiția aplicată -->
+<div class="language-selector-container" *ngIf="showLanguageSelector">
   <app-language-selector></app-language-selector>
 </div>
-

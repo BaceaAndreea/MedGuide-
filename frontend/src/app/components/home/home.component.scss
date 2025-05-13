@@ -18,29 +18,28 @@ $white: #fff;
 // Header - modificat pentru logo mai mare
 .header {
   background-color: $white;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
   position: sticky;
   top: 0;
   z-index: 100;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
 }
-
 .header-content {
-  max-width: 1800px;
+  max-width: 1650px; // Mărit de la 1200px pentru mai mult spațiu
   width: 100%;
   margin: 0 auto;
-  padding: 5px 20px;
+  padding: 0 20px;
   display: flex;
-  justify-content: center;
   align-items: center;
-  position: relative;
+  height: 75px; // Mărit de la 70px pentru un header mai înalt
+  justify-content: space-between; // Asigură spațierea corectă
 }
 
 .header-right {
-  position: absolute;
-  right: 150px;
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 15px;
+  margin-left: auto; // Împinge elementele la dreapta
 }
 
 .login-button {
@@ -73,27 +72,35 @@ $white: #fff;
   }
 }
 
-
 .logo {
   display: flex;
   align-items: center;
-  cursor: pointer;
-  margin-right: auto; // Forțează logo-ul să fie la stânga
+  flex-shrink: 0;
+  margin-right: auto; // Forțează logo-ul la stânga
+
+  .logo-link {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+  }
 
   .icon {
-    width: 48px; // Mărit de la 40px
-    height: 48px; // Mărit de la 40px
-    margin-right: 12px;
+    width: 54px; // Mărit de la 48px
+    height: 54px; // Mărit de la 48px
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 10px; // Mărit de la 8px
 
     svg {
-      width: 100%;
-      height: 100%;
+      width: 38px; // Mărit de la 30px
+      height: 38px; // Mărit de la 30px
       fill: $primary-color;
     }
   }
 
   .logo-text {
-    font-size: 34px; // Mărit de la 28px
+    font-size: 32px; // Mărit de la 24px
     font-weight: 700;
     color: $primary-color;
     margin: 0;
@@ -105,6 +112,45 @@ $white: #fff;
   background-color: $white;
   border-bottom: 1px solid #eee;
 }
+
+.main-nav {
+  margin-left: 40px;
+  flex-grow: 1;
+
+  .nav-links {
+    display: flex;
+    gap: 30px;
+  }
+
+  .nav-link {
+    color: #333;
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 500;
+    position: relative;
+    padding: 8px 0;
+
+    &:hover {
+      color: $primary-color;
+    }
+
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background-color: $primary-color;
+      transition: width 0.3s;
+    }
+
+    &:hover::after {
+      width: 100%;
+    }
+  }
+}
+
 
 .nav-content {
   max-width: 1200px;
@@ -142,138 +188,119 @@ $white: #fff;
   }
 }
 
-.hero-section-v3 {
-  background-color: #7958e8;
-  padding: 40px 0 40px; /* Redus padding-bottom la 40px */
-  color: $white;
+// Hero Banner
+.hero-banner {
   position: relative;
+  width: 100%;
+  height: 600px; // Ajustează înălțimea după nevoie
+  background-image: url('/assets/images/cropped-image.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  margin-bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
   overflow: hidden;
-  margin-bottom: 0; /* Eliminăm orice margin bottom */
+}
 
-  &::before {
-    content: '';
-    position: absolute;
-    top: -80px;
-    right: -80px;
-    width: 200px;
-    height: 200px;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.15);
-    z-index: 1;
+.hero-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.5) 50%, rgba(0, 0, 0, 0.2) 100%);
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+.hero-text-container {
+  max-width: 500px;
+  color: $white;
+  padding: 30px;
+  border-radius: 10px;
+  background-color: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(1px);
+  position: relative;
+  margin-left: 40px;
+  margin-top: 200px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+
+
+  h1 {
+    font-size: 48px;
+    font-weight: 700;
+    margin-bottom: 15px;
+    color: $white;
   }
 
-  &::after {
-    content: '';
-    position: absolute;
-    bottom: -100px;
-    left: -100px;
-    width: 300px;
-    height: 300px;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.1);
-    z-index: 1;
+  h2 {
+    font-size: 28px;
+    font-weight: 600;
+    margin-bottom: 15px;
+    line-height: 1.3;
+    color: $white;
   }
 
-  .hero-content {
-    position: relative;
-    z-index: 2;
-    max-width: 900px;
-    margin: 0 auto;
-    padding: 0 20px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+  p {
+    font-size: 18px;
+    margin-bottom: 25px;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.9);
   }
+}
 
-  .hero-text {
-    text-align: center;
-    max-width: 700px;
-    margin-bottom: 10px; /* Redus de la valoarea implicită */
+.hero-buttons {
+  display: flex;
+  gap: 15px;
+  margin-top: 20px;
 
-    h1 {
-      font-size: 42px;
-      margin-bottom: 8px; /* Redus */
-      font-weight: 700;
-      color: $white;
-    }
-
-    h2 {
-      font-size: 20px;
-      margin-bottom: 10px; /* Redus */
-      font-weight: 500;
-      opacity: 0.95;
-      color: $white;
-    }
-
-    p {
-      font-size: 16px;
-      margin-bottom: 15px; /* Redus */
-      line-height: 1.4; /* Redus spacing-ul dintre linii */
-      color: rgba(255, 255, 255, 0.9);
-    }
-  }
-
-  .hero-features {
-    display: flex;
-    justify-content: center;
-    gap: 25px;
-    margin-top: 10px; /* Redus de la 20px */
-    flex-wrap: wrap;
-    width: 100%;
-    max-width: 500px;
-    margin-left: auto;
-    margin-right: auto;
-  }
-
-  .feature {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    background-color: rgba(255, 255, 255, 0.1);
-    border-radius: 10px;
-    padding: 12px; /* Redus de la 15px */
-    width: 110px; /* Redus de la 130px */
-    height: 90px; /* Adăugat înălțime fixă pentru reducere */
-    transition: all 0.3s ease;
+  .primary-button {
+    background: linear-gradient(45deg, $primary-color, lighten($primary-color, 15%));
+    color: $white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 5px;
+    font-weight: 600;
+    font-size: 16px;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 
     &:hover {
       transform: translateY(-3px);
-      background-color: rgba(255, 255, 255, 0.2);
-      box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    i {
+      font-size: 14px;
     }
   }
 
-  .feature-icon {
-    width: 40px; /* Redus de la 50px */
-    height: 40px; /* Redus de la 50px */
-    background-color: rgba(255, 255, 255, 0.2);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 8px; /* Redus de la 10px */
+  .secondary-button {
+    background: rgba(255, 255, 255, 0.2);
+    color: $white;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    padding: 12px 25px;
+    border-radius: 5px;
+    font-weight: 600;
+    font-size: 16px;
+    cursor: pointer;
     transition: all 0.3s ease;
 
-    img {
-      width: 20px;
-      height: 20px;
-      object-fit: contain;
+    &:hover {
+      background: rgba(255, 255, 255, 0.3);
     }
-  }
-
-  .feature:hover .feature-icon {
-    background-color: rgba(255, 255, 255, 0.3);
-    transform: scale(1.05);
-  }
-
-  .feature-text {
-    font-weight: 500;
-    font-size: 13px; /* Redus de la 14px */
-    color: $white;
-    margin-top: auto; /* Aliniază textul în partea de jos */
   }
 }
 
@@ -990,3 +1017,1256 @@ $white: #fff;
     font-size: 12px;
   }
 }
+
+// Adaugă aceste stiluri în fișierul home.component.scss
+
+// Stiluri pentru secțiunea de programe educaționale
+.educational-programs-section {
+  background-color: rgba(lighten($primary-color, 70%), 3.5);
+}
+
+.educational-programs-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+// Stilul pentru cardurile de program
+.program-card {
+  background-color: $white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  display: flex;
+  transition: transform 0.3s, box-shadow 0.3s;
+  position: relative;
+
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+  }
+}
+
+// Indicator de categorie (culoare laterală)
+.program-category-indicator {
+  width: 8px;
+  height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+
+  &.category-green {
+    background: linear-gradient(to bottom, #2ecc71, #27ae60);
+  }
+
+  &.category-blue {
+    background: linear-gradient(to bottom, #3498db, #2980b9);
+  }
+
+  &.category-red {
+    background: linear-gradient(to bottom, #e74c3c, #c0392b);
+  }
+}
+
+// Conținutul cardului
+.program-content {
+  flex: 1;
+  padding: 25px 30px 25px 38px; // Padding extra în stânga pentru indicator
+
+  h3 {
+    font-size: 20px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 12px;
+  }
+
+  .program-description {
+    color: #555;
+    margin-bottom: 16px;
+    line-height: 1.5;
+  }
+}
+
+// Meta informații despre program
+.program-meta {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  font-size: 14px;
+
+  .program-duration {
+    color: #666;
+  }
+
+  .program-rating {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: #f39c12;
+
+    i {
+      color: #f39c12;
+    }
+  }
+}
+
+// Opțiuni de limbă
+.language-options {
+  margin-bottom: 20px;
+
+  .language-label {
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 8px;
+  }
+
+  .language-buttons {
+    display: flex;
+    gap: 8px;
+  }
+
+  .language-button {
+    padding: 5px 12px;
+    background-color: #f5f5f5;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    color: #444;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+
+    &:hover {
+      background-color: #eee;
+    }
+
+    &.active {
+      background-color: $primary-color;
+      color: white;
+      border-color: $primary-color;
+    }
+  }
+}
+
+// Acțiuni pentru program
+.program-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  .start-course-button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(45deg, $primary-color, lighten($primary-color, 10%));
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s;
+
+    &:hover {
+      background: linear-gradient(45deg, darken($primary-color, 5%), lighten($primary-color, 5%));
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba($primary-color, 0.3);
+    }
+
+    i {
+      font-size: 14px;
+    }
+  }
+
+  .program-price {
+    font-weight: 600;
+    color: #27ae60;
+  }
+}
+
+// Stiluri pentru modalul de vizualizare PDF
+.pdf-viewer-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.75);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.pdf-viewer-container {
+  background-color: white;
+  border-radius: 10px;
+  width: 90%;
+  height: 90%;
+  max-width: 1200px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.pdf-viewer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  border-bottom: 1px solid #eee;
+
+  h3 {
+    font-size: 18px;
+    color: #333;
+    margin: 0;
+  }
+
+  .close-button {
+    background: none;
+    border: none;
+    font-size: 20px;
+    color: #777;
+    cursor: pointer;
+    transition: color 0.2s;
+
+    &:hover {
+      color: #333;
+    }
+  }
+}
+
+.pdf-content {
+  flex: 1;
+  overflow: hidden;
+
+  iframe {
+    display: block;
+  }
+}
+
+// Secțiunea de evaluare
+.review-section {
+  padding: 20px;
+  border-top: 1px solid #eee;
+  background-color: #f9f9f9;
+
+  h4 {
+    font-size: 16px;
+    margin-bottom: 15px;
+    color: #333;
+  }
+
+  .rating-stars {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+
+    i {
+      font-size: 24px;
+      color: #ddd;
+      cursor: pointer;
+      transition: color 0.2s;
+
+      &.fas {
+        color: #f39c12;
+      }
+
+      &:hover {
+        color: #f39c12;
+      }
+    }
+  }
+
+  textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    font-family: inherit;
+    resize: vertical;
+
+    &:focus {
+      outline: none;
+      border-color: $primary-color;
+    }
+  }
+
+  .submit-review-button {
+    background-color: $primary-color;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s;
+
+    &:hover {
+      background-color: darken($primary-color, 10%);
+    }
+
+    &:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+  }
+}
+
+// Media queries pentru responsivitate
+@media (max-width: 768px) {
+  .program-content {
+    padding: 20px 20px 20px 28px;
+  }
+
+  .program-meta {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .program-actions {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+
+    .program-price {
+      margin-left: auto;
+      margin-right: auto;
+    }
+  }
+
+  .pdf-viewer-container {
+    width: 95%;
+    height: 95%;
+  }
+}
+
+@media (max-width: 480px) {
+  .language-options .language-buttons {
+    flex-wrap: wrap;
+  }
+
+  .rating-stars i {
+    font-size: 20px;
+  }
+}
+
+// Adaugă aceste stiluri la cele existente
+
+// Container pentru programele vizibile
+.visible-programs {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+// Buton de navigare pentru programe
+.program-nav {
+  width: 50px;
+  height: 50px;
+  margin: 20px auto;
+  background-color: rgba($primary-color, 0.8);
+  color: $white;
+  border: none;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background-color: $primary-color;
+    transform: scale(1.1);
+  }
+
+  &.prev {
+    margin-bottom: 10px;
+  }
+
+  &.next {
+    margin-top: 10px;
+  }
+
+  i {
+    font-size: 18px;
+  }
+}
+// Stiluri pentru secțiunea de programe educaționale
+.educational-programs-section {
+  background-color: rgba(lighten($primary-color, 30%), 0.15);
+  position: relative;
+}
+
+// Carousel-ul de programe educaționale
+.educational-programs-carousel {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin: 30px 0;
+}
+
+// Container pentru cardurile de programe
+.programs-cards-container {
+  display: flex;
+  gap: 30px;
+  width: 100%;
+  justify-content: center;
+}
+
+// Controale pentru navigare
+.carousel-control {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: $primary-color;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  z-index: 5;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+
+  &:hover {
+    background-color: darken($primary-color, 10%);
+    transform: scale(1.05);
+  }
+
+  &.prev {
+    left: -20px;
+  }
+
+  &.next {
+    right: -20px;
+  }
+
+  i {
+    font-size: 16px;
+  }
+}
+
+// Stiluri pentru cardurile de program
+.program-card {
+  background-color: $white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  display: flex;
+  transition: transform 0.3s, box-shadow 0.3s;
+  position: relative;
+  width: calc(50% - 15px);
+  min-height: 280px;
+  flex: 1;
+  max-width: 500px;
+
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+  }
+}
+
+// Indicator de categorie (culoare laterală)
+.program-category-indicator {
+  width: 8px;
+  height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+
+  &.category-green {
+    background: linear-gradient(to bottom, #2ecc71, #27ae60);
+  }
+
+  &.category-blue {
+    background: linear-gradient(to bottom, #3498db, #2980b9);
+  }
+
+  &.category-red {
+    background: linear-gradient(to bottom, #e74c3c, #c0392b);
+  }
+
+  &.category-purple {
+    background: linear-gradient(to bottom, #9b59b6, #8e44ad);
+  }
+
+  &.category-orange {
+    background: linear-gradient(to bottom, #f39c12, #d35400);
+  }
+
+  &.category-lightblue {
+    background: linear-gradient(to bottom, #3498db, #2980b9);
+  }
+
+  &.category-teal {
+    background: linear-gradient(to bottom, #1abc9c, #16a085);
+  }
+}
+
+// Conținutul cardului
+.program-content {
+  flex: 1;
+  padding: 25px 30px 25px 38px; // Padding extra în stânga pentru indicator
+
+  h3 {
+    font-size: 20px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 12px;
+  }
+
+  .program-description {
+    color: #555;
+    margin-bottom: 16px;
+    line-height: 1.5;
+  }
+}
+
+// Meta informații despre program
+.program-meta {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  font-size: 14px;
+
+  .program-duration {
+    color: #666;
+  }
+
+  .program-rating {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: #f39c12;
+
+    i {
+      color: #f39c12;
+    }
+  }
+}
+
+// Opțiuni de limbă
+.language-options {
+  margin-bottom: 20px;
+
+  .language-label {
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 8px;
+  }
+
+  .language-buttons {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .language-button {
+    padding: 5px 12px;
+    background-color: #f5f5f5;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    color: #444;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+
+    &:hover {
+      background-color: #eee;
+    }
+
+    &.active {
+      background-color: $primary-color;
+      color: white;
+      border-color: $primary-color;
+    }
+  }
+}
+
+// Acțiuni pentru program
+.program-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+
+  .start-course-button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(45deg, $primary-color, lighten($primary-color, 10%));
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s;
+
+    &:hover {
+      background: linear-gradient(45deg, darken($primary-color, 5%), lighten($primary-color, 5%));
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba($primary-color, 0.3);
+    }
+
+    i {
+      font-size: 14px;
+    }
+  }
+
+  .program-price {
+    font-weight: 600;
+    color: #27ae60;
+  }
+}
+
+// Animație pentru carduri la schimbarea paginii
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.program-card {
+  animation: fadeIn 0.5s ease-out;
+}
+
+// Stiluri de paginare pentru carousel-ul de programe
+.pagination-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  background-color: #fff;
+  padding: 10px 20px;
+  border-radius: 30px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.pagination-arrow {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: $primary-color;
+  color: white;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+
+  &:hover {
+    background-color: darken($primary-color, 10%);
+  }
+
+  &:disabled {
+    background-color: lighten($primary-color, 20%);
+    color: rgba(255, 255, 255, 0.7);
+    cursor: not-allowed;
+  }
+
+  i {
+    font-size: 14px;
+  }
+}
+
+.pagination-info {
+  font-size: 14px;
+  font-weight: 500;
+  color: $text-color;
+}
+
+// Media queries pentru responsivitate
+@media (max-width: 1024px) {
+  .programs-cards-container {
+    gap: 20px;
+  }
+
+  .program-card {
+    min-height: 300px;
+  }
+
+  .carousel-control {
+    &.prev {
+      left: -15px;
+    }
+
+    &.next {
+      right: -15px;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .programs-cards-container {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .program-card {
+    width: 90%;
+    max-width: 450px;
+    margin-bottom: 20px;
+  }
+
+  .carousel-control {
+    top: 50%;
+    transform: translateY(-50%);
+
+    &.prev {
+      left: 5px;
+    }
+
+    &.next {
+      right: 5px;
+    }
+  }
+
+  .program-content {
+    padding: 20px 20px 20px 30px;
+  }
+}
+
+@media (max-width: 480px) {
+  .program-card {
+    width: 95%;
+  }
+
+  .program-actions {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+
+    .program-price {
+      margin-top: 10px;
+      align-self: center;
+    }
+
+    .start-course-button {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+
+  .language-buttons {
+    justify-content: center;
+  }
+}
+
+// Stiluri pentru secțiunea de programe educaționale
+.educational-programs-section {
+  background-color: rgba(lighten($primary-color, 30%), 0.15);
+  position: relative;
+}
+
+// Carousel-ul de programe educaționale
+.educational-programs-carousel {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin: 30px 0;
+}
+
+// Container pentru cardurile de programe
+.programs-cards-container {
+  display: flex;
+  gap: 30px;
+  width: 100%;
+  justify-content: center;
+}
+
+// Controale pentru navigare
+.carousel-control {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: $primary-color;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  z-index: 5;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+
+  &:hover {
+    background-color: darken($primary-color, 10%);
+    transform: scale(1.05);
+  }
+
+  &.prev {
+    left: -20px;
+  }
+
+  &.next {
+    right: -20px;
+  }
+
+  i {
+    font-size: 16px;
+  }
+}
+
+// Stiluri pentru cardurile de program
+.program-card {
+  background-color: $white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  display: flex;
+  transition: transform 0.3s, box-shadow 0.3s;
+  position: relative;
+  width: calc(50% - 15px);
+  min-height: 280px;
+  flex: 1;
+  max-width: 500px;
+
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+  }
+}
+
+// Indicator de categorie (culoare laterală)
+.program-category-indicator {
+  width: 8px;
+  height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+
+  &.category-green {
+    background: linear-gradient(to bottom, #2c4d8a, #782dc5);
+  }
+
+  &.category-blue {
+    background: linear-gradient(to bottom, #2c4d8a, #782dc5);
+  }
+
+  &.category-red {
+    background: linear-gradient(to bottom, #2c4d8a, #782dc5);
+  }
+
+  &.category-purple {
+    background: linear-gradient(to bottom, #2c4d8a, #782dc5);
+  }
+
+  &.category-orange {
+    background: linear-gradient(to bottom, #2c4d8a, #782dc5);
+  }
+
+  &.category-lightblue {
+    background: linear-gradient(to bottom, #2c4d8a, #782dc5);
+  }
+
+  &.category-teal {
+    background: linear-gradient(to bottom, #2c4d8a, #782dc5);
+  }
+}
+
+// Conținutul cardului
+.program-content {
+  flex: 1;
+  padding: 25px 30px 25px 38px; // Padding extra în stânga pentru indicator
+
+  h3 {
+    font-size: 20px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 12px;
+  }
+
+  .program-description {
+    color: #555;
+    margin-bottom: 16px;
+    line-height: 1.5;
+  }
+}
+
+// Meta informații despre program
+.program-meta {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  font-size: 14px;
+
+  .program-duration {
+    color: #666;
+  }
+
+  .program-rating {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: #f39c12;
+
+    i {
+      color: #f39c12;
+    }
+  }
+}
+
+// Opțiuni de limbă
+.language-options {
+  margin-bottom: 20px;
+
+  .language-label {
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 8px;
+  }
+
+  .language-buttons {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .language-button {
+    padding: 5px 12px;
+    background-color: #f5f5f5;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    color: #444;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+
+    &:hover {
+      background-color: #eee;
+    }
+
+    &.active {
+      background-color: $primary-color;
+      color: white;
+      border-color: $primary-color;
+    }
+  }
+}
+
+// Acțiuni pentru program
+.program-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+
+  .start-course-button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(45deg, $primary-color, lighten($primary-color, 10%));
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s;
+
+    &:hover {
+      background: linear-gradient(45deg, darken($primary-color, 5%), lighten($primary-color, 5%));
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba($primary-color, 0.3);
+    }
+
+    i {
+      font-size: 14px;
+    }
+  }
+
+  .program-price {
+    font-weight: 600;
+    color: #27ae60;
+  }
+}
+
+// Animație pentru carduri la schimbarea paginii
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.program-card {
+  animation: fadeIn 0.5s ease-out;
+}
+
+// Stiluri de paginare pentru carousel-ul de programe
+.pagination-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  background-color: #fff;
+  padding: 10px 20px;
+  border-radius: 30px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.language-button {
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  background-color: rgba($primary-color, 0.1);
+  border: 1px solid rgba($primary-color, 0.2);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background-color: rgba($primary-color, 0.2);
+  }
+
+  .globe-icon {
+    margin-right: 6px;
+
+    svg {
+      width: 18px;
+      height: 18px;
+      fill: $primary-color;
+    }
+  }
+
+  .current-language {
+    font-weight: 600;
+    color: $primary-color;
+  }
+
+  .dropdown-arrow {
+    margin-left: 5px;
+    transition: transform 0.3s ease;
+  }
+
+  &:hover .dropdown-arrow {
+    transform: rotate(180deg);
+  }
+}
+
+.language-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 5px;
+  background-color: white;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: all 0.3s ease;
+  transform-origin: top right;
+  transform: scale(0.95);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 100;
+
+  &.visible {
+    transform: scale(1);
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .language-option {
+    display: block;
+    padding: 8px 16px;
+    text-decoration: none;
+    color: $text-color;
+    font-weight: 500;
+    transition: all 0.2s;
+
+    &:hover {
+      background-color: rgba($primary-color, 0.1);
+    }
+
+    &.active {
+      background-color: $primary-color;
+      color: white;
+    }
+  }
+}
+
+.pagination-arrow {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: $primary-color;
+  color: white;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+
+  &:hover {
+    background-color: darken($primary-color, 10%);
+  }
+
+  &:disabled {
+    background-color: lighten($primary-color, 20%);
+    color: rgba(255, 255, 255, 0.7);
+    cursor: not-allowed;
+  }
+
+  i {
+    font-size: 14px;
+  }
+}
+
+.pagination-info {
+  font-size: 14px;
+  font-weight: 500;
+  color: $text-color;
+}
+
+// Media queries pentru responsivitate
+@media (max-width: 1024px) {
+  .programs-cards-container {
+    gap: 20px;
+  }
+
+  .program-card {
+    min-height: 300px;
+  }
+
+  .carousel-control {
+    &.prev {
+      left: -15px;
+    }
+
+    &.next {
+      right: -15px;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .programs-cards-container {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .program-card {
+    width: 90%;
+    max-width: 450px;
+    margin-bottom: 20px;
+  }
+
+  .carousel-control {
+    top: 50%;
+    transform: translateY(-50%);
+
+    &.prev {
+      left: 5px;
+    }
+
+    &.next {
+      right: 5px;
+    }
+  }
+
+  .program-content {
+    padding: 20px 20px 20px 30px;
+  }
+}
+
+@media (max-width: 480px) {
+  .program-card {
+    width: 95%;
+  }
+
+  .program-actions {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+
+    .program-price {
+      margin-top: 10px;
+      align-self: center;
+    }
+
+    .start-course-button {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+
+  .language-buttons {
+    justify-content: center;
+  }
+}
+.language-selector {
+  position: relative;
+  z-index: 10;
+}
+
+@media (max-width: 768px) {
+  .header-content {
+    padding: 0 15px;
+  }
+
+  .main-nav {
+    display: none; // Se va afișa prin menu toggle pe mobile
+  }
+
+  .logo .logo-text {
+    font-size: 22px;
+  }
+
+  .header-right {
+    margin-left: auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .header-content {
+    padding: 0 10px;
+  }
+
+  .login-button span {
+    display: none; // Afișează doar iconul pe ecrane mici
+  }
+
+  .login-button {
+    padding: 8px;
+  }
+
+  .language-button .current-language {
+    display: none;
+  }
+}
+

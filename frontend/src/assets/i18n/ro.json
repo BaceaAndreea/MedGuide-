@@ -68,7 +68,9 @@
     "SPECIALIZATIONS": "Specializări",
     "LOGOUT": "Deconectare",
     "PROFILE": "Profil",
-    "CONSULTATIONS": "Consultațiile tale"
+    "CONSULTATIONS": "Consultațiile tale",
+    "LEARN": "Învață",
+    "LOGIN": "Intră în cont"
   },
   "PATIENTS": {
     "TITLE": "Pacienți",
@@ -315,7 +317,8 @@
     "SAVE_SPECIALIZATION": "Eroare la salvarea specializării",
     "UPDATE_SPECIALIZATION": "Eroare la actualizarea specializării",
     "DELETE_SPECIALIZATION": "Eroare la ștergerea specializării",
-    "FETCH_CONSULTATIONS": "Eroare la încărcarea consultațiilor!"
+    "FETCH_CONSULTATIONS": "Eroare la încărcarea consultațiilor!",
+    "FETCH_PROGRAMS": "A apărut o eroare la încărcarea programelor educaționale. Te rugăm să încerci din nou."
   },
 
   "SUCCESS": {
@@ -354,5 +357,60 @@
     "CONSULTATION_DETAILS": "Se încarcă detaliile consultației...",
     "SEARCHING": "Se caută...",
     "FILTERING": "Se filtrează rezultatele..."
+  },
+
+  "HERO": {
+    "TAGLINE": "Suntem aici când ai nevoie de noi — pentru orice îngrijire medicală.",
+    "DESCRIPTION": "Descoperă cea mai bună îngrijire medicală personalizată pentru tine și familia ta."
+  },
+
+  "EDUCATIONAL_PROGRAMS": {
+    "TITLE": "Programe educaționale",
+    "SUBTITLE": "Materiale educaționale pentru a vă ajuta să înțelegeți mai bine sănătatea dumneavoastră",
+    "SHOW_MORE": "Arată mai multe programe",
+    "SHOW_LESS": "Arată mai puține programe",
+    "AVAILABLE_LANGUAGES": "Limbi disponibile",
+    "START_COURSE": "Începe cursul",
+    "FREE": "Gratuit",
+    "RATE_COURSE": "Evaluează acest curs",
+    "REVIEW_PLACEHOLDER": "Scrie impresiile tale despre acest curs...",
+    "SUBMIT_REVIEW": "Trimite evaluarea",
+    "REVIEW_SUBMITTED": "Mulțumim pentru evaluare!",
+    "NO_RESULTS": "Nu s-au găsit programe educaționale",
+    "PROGRAMS": {
+      "BREAST_CANCER": {
+        "TITLE": "Prevenția cancerului mamar",
+        "DESCRIPTION": "Tot ce trebuie să știi despre factorii de risc și screeningul regulat."
+      },
+      "HEART_HEALTH": {
+        "TITLE": "Sănătatea inimii",
+        "DESCRIPTION": "Ghid complet pentru menținerea sănătății cardiovasculare și prevenția bolilor de inimă."
+      },
+      "HEALTHY_DIET": {
+        "TITLE": "Alimentație sănătoasă",
+        "DESCRIPTION": "Principii nutriționale și sfaturi practice pentru o alimentație echilibrată și sănătoasă."
+      },
+      "MENTAL_HEALTH": {
+        "TITLE": "Sănătate mintală și bunăstare emoțională",
+        "DESCRIPTION": "Strategii pentru îmbunătățirea sănătății mintale și gestionarea stresului."
+      },
+      "DIABETES": {
+        "TITLE": "Diabet zaharat și tulburări metabolice",
+        "DESCRIPTION": "Înțelegerea, prevenția și gestionarea diabetului zaharat."
+      },
+      "RESPIRATORY": {
+        "TITLE": "Boli respiratorii și sănătatea plămânilor",
+        "DESCRIPTION": "Prevenția și tratamentul bolilor respiratorii comune."
+      },
+      "PUBLIC_HEALTH": {
+        "TITLE": "Sănătate publică și epidemiologie",
+        "DESCRIPTION": "Principii de sănătate publică și prevenție a bolilor infecțioase."
+      },
+      "TELEMEDICINE": {
+        "TITLE": "Telemedicină și sănătate digitală",
+        "DESCRIPTION": "Ghid pentru utilizarea eficientă a serviciilor medicale la distanță și a tehnologiilor digitale în sănătate."
+      }
+    }
   }
 }
+

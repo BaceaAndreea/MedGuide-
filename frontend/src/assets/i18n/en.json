@@ -72,7 +72,9 @@
     "SPECIALIZATIONS": "Specializations",
     "LOGOUT": "Logout",
     "PROFILE": "Profile",
-    "CONSULTATIONS": "Your Consultations"
+    "CONSULTATIONS": "Your Consultations",
+    "LEARN": "Learn",
+    "LOGIN": "Log in"
   },
   "PATIENTS": {
     "TITLE": "Patients",
@@ -313,7 +315,8 @@
     "SAVE_SPECIALIZATION": "Error saving specialization",
     "UPDATE_SPECIALIZATION": "Error updating specialization",
     "DELETE_SPECIALIZATION": "Error deleting specialization",
-    "FETCH_CONSULTATIONS": "Failed to load consultations!"
+    "FETCH_CONSULTATIONS": "Failed to load consultations!",
+    "FETCH_PROGRAMS": "An error occurred while loading educational programs. Please try again."
 
   },
 
@@ -356,6 +359,61 @@
     "SEARCHING": "Searching...",
     "FILTERING": "Filtering results..."
 
-  }
+  },
 
+  "EDUCATIONAL_PROGRAMS": {
+    "TITLE": "Educational Programs",
+    "SUBTITLE": "Educational materials to help you better understand your health",
+    "SHOW_MORE": "Show more programs",
+    "SHOW_LESS": "Show fewer programs",
+    "AVAILABLE_LANGUAGES": "Available languages",
+    "START_COURSE": "Start course",
+    "FREE": "Free",
+    "RATE_COURSE": "Rate this course",
+    "REVIEW_PLACEHOLDER": "Write your impressions about this course...",
+    "SUBMIT_REVIEW": "Submit review",
+    "REVIEW_SUBMITTED": "Thank you for your review!",
+    "NO_RESULTS": "No educational programs found",
+    "PROGRAMS": {
+      "BREAST_CANCER": {
+        "TITLE": "Breast Cancer Prevention",
+        "DESCRIPTION": "Everything you need to know about risk factors and regular screening."
+      },
+      "HEART_HEALTH": {
+        "TITLE": "Heart Health",
+        "DESCRIPTION": "Complete guide for maintaining cardiovascular health and preventing heart disease."
+      },
+      "HEALTHY_DIET": {
+        "TITLE": "Healthy Eating",
+        "DESCRIPTION": "Nutritional principles and practical advice for a balanced and healthy diet."
+      },
+      "MENTAL_HEALTH": {
+        "TITLE": "Mental Health and Emotional Wellbeing",
+        "DESCRIPTION": "Strategies for improving mental health and managing stress."
+      },
+      "DIABETES": {
+        "TITLE": "Diabetes and Metabolic Disorders",
+        "DESCRIPTION": "Understanding, prevention and management of diabetes."
+      },
+      "RESPIRATORY": {
+        "TITLE": "Respiratory Diseases and Lung Health",
+        "DESCRIPTION": "Prevention and treatment of common respiratory diseases."
+      },
+      "PUBLIC_HEALTH": {
+        "TITLE": "Public Health and Epidemiology",
+        "DESCRIPTION": "Principles of public health and prevention of infectious diseases."
+      },
+      "TELEMEDICINE": {
+        "TITLE": "Telemedicine and Digital Health",
+        "DESCRIPTION": "Guide for the effective use of remote medical services and digital technologies in healthcare."
+      }
+    }
+  },
+  "HERO": {
+    "TAGLINE": "We're here when you need us — for every care in the world.",
+    "DESCRIPTION": "Discover the best personalized medical care for you and your family."
+  }
 }
+
+
+
