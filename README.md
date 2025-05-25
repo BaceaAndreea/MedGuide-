@@ -19,7 +19,7 @@ Feedback System: Rate doctors and leave reviews after appointments.
 For Doctors:
 Availability Management: Set and update available appointment slots.
 Patient Records: Access patient medical history and test results.
-AI Diagnostic Tools: Utilize AI for mammogram analysis and other diagnostics.
+AI Diagnostic Tools: Leverage advanced AI models for tumor detection and characterization in CT scans, complementing your clinical expertise.
 
 Security Features:
 The security layer of the Online Doctor Platform ensures data protection, secure authentication, and role-based access control. This implementation follows industry best practices to safeguard user information and restrict unauthorized access. User passwords are securely stored in the database using BCrypt hashing to prevent exposure in case of a data breach.Configured Spring Security with JWT-based authentication. Applied CORS and CSRF settings to allow secure communication between the frontend and backend. Implemented a helper class for JWT (JSON Web Token) generation, validation, and extraction. Includes methods to generate both Access Tokens (short-lived) and Refresh Tokens (longer-lived).Applied role-based access control (RBAC) using @PreAuthorize annotations.
