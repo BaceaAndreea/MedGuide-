@@ -43,7 +43,7 @@
                     <i class="bi bi-star"></i>
                   </ng-container>
                 </div>
-                <div class="rating-value">{{ consultation.rating || 0 }}/10</div>
+                <div class="rating-value">{{ consultation.rating || 0 }}/5</div>
               </div>
               <!-- Show "Not Rated" if no rating exists -->
               <span *ngIf="!consultation.isReviewed" class="not-rated">
@@ -193,7 +193,7 @@
                 <i class="bi bi-star"></i>
               </ng-container>
             </div>
-            <div class="rating-value">{{ selectedConsultation?.rating }}/10</div>
+            <div class="rating-value">{{ selectedConsultation?.rating }}/5</div>
           </div>
           <div *ngIf="selectedConsultation?.reviewComment" class="review-comment">
             <p>"{{ selectedConsultation?.reviewComment }}"</p>
@@ -222,7 +222,8 @@
               <label for="rating">{{ 'CONSULTATIONS.SELECT_RATING' | translate }}</label>
               <div class="rating-input">
                 <div class="rating-stars">
-                  <ng-container *ngFor="let value of [10, 9, 8, 7, 6, 5, 4, 3, 2, 1]">
+                  <!-- Stele de la 1 la 5, în ordine corectă -->
+                  <ng-container *ngFor="let value of [1, 2, 3, 4, 5]">
                     <label class="rating-star">
                       <input
                         type="radio"
@@ -230,11 +231,15 @@
                         formControlName="rating"
                         name="rating"
                       >
-                      <i class="bi" [ngClass]="{'bi-star-fill': ratingForm.get('rating')?.value >= value, 'bi-star': ratingForm.get('rating')?.value < value}"></i>
+                      <i class="bi"
+                         [ngClass]="{
+                   'bi-star-fill': ratingForm.get('rating')?.value >= value,
+                   'bi-star': ratingForm.get('rating')?.value < value || !ratingForm.get('rating')?.value
+                 }"></i>
                     </label>
                   </ng-container>
                 </div>
-                <span class="rating-number">{{ ratingForm.get('rating')?.value || 0 }}/10</span>
+                <span class="rating-number">{{ ratingForm.get('rating')?.value || 0 }}/5</span>
               </div>
               <div *ngIf="ratingForm.get('rating')?.invalid && (ratingForm.get('rating')?.dirty || ratingForm.get('rating')?.touched || ratingSubmitted)" class="error-message">
                 {{ 'CONSULTATIONS.RATING_REQUIRED' | translate }}
@@ -313,7 +318,8 @@
             <label for="rating">{{ 'CONSULTATIONS.SELECT_RATING' | translate }}</label>
             <div class="rating-input">
               <div class="rating-stars">
-                <ng-container *ngFor="let value of [10, 9, 8, 7, 6, 5, 4, 3, 2, 1]">
+                <!-- Stele de la 1 la 5, în ordine corectă -->
+                <ng-container *ngFor="let value of [1, 2, 3, 4, 5]">
                   <label class="rating-star">
                     <input
                       type="radio"
@@ -321,11 +327,15 @@
                       formControlName="rating"
                       name="rating"
                     >
-                    <i class="bi" [ngClass]="{'bi-star-fill': ratingForm.get('rating')?.value >= value, 'bi-star': ratingForm.get('rating')?.value < value}"></i>
+                    <i class="bi"
+                       [ngClass]="{
+                   'bi-star-fill': ratingForm.get('rating')?.value >= value,
+                   'bi-star': ratingForm.get('rating')?.value < value || !ratingForm.get('rating')?.value
+                 }"></i>
                   </label>
                 </ng-container>
               </div>
-              <span class="rating-number">{{ ratingForm.get('rating')?.value || 0 }}/10</span>
+              <span class="rating-number">{{ ratingForm.get('rating')?.value || 0 }}/5</span>
             </div>
             <div *ngIf="ratingForm.get('rating')?.invalid && (ratingForm.get('rating')?.dirty || ratingForm.get('rating')?.touched || ratingSubmitted)" class="error-message">
               {{ 'CONSULTATIONS.RATING_REQUIRED' | translate }}

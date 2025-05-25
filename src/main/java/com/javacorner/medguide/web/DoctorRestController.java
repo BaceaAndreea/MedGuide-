@@ -1,6 +1,7 @@
 package com.javacorner.medguide.web;
 
 import com.javacorner.medguide.domain.Doctor;
+import com.javacorner.medguide.domain.Specialization;
 import com.javacorner.medguide.domain.User;
 import com.javacorner.medguide.dto.AppointmentDTO;
 import com.javacorner.medguide.dto.ConsultationDTO;
@@ -37,7 +38,6 @@ public class DoctorRestController {
     }
 
     @GetMapping
-    @PreAuthorize("hasAuthority('Admin')")
     public Page<DoctorDTO> searchDoctor(@RequestParam(name = "keyword", defaultValue = "") String keyword,
                                         @RequestParam(name = "page", defaultValue = "0") int page,
                                         @RequestParam(name = "size", defaultValue = "5") int size){
@@ -139,6 +139,23 @@ public class DoctorRestController {
     @GetMapping("/{doctorId}/ratings")
     public ResponseEntity<List<ConsultationDTO>> getDoctorRatings(@PathVariable Long doctorId) {
         return ResponseEntity.ok(doctorService.getDoctorRatings(doctorId));
+    }
+
+    @GetMapping("/{doctorId}/isRadiologist")
+    @PreAuthorize("hasAuthority('Doctor')") // Sau permitAll() dacă doriți să fie accesibil tuturor
+    public ResponseEntity<Boolean> isRadiologist(@PathVariable Long doctorId) {
+        try {
+            Doctor doctor = doctorService.loadDoctorById(doctorId);
+            Specialization specialization = doctor.getSpecialization();
+
+            boolean isRadiologist = specialization != null &&
+                    (specialization.getDescription().toLowerCase().contains("radiolog") ||
+                            specialization.getDescription().toLowerCase().contains("radiogra"));
+
+            return ResponseEntity.ok(isRadiologist);
+        } catch (Exception e) {
+            return ResponseEntity.ok(false); // Returnăm false în caz de eroare
+        }
     }
 
 

@@ -3,7 +3,7 @@ import {Patient} from './patient.model';
 
 export interface Appointment{
   appointmentId : number;
-  appointmentDate : Date;
+  appointmentDate : string;
   doctor : Doctor;
   patient : Patient;
   reason: string;

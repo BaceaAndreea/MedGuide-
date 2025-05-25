@@ -1,6 +1,7 @@
 package com.javacorner.medguide.dto;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 public class DoctorDTO {
     private Long doctorId;
@@ -11,6 +12,8 @@ public class DoctorDTO {
     private HospitalDTO hospital;
     private SpecializationDTO specialization;
     private String imageUrl;
+    private LocalTime workStartTime;
+    private LocalTime workEndTime;
 
     public HospitalDTO getHospital() {
         return hospital;
@@ -74,5 +77,20 @@ public class DoctorDTO {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+    public LocalTime getWorkStartTime() {
+        return workStartTime;
+    }
+
+    public void setWorkStartTime(LocalTime workStartTime) {
+        this.workStartTime = workStartTime;
+    }
+
+    public LocalTime getWorkEndTime() {
+        return workEndTime;
+    }
+
+    public void setWorkEndTime(LocalTime workEndTime) {
+        this.workEndTime = workEndTime;
     }
 }

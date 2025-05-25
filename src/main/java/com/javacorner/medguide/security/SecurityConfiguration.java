@@ -23,6 +23,8 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.springframework.http.HttpMethod.GET;
+
 
 @Configuration
 @EnableWebSecurity
@@ -58,6 +60,7 @@ public class SecurityConfiguration {
                         .requestMatchers("/users**").permitAll()
                         .requestMatchers("/specializations/all").permitAll()
                         .requestMatchers("/doctors/specialization/**").permitAll()
+                        .requestMatchers(GET, "/doctors").permitAll() // Permite căutarea doctorilor
                         .requestMatchers(HttpMethod.POST, "/patients").permitAll()
                         .requestMatchers("/doctors/{doctorId}/ratings/summary").permitAll()
                         .requestMatchers("/auth/send-temporary-password").permitAll() // Endpoint pentru solicitare parolă temporară

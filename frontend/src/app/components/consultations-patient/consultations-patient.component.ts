@@ -1,4 +1,4 @@
-// consultations-patient.component.ts
+// consultations-patient.component.ts - Părțile modificate
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {catchError, Observable, of, tap} from 'rxjs';
@@ -50,9 +50,9 @@ export class ConsultationsPatientComponent implements OnInit {
     // Initialize language settings
     this.translate.setDefaultLang('ro');
 
-    // Initialize rating form
+    // Initialize rating form with 1-5 scale
     this.ratingForm = this.fb.group({
-      rating: [null, [Validators.required, Validators.min(1), Validators.max(10)]],
+      rating: [null, [Validators.required, Validators.min(1), Validators.max(5)]], // Schimbat la 1-5
       reviewComment: ['', Validators.maxLength(500)]
     });
   }
@@ -235,15 +235,15 @@ export class ConsultationsPatientComponent implements OnInit {
       });
   }
 
-  // Get stars array for display
+  // Get stars array for display (1-5 scale)
   getStarsArray(rating: number | undefined | null): number[] {
-    const safeRating = rating || 0;
+    const safeRating = Math.max(0, Math.min(5, rating || 0)); // Asigură-te că e între 0-5
     return Array(safeRating).fill(0);
   }
 
-  // Get empty stars array for display
+  // Get empty stars array for display (1-5 scale)
   getEmptyStarsArray(rating: number | undefined | null): number[] {
-    const safeRating = rating || 0;
-    return Array(10 - safeRating).fill(0);
+    const safeRating = Math.max(0, Math.min(5, rating || 0)); // Asigură-te că e între 0-5
+    return Array(5 - safeRating).fill(0); // 5 stele total minus cele pline
   }
 }

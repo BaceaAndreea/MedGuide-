@@ -521,7 +521,10 @@
 }
 
 .modal-body {
-  padding: 1rem;
+  padding: 0.75rem; // Redus de la 1rem
+  max-height: 80vh; // Limitează înălțimea la 70% din viewport
+  overflow-y: auto; // Scroll dacă e necesar
+
 }
 
 .modal-footer {
@@ -844,3 +847,395 @@ input[type="datetime-local"] {
     padding: 0.75rem;
   }
 }
+
+// Stil pentru butonul de radiografie
+.btn-radiography {
+  background-color: #4e67eb;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 6px 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 14px;
+
+  &:hover {
+    background-color: #3a50cc;
+  }
+
+  &:disabled {
+    background-color: #c8cff0;
+    cursor: not-allowed;
+  }
+}
+
+// Layout de tip grid pentru afișare pe 2 coloane
+.compact-modal {
+  padding: 1rem;
+}
+
+.radiography-grid-layout {
+  display: grid;
+  grid-template-columns: minmax(200px, 40%) 1fr;
+  gap: 1rem;
+  min-height: 400px;
+  max-height: 500px;
+}
+
+// Prima coloană - controlul încărcării și rezultate
+.left-column {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+// A doua coloană - preview imagine
+.right-column {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f0f0f0;
+  border-radius: 8px;
+  padding: 0.5rem;
+  height: 100%;
+}
+
+// Informații despre pacient - stil compact
+.radiography-info-compact {
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  padding: 0.75rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.patient-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.info-label {
+  font-weight: 600;
+  color: #4a5568;
+}
+
+.info-value {
+  color: #333;
+  font-weight: 500;
+}
+
+// Controlul încărcării - stil compact
+.upload-controls-compact {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  padding: 0.75rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+// Păstrăm stilurile anterioare dar adaptate pentru layout-ul compact
+.radiography-details {
+  margin-bottom: 1rem;
+}
+
+.radiography-info {
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.radiography-upload {
+  margin-top: 1rem;
+}
+
+.upload-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+}
+
+.upload-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0.5rem 0;
+}
+
+.upload-label {
+  background-color: #4e67eb;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  margin-bottom: 10px;
+
+  &:hover {
+    background-color: #3a50cc;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  }
+
+  i {
+    font-size: 18px;
+  }
+}
+
+.file-input {
+  display: none;
+}
+
+.selected-file {
+  padding: 6px 10px;
+  background-color: #f0f0f0;
+  border-radius: 4px;
+  font-size: 12px;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  border-left: 3px solid #4e67eb;
+}
+
+// Stiluri pentru preview imagine optimizate pentru noul layout
+.image-preview-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.image-preview {
+  max-width: 100%;
+  max-height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  img {
+    max-width: 100%;
+    max-height: 380px;
+    object-fit: contain;
+    display: block;
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+}
+
+// Placeholder pentru imagine
+.image-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  color: #cbd5e0;
+
+  i {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+  }
+
+  p {
+    text-align: center;
+    font-size: 1rem;
+    opacity: 0.7;
+  }
+}
+
+.analyze-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 0.5rem;
+
+  @media (max-width: 768px) {
+    display: flex;
+    justify-content: center;
+  }
+}
+
+.btn-analyze {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 14px;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+
+  &:hover {
+    background-color: #218838;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  }
+
+  &:disabled {
+    background-color: #a3d9ae;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+}
+
+.loading-spinner {
+  margin: 0.5rem 0;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  color: #4e67eb;
+  background-color: rgba(78, 103, 235, 0.05);
+  border-radius: 6px;
+
+  .spin {
+    animation: spin 1s linear infinite;
+    font-size: 1rem;
+  }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+// Rezultatul analizei - stil compact
+.analysis-result-compact {
+  border-radius: 8px;
+  padding: 0.75rem;
+  background-color: #ffffff;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+
+  h5 {
+    color: #333;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+}
+
+// Pentru compatibilitate cu stilurile anterioare
+.analysis-result {
+  margin-top: 1rem;
+  border-radius: 8px;
+  padding: 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  background-color: #ffffff;
+
+  h5 {
+    color: #333;
+    margin-bottom: 8px;
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+}
+
+.result-content {
+  padding: 10px;
+  border-radius: 6px;
+  font-size: 13px;
+  line-height: 1.4;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  overflow-y: auto;
+  max-height: 140px;
+
+  // Culori pentru rezultate
+  &.result-warning {
+    background-color: rgba(220, 53, 69, 0.1);
+    color: #dc3545;
+    border-left: 4px solid #dc3545;
+  }
+
+  &.result-normal {
+    background-color: rgba(255, 193, 7, 0.1);
+    color: #856404;
+    border-left: 4px solid #ffc107;
+  }
+}
+
+.btn-next {
+  background-color: #17a2b8;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 14px;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+
+  &:hover {
+    background-color: #138496;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  }
+
+  &:disabled {
+    background-color: #a1d6e2;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+}
+
+// Responsive tweaks
+.modal-footer {
+  padding: 0.75rem 1rem;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+
+    .btn-cancel, .btn-next {
+      width: 100%;
+    }
+  }
+}
+
+// Responsive design pentru layout-ul grid
+@media (max-width: 768px) {
+  .radiography-grid-layout {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+  }
+
+  .right-column {
+    margin-top: 0.5rem;
+    min-height: 200px;
+  }
+}
+
+

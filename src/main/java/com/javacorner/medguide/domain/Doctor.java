@@ -3,6 +3,7 @@ package com.javacorner.medguide.domain;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -42,10 +43,18 @@ public class Doctor {
     @JoinColumn(name = "hospital_id", referencedColumnName = "hospital_id", nullable = false)
     private Hospital hospital;
 
+    @Column(name = "work_start_time")
+    private LocalTime workStartTime;
+
+    @Column(name = "work_end_time")
+    private LocalTime workEndTime;
+
     public Doctor() { //nonargument constructor
     }
 
-    public Doctor(String firstName, String lastName, LocalDate birthDate, User user, Specialization specialization, Hospital hospital, String imageUrl) {
+    public Doctor(String firstName, String lastName, LocalDate birthDate, User user,
+                  Specialization specialization, Hospital hospital, String imageUrl,
+                  LocalTime workStartTime, LocalTime workEndTime) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.birthDate = birthDate;
@@ -53,6 +62,8 @@ public class Doctor {
         this.specialization = specialization;
         this.hospital = hospital;
         this.imageUrl = imageUrl;
+        this.workStartTime = workStartTime;
+        this.workEndTime = workEndTime;
     }
 
     @Override
@@ -206,5 +217,21 @@ public class Doctor {
                 ", birthDate=" + birthDate +
                 ", imageUrl='" + imageUrl + '\'' +
                 '}';
+    }
+
+    public LocalTime getWorkStartTime() {
+        return workStartTime;
+    }
+
+    public void setWorkStartTime(LocalTime workStartTime) {
+        this.workStartTime = workStartTime;
+    }
+
+    public LocalTime getWorkEndTime() {
+        return workEndTime;
+    }
+
+    public void setWorkEndTime(LocalTime workEndTime) {
+        this.workEndTime = workEndTime;
     }
 }

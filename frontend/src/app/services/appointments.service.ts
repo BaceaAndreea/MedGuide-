@@ -32,8 +32,19 @@ export class AppointmentsService {
   }
 
   public saveAppointment(appointment: any): Observable<any> {
+    console.log('Saving appointment:', appointment); // Add this for debugging
+
     return this.http.post(environment.backendHost + '/appointments', appointment, {
-    });
+      headers: new HttpHeaders({
+        "Content-Type": "application/json"
+      })
+    }).pipe(
+      tap(response => console.log('Save appointment response:', response)), // Add this for debugging
+      catchError(error => {
+        console.error('Save appointment error:', error);
+        return throwError(() => error);
+      })
+    );
   }
   public updateAppointment(appointment: any, appointmentId: number): Observable<any> {
     return this.http.put(environment.backendHost + "/appointments/" + appointmentId, appointment, {
@@ -83,6 +94,22 @@ export class AppointmentsService {
           throw error;
         })
       );
+  }
+
+  public getAvailableTimeSlots(doctorId: number, date: string): Observable<string[]> {
+    console.log('Calling getAvailableTimeSlots with:', { doctorId, date }); // Debug
+
+    return this.http.get<string[]>(`${environment.backendHost}/appointments/available-slots`, {
+      params: {
+        doctorId: doctorId.toString(),
+        date: date // Format: 'yyyy-MM-dd'
+      }
+    }).pipe(
+      catchError(error => {
+        console.error('Error fetching available time slots:', error);
+        return throwError(() => error);
+      })
+    );
   }
 
 }

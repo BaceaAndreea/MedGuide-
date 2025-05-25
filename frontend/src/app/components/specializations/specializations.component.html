@@ -37,6 +37,8 @@
         <tr>
           <th>{{ 'SPECIALIZATIONS.ID' | translate }}</th>
           <th>{{ 'SPECIALIZATIONS.DESCRIPTION' | translate }}</th>
+          <th>{{ 'SPECIALIZATIONS.DOCTOR_COUNT' | translate }}</th>
+          <th>{{ 'SPECIALIZATIONS.STATUS' | translate }}</th>
           <th>{{ 'SPECIALIZATIONS.ACTIONS' | translate }}</th>
         </tr>
         </thead>
@@ -44,6 +46,48 @@
         <tr *ngFor="let spec of listSpecializations.content">
           <td>{{spec.specializationId}}</td>
           <td>{{spec.description}}</td>
+          <td class="doctor-count-cell">
+            <div class="doctor-count-container">
+              <ng-container *ngIf="!isLoadingDoctorCount(spec.specializationId); else loadingDoctorCount">
+                <span class="doctor-count-badge">
+                  <i class="bi bi-person-fill"></i>
+                  {{ getDoctorCount(spec.specializationId) }}
+                </span>
+              </ng-container>
+              <ng-template #loadingDoctorCount>
+                <span class="doctor-count-loading">
+                  <i class="bi bi-arrow-repeat spin"></i>
+                  <span>...</span>
+                </span>
+              </ng-template>
+            </div>
+          </td>
+          <td class="status-cell">
+            <div class="status-container">
+              <ng-container *ngIf="!isTogglingStatus(spec.specializationId); else loadingStatus">
+                <button
+                  class="status-toggle-btn"
+                  [ngClass]="{
+                    'active': getStatus(spec.specializationId) === 'active',
+                    'inactive': getStatus(spec.specializationId) === 'inactive'
+                  }"
+                  (click)="toggleStatus(spec)"
+                  [title]="getStatus(spec.specializationId) === 'active' ? 'Click pentru a dezactiva' : 'Click pentru a activa'">
+                  <i class="bi" [ngClass]="{
+                    'bi-check-circle-fill': getStatus(spec.specializationId) === 'active',
+                    'bi-x-circle-fill': getStatus(spec.specializationId) === 'inactive'
+                  }"></i>
+                  <span>{{ getStatus(spec.specializationId) === 'active' ? 'Activ' : 'Inactiv' }}</span>
+                </button>
+              </ng-container>
+              <ng-template #loadingStatus>
+                <div class="status-loading">
+                  <i class="bi bi-arrow-repeat spin"></i>
+                  <span>Se actualizează...</span>
+                </div>
+              </ng-template>
+            </div>
+          </td>
           <td class="actions-cell">
             <button (click)="getUpdateSpecializationModal(spec, updateContent)" class="btn-edit">
               <i class="bi bi-pencil-square"></i>

@@ -1,3 +1,4 @@
+<!-- HTML Component -->
 <div class="medguide-container">
   <!-- Header modernizat cu navigare și selector de limbă -->
   <div class="header">
@@ -18,7 +19,6 @@
         <div class="nav-links">
           <a (click)="scrollToSection(doctorsSection)" class="nav-link">{{ 'NAVIGATION.DOCTORS' | translate }}</a>
           <a (click)="scrollToSection(hospitalsSection)" class="nav-link">{{ 'NAVIGATION.HOSPITALS' | translate }}</a>
-          <a (click)="scrollToSection(specializationsSection)" class="nav-link">{{ 'NAVIGATION.SPECIALIZATIONS' | translate }}</a>
           <a (click)="scrollToSection(educationalSection)" class="nav-link">{{ 'NAVIGATION.LEARN' | translate }}</a>
         </div>
       </div>
@@ -69,19 +69,34 @@
     </div>
   </div>
 
-
-
   <!-- Secțiunea Doctori -->
   <div id="doctors-section" class="featured-section doctors-section">
     <div class="section-header">
       <h2>{{ 'DOCTORS.TITLE' | translate }}</h2>
-      <div class="specialization-filter">
-        <select [(ngModel)]="selectedSpecialization" (change)="filterDoctorsBySpecialization()">
-          <option [value]="0">{{ 'DOCTORS.SELECT_SPECIALIZATION' | translate }}</option>
-          <option *ngFor="let spec of specializations" [value]="spec.specializationId">
-            {{ getSpecializationTranslation(spec.description) }}
-          </option>
-        </select>
+      <div class="doctor-search-container">
+        <div class="search-box">
+          <input
+            type="text"
+            class="search-input"
+            placeholder="{{ 'DOCTORS.SEARCH' | translate }}"
+            [(ngModel)]="doctorSearchKeyword"
+            (keyup.enter)="searchDoctors()"
+          >
+          <button class="search-button" (click)="searchDoctors()">
+            <svg class="search-icon" viewBox="0 0 24 24">
+              <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+            </svg>
+          </button>
+        </div>
+
+        <div class="specialization-filter">
+          <select [(ngModel)]="selectedSpecialization" (change)="filterDoctorsBySpecialization()" style="-webkit-appearance: none; -moz-appearance: none;">
+            <option [value]="0">{{ 'DOCTORS.SELECT_SPECIALIZATION' | translate }}</option>
+            <option *ngFor="let spec of specializations" [value]="spec.specializationId">
+              {{ getSpecializationTranslation(spec.description) }}
+            </option>
+          </select>
+        </div>
       </div>
     </div>
 
@@ -120,19 +135,21 @@
 
             <!-- Containerul pentru ratings cu înălțime fixă -->
             <div class="rating-container">
-              <!-- Rating component - verifică atât undefined cât și valoarea 0 -->
+              <!-- Rating component -->
               <div class="doctor-rating" *ngIf="doctor.rating !== undefined && doctor.reviewCount !== undefined && doctor.reviewCount > 0">
                 <div class="stars">
                   <ng-container *ngFor="let star of [1,2,3,4,5]">
                     <i class="fas fa-star" [ngClass]="{'filled': star <= doctor.rating, 'empty': star > doctor.rating}"></i>
                   </ng-container>
                 </div>
-                <span class="rating-value">{{ doctor.rating }}</span>
-                <span class="review-count">({{ doctor.reviewCount }} {{ doctor.reviewCount === 1 ? 'recenzie' : 'recenzii' }})</span>
+                <div class="rating-text">
+                  <span class="rating-value">{{ doctor.rating | number:'1.1-1' }}</span>
+                  <span class="review-count">({{ doctor.reviewCount }} {{ doctor.reviewCount === 1 ? 'recenzie' : 'recenzii' }})</span>
+                </div>
               </div>
 
-              <!-- Mesaj "Nicio evaluare încă" - verifică atât undefined cât și 0 -->
-              <div class="no-rating" *ngIf="doctor.rating === undefined || doctor.reviewCount === 0">
+              <!-- Mesaj "Nicio evaluare încă" -->
+              <div class="no-rating" *ngIf="doctor.rating === undefined || doctor.reviewCount === 0 || doctor.reviewCount === undefined">
                 Nicio evaluare încă
               </div>
             </div>
@@ -144,9 +161,6 @@
         </div>
       </div>
 
-      <button class="carousel-control next" (click)="nextDoctors()" *ngIf="doctorsStartIndex + doctorsPerPage < filteredDoctors.length">
-        <i class="fas fa-chevron-right"></i>
-      </button>
     </div>
 
     <div class="pagination-container" *ngIf="filteredDoctors.length > 0">
@@ -172,7 +186,7 @@
   </div>
 
   <!-- Secțiunea Spitale -->
-  <div id="hospitals-section" class="featured-section educational-programs-section">
+  <div id="hospitals-section" class="featured-section doctors-section">
     <div class="section-header">
       <h2>{{ 'HOSPITALS.TITLE' | translate }}</h2>
     </div>
@@ -194,32 +208,30 @@
         <i class="fas fa-chevron-left"></i>
       </button>
 
-      <div class="cards-container">
-        <div class="hospital-card" *ngFor="let hospital of visibleHospitals">
-          <div class="card-image">
-            <img [src]="hospital.imageUrl || '/assets/images/hospitals/default-hospital.png'"
-                 alt="{{ hospital.name }}"
-                 width="150"
-                 height="150">
-          </div>
+      <div class="hospital-card" *ngFor="let hospital of visibleHospitals">
+        <div class="card-image">
+          <img [src]="hospital.imageUrl || '/assets/images/hospitals/default-hospital.png'"
+               alt="{{ hospital.name }}"
+               width="150"
+               height="150">
+        </div>
 
-          <div class="card-content">
-            <h3>{{ hospital.name }}</h3>
+        <div class="card-content">
+          <h3>{{ hospital.name }}</h3>
+
+          <!-- Container pentru adresă și oraș - adăugat pentru aliniere uniformă -->
+          <div class="address-container">
             <p class="address">{{ hospital.address }}</p>
             <p class="city">{{ hospital.city }}</p>
-
-            <button class="map-button-gradient"
-                    (click)="openHospitalInMaps(hospital)">
-              {{ 'HOSPITALS.SEE_ON_MAP' | translate }}
-            </button>
           </div>
+
+          <button class="map-button-gradient"
+                  (click)="openHospitalInMaps(hospital)">
+            {{ 'HOSPITALS.SEE_ON_MAP' | translate }}
+          </button>
         </div>
       </div>
 
-      <button class="carousel-control next" (click)="nextHospitals()"
-              *ngIf="hospitalsStartIndex + hospitalsPerPage < hospitals.length">
-        <i class="fas fa-chevron-right"></i>
-      </button>
     </div>
 
     <div class="pagination-container" *ngIf="hospitals.length > 0">
@@ -245,10 +257,10 @@
 
 
   <!-- Secțiunea Programe Educaționale cu Carousel-->
-  <<div id="educational-section" class="featured-section educational-programs-section">
-  <div class="section-header">
-    <h2>{{ 'EDUCATIONAL_PROGRAMS.TITLE' | translate }}</h2>
-  </div>
+  <div id="educational-section" class="featured-section doctors-section">
+    <div class="section-header">
+      <h2>{{ 'EDUCATIONAL_PROGRAMS.TITLE' | translate }}</h2>
+    </div>
 
     <!-- Loading indicator -->
     <div class="loading-container" *ngIf="loadingPrograms">

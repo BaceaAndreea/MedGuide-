@@ -21,6 +21,8 @@ public class DoctorMapper {
         dto.setLastName(doctor.getLastName());
         dto.setBirthDate(doctor.getBirthDate());
         dto.setImageUrl(doctor.getImageUrl());
+        dto.setWorkStartTime(doctor.getWorkStartTime());
+        dto.setWorkEndTime(doctor.getWorkEndTime());
 
         // Adaugă datele despre spital
         if (doctor.getHospital() != null) {
@@ -58,6 +60,8 @@ public class DoctorMapper {
         Doctor doctor = new Doctor();
         BeanUtils.copyProperties(doctorDTO, doctor);
         doctor.setImageUrl(doctorDTO.getImageUrl());
+        doctor.setWorkStartTime(doctorDTO.getWorkStartTime());
+        doctor.setWorkEndTime(doctorDTO.getWorkEndTime());
         return doctor;
     }
 }

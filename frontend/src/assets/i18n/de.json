@@ -120,7 +120,105 @@
     "CURRENT_STATUS": "Aktueller Status",
     "CREATE_APPOINTMENT": "Termin erstellen",
     "SAVE_CHANGES": "Änderungen speichern",
-    "NO_APPOINTMENTS": "Keine Termine für diesen Arzt"
+    "NO_APPOINTMENTS": "Keine Termine für diesen Arzt",
+    "AVAILABLE_TIME_SLOTS": "Verfügbare Zeitslots",
+    "NO_AVAILABLE_SLOTS": "Keine verfügbaren Slots für dieses Datum",
+    "SELECT_TIME_SLOT": "Zeitslot auswählen",
+    "SELECTED_TIME": "Ausgewählte Zeit",
+    "SELECT_DATE_AND_TIME": "Datum und Uhrzeit auswählen",
+    "AVAILABLE_DATES": "Verfügbare Termine",
+    "SLOTS_AVAILABLE": "Slots",
+    "NO_SLOTS": "Nicht verfügbar",
+    "NO_AVAILABLE_SLOTS_FOR_DATE": "Keine verfügbaren Zeiten für dieses Datum",
+    "SELECT_DOCTOR_FIRST": "Wählen Sie zuerst einen Arzt aus, um verfügbare Termine zu sehen",
+    "SELECTED_APPOINTMENT": "Ausgewählter Termin",
+    "SELECT_TYPE": "Termintyp auswählen"
+  },
+  "APPOINTMENT_TYPES": {
+    "CARDIOLOGY": {
+      "INITIAL_CONSULT": "Kardiologische Erstberatung",
+      "PERIODIC_CONTROL": "Kardiologische Kontrolluntersuchung",
+      "EKG": "EKG (Elektrokardiogramm)",
+      "ECHOCARDIOGRAPHY": "Echokardiographie",
+      "HOLTER": "Holter-Monitor",
+      "STRESS_TEST": "Belastungstest",
+      "HYPERTENSION_MONITORING": "Blutdrucküberwachung"
+    },
+    "PEDIATRICS": {
+      "INITIAL_CONSULT": "Kinderärztliche Erstberatung",
+      "GROWTH_CONTROL": "Wachstums- und Entwicklungskontrolle",
+      "VACCINATIONS": "Impfungen",
+      "SCHOOL_EXAM": "Schulärztliche Untersuchung",
+      "INFECTIOUS_DISEASES": "Kinderinfektionskrankheiten",
+      "POST_ILLNESS_CONTROL": "Nachkontrolle nach Krankheit"
+    },
+    "RADIOLOGY": {
+      "CT_SCAN": "CT (Computertomographie)"
+    },
+    "DERMATOLOGY": {
+      "INITIAL_CONSULT": "Dermatologische Erstberatung",
+      "LESION_CONTROL": "Kontrolle von Hautveränderungen",
+      "DERMATOSCOPY": "Dermatoskopie",
+      "SKIN_BIOPSY": "Hautbiopsie",
+      "ACNE_TREATMENT": "Aknebehandlung",
+      "ALLERGY_CONTROL": "Allergiekontrolle"
+    },
+    "NEUROLOGY": {
+      "INITIAL_CONSULT": "Neurologische Erstberatung",
+      "EEG": "EEG (Elektroenzephalogramm)",
+      "EPILEPSY_CONTROL": "Epilepsiekontrolle",
+      "MIGRAINE_CONTROL": "Migränekontrolle",
+      "POST_STROKE_EXAM": "Neurologische Untersuchung nach Schlaganfall",
+      "PARKINSON_CONTROL": "Parkinsonkontrolle"
+    },
+    "OPHTHALMOLOGY": {
+      "INITIAL_CONSULT": "Augenärztliche Erstberatung",
+      "VISION_CONTROL": "Sehkontrolle",
+      "FUNDUS_EXAM": "Augenhindergrunduntersuchung",
+      "INTRAOCULAR_PRESSURE": "Augeninnendruckmessung",
+      "CATARACT_CONTROL": "Kataraktkontrolle",
+      "GLAUCOMA_CONTROL": "Glaukomkontrolle"
+    },
+    "GYNECOLOGY": {
+      "INITIAL_CONSULT": "Gynäkologische Erstberatung",
+      "PREVENTIVE_CONTROL": "Vorsorgeuntersuchung",
+      "FAMILY_PLANNING": "Familienplanung",
+      "PREGNANCY_CONTROL": "Schwangerschaftskontrolle",
+      "PAP_SMEAR": "Pap-Abstrich",
+      "GYNECOLOGICAL_ULTRASOUND": "Gynäkologischer Ultraschall"
+    },
+    "ONCOLOGY": {
+      "INITIAL_CONSULT": "Onkologische Erstberatung",
+      "POST_TREATMENT_CONTROL": "Nachbehandlungskontrolle",
+      "TREATMENT_RESPONSE_EVALUATION": "Bewertung des Behandlungsansprechens",
+      "CHEMOTHERAPY_CONSULT": "Chemotherapie-Beratung",
+      "ONCOLOGICAL_FOLLOW_UP": "Onkologische Nachsorge",
+      "RADIOTHERAPY_CONSULT": "Strahlentherapie-Beratung"
+    },
+    "ENDOCRINOLOGY": {
+      "INITIAL_CONSULT": "Endokrinologische Erstberatung",
+      "DIABETES_CONTROL": "Diabeteskontrolle",
+      "THYROID_CONTROL": "Schilddrüsenkontrolle",
+      "HORMONAL_EVALUATION": "Hormonelle Bewertung",
+      "OSTEOPOROSIS_CONTROL": "Osteoporosekontrolle",
+      "METABOLISM_CONSULT": "Stoffwechselberatung"
+    },
+    "ORTHOPEDICS": {
+      "INITIAL_CONSULT": "Orthopädische Erstberatung",
+      "FRACTURE_CONTROL": "Frakturkontrolle",
+      "JOINT_PAIN_EVALUATION": "Bewertung von Gelenkschmerzen",
+      "POST_OPERATIVE_CONTROL": "Postoperative Kontrolle",
+      "JOINT_INFILTRATIONS": "Gelenkinfiltration",
+      "PHYSIOTHERAPY": "Physiotherapie"
+    },
+    "RHEUMATOLOGY": {
+      "INITIAL_CONSULT": "Rheumatologische Erstberatung",
+      "RHEUMATOID_ARTHRITIS_CONTROL": "Rheumatoide Arthritis Kontrolle",
+      "SPONDYLOARTHRITIS_CONTROL": "Spondyloarthritis Kontrolle",
+      "JOINT_PAIN_EVALUATION": "Bewertung von Gelenkschmerzen",
+      "LUPUS_CONTROL": "Lupuskontrolle",
+      "JOINT_INFILTRATIONS": "Gelenkinfiltration"
+    }
   },
   "CONSULTATIONS": {
     "TITLE": "Konsultationen",
@@ -242,7 +340,9 @@
     "ALLERGY_IMMUNOLOGY": "Allergologie und Immunologie",
     "INFECTIOUS_DISEASE": "Infektionskrankheiten",
     "PULMONOLOGY": "Lungenheilkunde",
-    "NEPHROLOGY": "Nephrologie"
+    "NEPHROLOGY": "Nephrologie",
+    "STATUS": "Status",
+    "DOCTOR_COUNT": "Anzahl der Ärzte"
   },
   "SEARCH": {
     "NO_RESULTS": "Keine Ergebnisse für Ihre Suche gefunden.",
@@ -289,7 +389,9 @@
     "CITY_REQUIRED": "Stadt ist erforderlich",
     "DESCRIPTION_REQUIRED": "Beschreibung ist erforderlich",
     "APPOINTMENT_STATUS_REQUIRED": "Terminstatus ist erforderlich",
-    "DIAGNOSIS_REQUIRED": "Diagnose ist erforderlich"
+    "DIAGNOSIS_REQUIRED": "Diagnose ist erforderlich",
+    "DATE_REQUIRED": "Datumsauswahl ist erforderlich",
+    "TIME_SLOT_REQUIRED": "Zeitslot-Auswahl ist erforderlich"
   },
 
   "ERROR": {
@@ -316,7 +418,9 @@
     "UPDATE_SPECIALIZATION": "Fehler beim Aktualisieren des Fachgebiets",
     "DELETE_SPECIALIZATION": "Fehler beim Löschen des Fachgebiets",
     "FETCH_CONSULTATIONS": "Fehler beim Laden der Konsultationen!",
-    "FETCH_PROGRAMS": "Beim Laden der Bildungsprogramme ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut."
+    "FETCH_PROGRAMS": "Beim Laden der Bildungsprogramme ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.",
+    "ANALYZE_RADIOGRAPHY": "Fehler bei der Analyse der Radiographie",
+    "PLEASE_SELECT_DATE_TIME": "Bitte wählen Sie Datum und Uhrzeit für den Termin"
   },
 
   "SUCCESS": {
@@ -334,7 +438,8 @@
     "HOSPITAL_DELETED": "Krankenhaus erfolgreich gelöscht",
     "SPECIALIZATION_CREATED": "Fachgebiet erfolgreich erstellt",
     "SPECIALIZATION_UPDATED": "Fachgebiet erfolgreich aktualisiert",
-    "SPECIALIZATION_DELETED": "Fachgebiet erfolgreich gelöscht"
+    "SPECIALIZATION_DELETED": "Fachgebiet erfolgreich gelöscht",
+    "SPECIALIZATION_STATUS_UPDATED": "Spezialisierungsstatus erfolgreich aktualisiert!"
   },
 
   "CONFIRMATION": {
@@ -354,7 +459,8 @@
     "CONSULTATIONS": "Konsultationen werden geladen...",
     "CONSULTATION_DETAILS": "Konsultationsdetails werden geladen...",
     "SEARCHING": "Suche läuft...",
-    "FILTERING": "Ergebnisse werden gefiltert..."
+    "FILTERING": "Ergebnisse werden gefiltert...",
+    "TIME_SLOTS": "Verfügbare Slots werden geladen..."
   },
 
   "EDUCATIONAL_PROGRAMS": {
@@ -408,5 +514,21 @@
   "HERO": {
     "TAGLINE": "Wir sind für Sie da, wenn Sie uns brauchen — für jede medizinische Versorgung.",
     "DESCRIPTION": "Entdecken Sie die beste personalisierte medizinische Versorgung für Sie und Ihre Familie."
+  },
+  "RADIOGRAPHY": {
+    "RADIOGRAPHY": "Radiographie",
+    "ANALYZE_RADIOGRAPHY": "Radiographie analysieren",
+    "PATIENT": "Patient",
+    "DATE": "Datum",
+    "REASON": "Grund",
+    "UPLOAD_RADIOGRAPHY": "Radiographie hochladen",
+    "SELECT_FILE": "Datei auswählen",
+    "ANALYZE": "Analysieren",
+    "ANALYZING": "Wird analysiert...",
+    "RESULT": "Analyseergebnis",
+    "CONTINUE_TO_CONSULTATION": "Weiter zur Konsultation",
+    "CANCER_DETECTED": "WARNUNG: Möglicher Krebs erkannt!",
+    "NO_CANCER_DETECTED": "Keine Anomalien erkannt",
+    "INCONCLUSIVE": "Nicht schlüssiges Ergebnis, weitere Analyse erforderlich"
   }
 }

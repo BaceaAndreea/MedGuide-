@@ -16,7 +16,16 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
+
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -145,5 +154,53 @@ public class AppointmentServiceImpl implements AppointmentService {
         PageRequest pageRequest = PageRequest.of(page, size);
         Page<Appointment> doctorAppointmentPage =appointmentDao.getAppointmentsByDoctorId(doctorId, pageRequest);
         return new PageImpl<>(doctorAppointmentPage.getContent().stream().map(appointment -> appointmentMapper.fromAppointment(appointment)).collect(Collectors.toList()), pageRequest, doctorAppointmentPage.getTotalElements());
+    }
+
+    @Override
+    public List<String> getAvailableTimeSlots(Long doctorId, LocalDate date) {
+        // Găsim doctorul
+        Doctor doctor = doctorDao.findById(doctorId)
+                .orElseThrow(() -> new EntityNotFoundException("Doctor with ID " + doctorId + " not found!"));
+
+        // Verificăm dacă doctorul are ore de lucru setate
+        if (doctor.getWorkStartTime() == null || doctor.getWorkEndTime() == null) {
+            return new ArrayList<>(); // Returnăm listă goală dacă nu are ore setate
+        }
+
+        // Generăm toate slot-urile posibile (la 30 de minute)
+        List<String> allSlots = generateTimeSlots(doctor.getWorkStartTime(), doctor.getWorkEndTime());
+
+        // Găsim programările existente pentru doctorul și data respectivă
+        Date startOfDay = Date.from(date.atStartOfDay(ZoneId.systemDefault()).toInstant());
+        Date endOfDay = Date.from(date.plusDays(1).atStartOfDay(ZoneId.systemDefault()).toInstant());
+
+        List<Appointment> existingAppointments = appointmentDao.findByDoctorAndDateRange(doctorId, startOfDay, endOfDay);
+
+        // Extragem orele ocupate
+        Set<String> occupiedSlots = existingAppointments.stream()
+                .map(appointment -> {
+                    LocalTime time = appointment.getAppointmentDate().toInstant()
+                            .atZone(ZoneId.systemDefault())
+                            .toLocalTime();
+                    return time.format(DateTimeFormatter.ofPattern("HH:mm"));
+                })
+                .collect(Collectors.toSet());
+
+        // Returnăm doar slot-urile disponibile
+        return allSlots.stream()
+                .filter(slot -> !occupiedSlots.contains(slot))
+                .collect(Collectors.toList());
+    }
+
+    private List<String> generateTimeSlots(LocalTime startTime, LocalTime endTime) {
+        List<String> slots = new ArrayList<>();
+        LocalTime current = startTime;
+
+        while (current.isBefore(endTime)) {
+            slots.add(current.format(DateTimeFormatter.ofPattern("HH:mm")));
+            current = current.plusMinutes(30); // Interval de 30 de minute
+        }
+
+        return slots;
     }
 }

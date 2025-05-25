@@ -13,6 +13,10 @@ public class AppointmentDTO {
     private PatientDTO patient;
     private String reason;
 
+    private String radiographyImagePath;
+    private String aiAnalysisResult;
+
+
     public String getReason() {return reason;}
 
     public void setReason(String reason) {this.reason = reason;}
@@ -55,5 +59,20 @@ public class AppointmentDTO {
 
     public void setDoctor(DoctorDTO doctor) {
         this.doctor = doctor;
+    }
+    public String getRadiographyImagePath() {
+        return radiographyImagePath;
+    }
+
+    public void setRadiographyImagePath(String radiographyImagePath) {
+        this.radiographyImagePath = radiographyImagePath;
+    }
+
+    public String getAiAnalysisResult() {
+        return aiAnalysisResult;
+    }
+
+    public void setAiAnalysisResult(String aiAnalysisResult) {
+        this.aiAnalysisResult = aiAnalysisResult;
     }
 }

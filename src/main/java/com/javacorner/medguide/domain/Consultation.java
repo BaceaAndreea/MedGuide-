@@ -28,7 +28,7 @@ public class Consultation {
     private String prescriptions;
 
     @Column(name = "rating")
-    private Integer rating;
+    private Integer rating ;
 
     @Column(name = "review_comment", length = 500)
     private String reviewComment;

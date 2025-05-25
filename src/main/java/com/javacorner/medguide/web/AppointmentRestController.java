@@ -4,8 +4,12 @@ import com.javacorner.medguide.domain.Appointment;
 import com.javacorner.medguide.dto.AppointmentDTO;
 import com.javacorner.medguide.service.AppointmentService;
 import org.springframework.data.domain.Page;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
+import java.util.List;
 
 @RestController
 @RequestMapping("/appointments")
@@ -48,6 +52,14 @@ public class AppointmentRestController {
     @PostMapping("/{appointmentId}/enroll/patients/{patientId}")
     public void enrollPatientInAppointment(@PathVariable Long appointmentId, @PathVariable Long patientId) {
         appointmentService.assignPatientToAppointment(appointmentId, patientId);
+    }
+
+    @GetMapping("/available-slots")
+    @PreAuthorize("hasAnyAuthority('Admin', 'Patient', 'Doctor')")
+    public List<String> getAvailableTimeSlots(
+            @RequestParam Long doctorId,
+            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
+        return appointmentService.getAvailableTimeSlots(doctorId, date);
     }
 
 }

@@ -14,6 +14,8 @@ import {Hospital} from '../../model/hospital.model';
 import {Specialization} from '../../model/specialization.model';
 import {ConsultationsService} from '../../services/consultations.service';
 import {TranslateModule, TranslateService} from '@ngx-translate/core';
+import {RadiographyService} from '../../services/radiography.service';
+import {DoctorsService} from '../../services/doctors.service';
 
 @Component({
   selector: 'app-appointments-doctor',
@@ -61,10 +63,18 @@ export class AppointmentsDoctorComponent {
 
   private appointmentService = inject(AppointmentsService);
 
+  //propiertati pentru radiografie
+  isRadiologist: boolean = false;
+  radiographyFormGroup!: FormGroup;
+  selectedFile: File | null = null;
+  analyzeRadiographyInProgress: boolean = false;
+  radiographyAnalysisResult: string | null = null;
+  imagePreviewUrl: string | ArrayBuffer | null = null;
+
   constructor(private route: ActivatedRoute, private fb: FormBuilder,
               private modalService: NgbModal, private patientService: PatientsService,
               private consultationsService: ConsultationsService,
-              private translate: TranslateService) {
+              private translate: TranslateService,  private doctorsService: DoctorsService, private radiographyService: RadiographyService) {
   }
 
 
@@ -80,6 +90,14 @@ export class AppointmentsDoctorComponent {
   ngOnInit(): void {
     this.doctorId = this.route.snapshot.params['id'];
     this.fillCurrentDoctor();
+
+    // Inițializăm formularul pentru radiografie
+    this.radiographyFormGroup = this.fb.group({
+      radiographyImage: ['', Validators.required]
+    });
+
+    // Verificăm dacă doctorul este radiolog
+    this.checkIfRadiologist();
     this.consultationFormGroup = this.fb.group({
       diagnosis: ['', Validators.required],
       symptoms: [''],
@@ -93,6 +111,38 @@ export class AppointmentsDoctorComponent {
     this.loadAppointments();
   }
 
+
+  // În appointments-doctor.component.ts
+
+  private checkIfRadiologist(): void {
+    console.log('Checking if doctor with ID:', this.doctorId, 'is a radiologist');
+
+    // Folosim noul endpoint specific
+    this.doctorsService.isRadiologistByDoctorId(this.doctorId).subscribe({
+      next: (isRadiologist) => {
+        console.log('Doctor is radiologist:', isRadiologist);
+        this.isRadiologist = isRadiologist;
+      },
+      error: (error) => {
+        console.error('Error checking if doctor is radiologist:', error);
+
+        // În caz de eroare, încercăm metoda alternativă
+        this.doctorsService.getDoctorDetails(this.doctorId).subscribe({
+          next: (doctor) => {
+            console.log('Doctor details received:', doctor);
+            this.isRadiologist = this.doctorsService.isRadiologist(doctor);
+            console.log('Is radiologist (from doctor details):', this.isRadiologist);
+          },
+          error: (detailsError) => {
+            console.error('Error fetching doctor details:', detailsError);
+            // Falback - setăm manual pentru testare
+            this.isRadiologist = false;
+          }
+        });
+      }
+    });
+  }
+
   private fillCurrentDoctor() {
     this.currentDoctor = {
       doctorId: this.doctorId,
@@ -102,6 +152,103 @@ export class AppointmentsDoctorComponent {
       hospital: {} as Hospital,
       specialization: {} as Specialization,
       user: {email: "", password: ""}
+    }
+  }
+
+  openRadiographyAnalysisModal(appointment: any, radiographyModal: any): void {
+    this.selectedAppointment = appointment;
+    this.radiographyFormGroup.reset();
+    this.selectedFile = null;
+    this.radiographyAnalysisResult = null;
+
+    this.modalService.open(radiographyModal, {
+      centered: true,
+      backdrop: 'static',
+      size: 'lg'
+    });
+  }
+  // Adaugă această metodă pentru a previzualiza imaginea
+  previewImage(event: any): void {
+    const file = event.target.files[0];
+    if (file) {
+      // Creează un URL pentru fișierul selectat pentru a-l afișa
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        this.imagePreviewUrl = e.target?.result || null;
+      };
+      reader.readAsDataURL(file);
+    } else {
+      this.imagePreviewUrl = null;
+    }
+  }
+
+  isTumorDetected(): boolean {
+    if (!this.radiographyAnalysisResult) return false;
+
+    // Verifică dacă rezultatul conține cuvinte-cheie care indică tumoare
+    const result = this.radiographyAnalysisResult.toLowerCase();
+
+    // Verifică dacă există termeni specifici asociați cu tumorile
+    return (
+      (result.includes('glioma') && !result.includes('glioma: 0.00%')) ||
+      (result.includes('meningioma') && !result.includes('meningioma: 0.00%')) ||
+      (result.includes('pituitary') && !result.includes('pituitary: 0.00%'))
+    );
+  }
+
+  onFileSelected(event: any): void {
+    const file: File = event.target.files[0];
+    if (file) {
+      this.selectedFile = file;
+    }
+  }
+  analyzeRadiography(modal: any): void {
+    if (!this.selectedFile || !this.selectedAppointment) {
+      return;
+    }
+
+    this.analyzeRadiographyInProgress = true;
+    this.radiographyAnalysisResult = null;  // Reset rezultatul anterior
+
+    this.radiographyService.analyzeRadiography(
+      this.selectedAppointment.appointmentId,
+      this.selectedFile
+    ).pipe(
+      finalize(() => {
+        this.analyzeRadiographyInProgress = false;
+      })
+    ).subscribe({
+      next: (result) => {
+        this.radiographyAnalysisResult = result;
+
+        // Dacă dorim să completăm automat diagnosticul pe baza rezultatului
+        if (this.consultationFormGroup) {
+          const prefix = this.isTumorDetected() ?
+            'ATENȚIE - Analiză AI mamografie (posibilă tumoare): ' :
+            'Analiză AI mamografie: ';
+
+          this.consultationFormGroup.patchValue({
+            diagnosis: `${prefix}${result}`
+          });
+        }
+      },
+      error: (error) => {
+        console.error('Error analyzing radiography:', error);
+        this.radiographyAnalysisResult = this.translate.instant('ERROR.ANALYZE_RADIOGRAPHY');
+      }
+    });
+  }
+
+  // Metodă pentru transferul către formularul de consultație
+  transferToConsultation(radiographyModal: any, consultationModal: any): void {
+    radiographyModal.close();
+    this.completeAppointment(this.selectedAppointment, consultationModal);
+
+    // Precompletăm diagnosticul cu rezultatul analizei
+    if (this.radiographyAnalysisResult && this.consultationFormGroup) {
+      this.consultationFormGroup.patchValue({
+        diagnosis: `Analiză AI mamografie: ${this.radiographyAnalysisResult}`
+      });
     }
   }
 
@@ -449,24 +596,30 @@ export class AppointmentsDoctorComponent {
   }
 
   getStatusText(status: string): string {
-    // Folosim translate service pentru a obține valorile corecte în funcție de limbă
     if (!status) return '';
 
-    const normalizedStatus = status.toUpperCase();
+    const normalizedStatus = status.toLowerCase();
 
-    // Lucrăm strict cu codurile de status, nu cu textele traduse
-    if (normalizedStatus === 'COMPLETED' || normalizedStatus.includes('COMPLET')) {
-      return this.translate.instant('STATUS.COMPLETED');
+    if (normalizedStatus.includes('complet') || normalizedStatus === 'completed') {
+      return 'STATUS.COMPLETED';
     }
-    if (normalizedStatus === 'CONFIRMED' || normalizedStatus.includes('CONFIRM')) {
-      return this.translate.instant('STATUS.CONFIRMED');
+    if (normalizedStatus.includes('confirm') || normalizedStatus === 'confirmed') {
+      return 'STATUS.CONFIRMED';
     }
-    if (normalizedStatus === 'CANCELED' || normalizedStatus.includes('CANCEL')) {
-      return this.translate.instant('STATUS.CANCELED');
+    if (normalizedStatus.includes('cancel') || normalizedStatus === 'cancelled') {
+      return 'STATUS.CANCELED';
     }
-    if (normalizedStatus === 'SCHEDULED' || normalizedStatus.includes('SCHEDUL')) {
-      return this.translate.instant('STATUS.SCHEDULED');
+    if (normalizedStatus.includes('schedul') || normalizedStatus === 'scheduled' ||
+      normalizedStatus.includes('appointment') || normalizedStatus.includes('programat')) {
+      return 'STATUS.SCHEDULED';
     }
+    if (normalizedStatus.includes('finalizat')) {
+      return 'STATUS.COMPLETED';
+    }
+    if (normalizedStatus.includes('anulat')) {
+      return 'STATUS.CANCELED';
+    }
+
     return status;
   }
 

@@ -124,7 +124,105 @@
     "CURRENT_STATUS": "Current Status",
     "CREATE_APPOINTMENT": "Create Appointment",
     "SAVE_CHANGES": "Save Changes",
-    "NO_APPOINTMENTS": "No appointments for this doctor"
+    "NO_APPOINTMENTS": "No appointments for this doctor",
+    "AVAILABLE_TIME_SLOTS": "Available Time Slots",
+    "NO_AVAILABLE_SLOTS": "No available slots for this date",
+    "SELECT_TIME_SLOT": "Select a time slot",
+    "SELECTED_TIME": "Selected time",
+    "SELECT_DATE_AND_TIME": "Select date and time",
+    "AVAILABLE_DATES": "Available dates",
+    "SLOTS_AVAILABLE": "slots",
+    "NO_SLOTS": "Unavailable",
+    "NO_AVAILABLE_SLOTS_FOR_DATE": "No available times for this date",
+    "SELECT_DOCTOR_FIRST": "Select a doctor first to see available dates",
+    "SELECTED_APPOINTMENT": "Selected appointment",
+    "SELECT_TYPE": "Select appointment type"
+  },
+  "APPOINTMENT_TYPES": {
+    "CARDIOLOGY": {
+      "INITIAL_CONSULT": "Initial cardiology consultation",
+      "PERIODIC_CONTROL": "Periodic cardiology control",
+      "EKG": "EKG (Electrocardiogram)",
+      "ECHOCARDIOGRAPHY": "Echocardiography",
+      "HOLTER": "Holter monitor",
+      "STRESS_TEST": "Stress test",
+      "HYPERTENSION_MONITORING": "Hypertension monitoring"
+    },
+    "PEDIATRICS": {
+      "INITIAL_CONSULT": "Initial pediatric consultation",
+      "GROWTH_CONTROL": "Growth and development control",
+      "VACCINATIONS": "Vaccinations",
+      "SCHOOL_EXAM": "School medical examination",
+      "INFECTIOUS_DISEASES": "Pediatric infectious diseases consultation",
+      "POST_ILLNESS_CONTROL": "Post-illness control"
+    },
+    "RADIOLOGY": {
+      "CT_SCAN": "CT (Computed Tomography)"
+    },
+    "DERMATOLOGY": {
+      "INITIAL_CONSULT": "Initial dermatology consultation",
+      "LESION_CONTROL": "Skin lesion control",
+      "DERMATOSCOPY": "Dermatoscopy",
+      "SKIN_BIOPSY": "Skin biopsy",
+      "ACNE_TREATMENT": "Acne treatment",
+      "ALLERGY_CONTROL": "Allergy control"
+    },
+    "NEUROLOGY": {
+      "INITIAL_CONSULT": "Initial neurology consultation",
+      "EEG": "EEG (Electroencephalogram)",
+      "EPILEPSY_CONTROL": "Epilepsy control",
+      "MIGRAINE_CONTROL": "Migraine control",
+      "POST_STROKE_EXAM": "Post-stroke neurological examination",
+      "PARKINSON_CONTROL": "Parkinson's control"
+    },
+    "OPHTHALMOLOGY": {
+      "INITIAL_CONSULT": "Initial ophthalmology consultation",
+      "VISION_CONTROL": "Vision control",
+      "FUNDUS_EXAM": "Fundus examination",
+      "INTRAOCULAR_PRESSURE": "Intraocular pressure measurement",
+      "CATARACT_CONTROL": "Cataract control",
+      "GLAUCOMA_CONTROL": "Glaucoma control"
+    },
+    "GYNECOLOGY": {
+      "INITIAL_CONSULT": "Initial gynecology consultation",
+      "PREVENTIVE_CONTROL": "Preventive control",
+      "FAMILY_PLANNING": "Family planning consultation",
+      "PREGNANCY_CONTROL": "Pregnancy control",
+      "PAP_SMEAR": "Pap smear examination",
+      "GYNECOLOGICAL_ULTRASOUND": "Gynecological ultrasound"
+    },
+    "ONCOLOGY": {
+      "INITIAL_CONSULT": "Initial oncology consultation",
+      "POST_TREATMENT_CONTROL": "Post-treatment control",
+      "TREATMENT_RESPONSE_EVALUATION": "Treatment response evaluation",
+      "CHEMOTHERAPY_CONSULT": "Chemotherapy consultation",
+      "ONCOLOGICAL_FOLLOW_UP": "Oncological follow-up",
+      "RADIOTHERAPY_CONSULT": "Radiotherapy consultation"
+    },
+    "ENDOCRINOLOGY": {
+      "INITIAL_CONSULT": "Initial endocrinology consultation",
+      "DIABETES_CONTROL": "Diabetes control",
+      "THYROID_CONTROL": "Thyroid control",
+      "HORMONAL_EVALUATION": "Hormonal evaluation",
+      "OSTEOPOROSIS_CONTROL": "Osteoporosis control",
+      "METABOLISM_CONSULT": "Metabolism consultation"
+    },
+    "ORTHOPEDICS": {
+      "INITIAL_CONSULT": "Initial orthopedic consultation",
+      "FRACTURE_CONTROL": "Fracture control",
+      "JOINT_PAIN_EVALUATION": "Joint pain evaluation",
+      "POST_OPERATIVE_CONTROL": "Post-operative control",
+      "JOINT_INFILTRATIONS": "Joint infiltrations",
+      "PHYSIOTHERAPY": "Physiotherapy"
+    },
+    "RHEUMATOLOGY": {
+      "INITIAL_CONSULT": "Initial rheumatology consultation",
+      "RHEUMATOID_ARTHRITIS_CONTROL": "Rheumatoid arthritis control",
+      "SPONDYLOARTHRITIS_CONTROL": "Spondyloarthritis control",
+      "JOINT_PAIN_EVALUATION": "Joint pain evaluation",
+      "LUPUS_CONTROL": "Lupus control",
+      "JOINT_INFILTRATIONS": "Joint infiltrations"
+    }
   },
   "CONSULTATIONS": {
     "TITLE": "Consultations",
@@ -245,7 +343,9 @@
     "ALLERGY_IMMUNOLOGY": "Allergy & Immunology",
     "INFECTIOUS_DISEASE": "Infectious Disease",
     "PULMONOLOGY": "Pulmonology",
-    "NEPHROLOGY": "Nephrology"
+    "NEPHROLOGY": "Nephrology",
+    "STATUS": "Status",
+    "DOCTOR_COUNT": "Number of doctors"
   },
   "PROFILE": {
     "TITLE": "My Profile",
@@ -288,7 +388,9 @@
     "CITY_REQUIRED": "City is required",
     "DESCRIPTION_REQUIRED": "Description is required",
     "APPOINTMENT_STATUS_REQUIRED": "Appointment status is required",
-    "DIAGNOSIS_REQUIRED": "Diagnosis is required"
+    "DIAGNOSIS_REQUIRED": "Diagnosis is required",
+    "DATE_REQUIRED": "Date selection is required",
+    "TIME_SLOT_REQUIRED": "Time slot selection is required"
 
   },
 
@@ -316,7 +418,9 @@
     "UPDATE_SPECIALIZATION": "Error updating specialization",
     "DELETE_SPECIALIZATION": "Error deleting specialization",
     "FETCH_CONSULTATIONS": "Failed to load consultations!",
-    "FETCH_PROGRAMS": "An error occurred while loading educational programs. Please try again."
+    "FETCH_PROGRAMS": "An error occurred while loading educational programs. Please try again.",
+    "ANALYZE_RADIOGRAPHY": "Error analyzing radiography",
+    "PLEASE_SELECT_DATE_TIME": "Please select date and time for the appointment"
 
   },
 
@@ -335,7 +439,8 @@
     "HOSPITAL_DELETED": "Hospital deleted successfully",
     "SPECIALIZATION_CREATED": "Specialization created successfully",
     "SPECIALIZATION_UPDATED": "Specialization updated successfully",
-    "SPECIALIZATION_DELETED": "Specialization deleted successfully"
+    "SPECIALIZATION_DELETED": "Specialization deleted successfully",
+    "SPECIALIZATION_STATUS_UPDATED": "Specialization status updated successfully!"
 
   },
 
@@ -357,7 +462,8 @@
     "CONSULTATIONS": "Loading consultations...",
     "CONSULTATION_DETAILS": "Loading consultation details...",
     "SEARCHING": "Searching...",
-    "FILTERING": "Filtering results..."
+    "FILTERING": "Filtering results...",
+    "TIME_SLOTS": "Loading available slots..."
 
   },
 
@@ -412,6 +518,22 @@
   "HERO": {
     "TAGLINE": "We're here when you need us — for every care in the world.",
     "DESCRIPTION": "Discover the best personalized medical care for you and your family."
+  },
+  "RADIOGRAPHY": {
+    "RADIOGRAPHY": "Radiography",
+    "ANALYZE_RADIOGRAPHY": "Analyze Radiography",
+    "PATIENT": "Patient",
+    "DATE": "Date",
+    "REASON": "Reason",
+    "UPLOAD_RADIOGRAPHY": "Upload Radiography",
+    "SELECT_FILE": "Select File",
+    "ANALYZE": "Analyze",
+    "ANALYZING": "Analyzing...",
+    "RESULT": "Analysis Result",
+    "CONTINUE_TO_CONSULTATION": "Continue to Consultation",
+    "CANCER_DETECTED": "WARNING: Possible cancer detected!",
+    "NO_CANCER_DETECTED": "No abnormalities detected",
+    "INCONCLUSIVE": "Inconclusive result, further analysis required"
   }
 }
 

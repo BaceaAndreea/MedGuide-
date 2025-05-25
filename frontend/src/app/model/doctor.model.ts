@@ -13,4 +13,6 @@ export interface Doctor {
   imageUrl?: string;
   rating?: number;
   reviewCount?: number;
+  workStartTime?: string;
+  workEndTime?: string;
 }

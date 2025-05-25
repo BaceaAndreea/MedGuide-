@@ -35,4 +35,5 @@ public interface DoctorService {
     int getDoctorRatingCount(Long doctorId, int ratingValue);
     List<ConsultationDTO> getDoctorRatings(Long doctorId);
 
+
 }

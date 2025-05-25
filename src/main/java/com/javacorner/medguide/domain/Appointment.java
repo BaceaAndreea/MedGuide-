@@ -36,6 +36,12 @@ public class Appointment {
     @Column(name = "reason", nullable = false, length = 50)
     private String reason;
 
+    @Column(name = "radiography_image", nullable = true)
+    private String radiographyImagePath;
+
+    @Column(name = "ai_analysis_result", nullable = true, length = 1000)
+    private String aiAnalysisResult;
+
 
 
     public Appointment() {
@@ -127,6 +133,22 @@ public class Appointment {
         }
         this.patient = null;
         System.out.println("Patient has been removed from the appointment.");
+    }
+
+    public String getRadiographyImagePath() {
+        return radiographyImagePath;
+    }
+
+    public void setRadiographyImagePath(String radiographyImagePath) {
+        this.radiographyImagePath = radiographyImagePath;
+    }
+
+    public String getAiAnalysisResult() {
+        return aiAnalysisResult;
+    }
+
+    public void setAiAnalysisResult(String aiAnalysisResult) {
+        this.aiAnalysisResult = aiAnalysisResult;
     }
 
     public void removeDoctorFromAppointment(Doctor doctor) {

@@ -1,18 +1,17 @@
-import {Component, OnInit, HostListener} from '@angular/core';
+import {Component, OnInit, HostListener, ChangeDetectorRef} from '@angular/core';
 import {Router} from '@angular/router';
 import {Doctor} from '../../model/doctor.model';
 import {Hospital} from '../../model/hospital.model';
 import {Specialization} from '../../model/specialization.model';
 import {TranslateModule, TranslateService} from '@ngx-translate/core';
 import {DoctorsService} from '../../services/doctors.service';
-import {HospitalsService} from '../../services/hospitals.service';
-import {CommonModule, isPlatformBrowser, NgOptimizedImage} from '@angular/common';
+import {CommonModule, isPlatformBrowser} from '@angular/common';
 import {FormsModule} from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Inject, PLATFORM_ID } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-import {SafePipe} from '../../pipes/safe.pipe';
+import {PageRespone} from '../../model/page.response.model';
 
 // Interfețe pentru programele educaționale
 interface LanguageOption {
@@ -83,6 +82,7 @@ export class HomeComponent implements OnInit {
 
   // Stare de filtrare
   isFiltering = false;
+  doctorSearchKeyword = '';
 
   // Favorite spitale
   favoriteHospitals: number[] = [];
@@ -111,6 +111,7 @@ export class HomeComponent implements OnInit {
     private translate: TranslateService,
     private http: HttpClient,
     private sanitizer: DomSanitizer,
+    private doctorsService: DoctorsService,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {
     // Inițializează serviciul de translatare
@@ -134,7 +135,9 @@ export class HomeComponent implements OnInit {
     setTimeout(() => {
       this.addSectionIds();
     }, 100);
+
   }
+
 
   // Adaugă ID-uri la secțiuni pentru navigare
   private addSectionIds(): void {
@@ -214,11 +217,6 @@ export class HomeComponent implements OnInit {
     }
   }
 
-  private saveFavoriteHospitals(): void {
-    if (isPlatformBrowser(this.platformId)) {
-      localStorage.setItem('favoriteHospitals', JSON.stringify(this.favoriteHospitals));
-    }
-  }
 
   // Metodă pentru traducerea specializărilor folosind fișierele de traducere
   getSpecializationTranslation(specialization: string): string {
@@ -833,4 +831,46 @@ export class HomeComponent implements OnInit {
   get safeUrl(): SafeResourceUrl {
     return this.pdfUrl || this.sanitizer.bypassSecurityTrustResourceUrl('about:blank');
   }
+
+  searchDoctors(): void {
+    if (!this.doctorSearchKeyword || this.doctorSearchKeyword.trim() === '') {
+      this.loadFeaturedDoctors(); // Reîncarcă doctorii featured dacă nu este niciun cuvânt-cheie
+      return;
+    }
+
+    this.loadingDoctors = true;
+    this.errorFetchingDoctors = false;
+
+    // Căutarea doctorilor folosind service-ul
+    this.doctorsService.searchDoctors(this.doctorSearchKeyword, 0, 50).subscribe({
+      next: (response: PageRespone<Doctor>) => {
+        this.doctors = response.content;
+
+        // Procesare URLs imagini
+        this.doctors.forEach(doctor => {
+          if (doctor.imageUrl) {
+            if (!doctor.imageUrl.startsWith('http') && !doctor.imageUrl.startsWith('/assets')) {
+              doctor.imageUrl = `${environment.backendHost}/${doctor.imageUrl}`;
+            } else if (doctor.imageUrl.startsWith('/assets')) {
+              doctor.imageUrl = doctor.imageUrl.replace('/assets', `${environment.backendHost}/assets`);
+            }
+          }
+
+          // Obține ratingurile pentru fiecare doctor
+          this.loadDoctorRatings(doctor);
+        });
+
+        this.filteredDoctors = [...this.doctors];
+        this.doctorsStartIndex = 0; // Reset la prima pagină
+        this.updateVisibleDoctors();
+        this.loadingDoctors = false;
+      },
+      error: (error) => {
+        console.error('Error searching doctors:', error);
+        this.loadingDoctors = false;
+        this.errorFetchingDoctors = true;
+      }
+    });
+  }
+
 }

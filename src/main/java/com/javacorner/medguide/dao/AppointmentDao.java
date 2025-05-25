@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.Date;
+import java.util.List;
 
 
 public interface AppointmentDao extends JpaRepository<Appointment, Long> {
@@ -28,5 +29,10 @@ public interface AppointmentDao extends JpaRepository<Appointment, Long> {
     @Modifying
     @Query("DELETE FROM Appointment a WHERE a.doctor.doctorId = :doctorId")
     void deleteByDoctorId(@Param("doctorId") Long doctorId);
+
+    @Query("SELECT a FROM Appointment a WHERE a.doctor.doctorId = :doctorId AND a.appointmentDate >= :startDate AND a.appointmentDate < :endDate AND a.status != 'Anulată'")
+    List<Appointment> findByDoctorAndDateRange(@Param("doctorId") Long doctorId,
+                                               @Param("startDate") Date startDate,
+                                               @Param("endDate") Date endDate);
 
 }

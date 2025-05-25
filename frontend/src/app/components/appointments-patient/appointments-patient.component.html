@@ -12,7 +12,6 @@
       <h1 class="page-title">{{ 'APPOINTMENTS.PATIENT_APPOINTMENTS' | translate }}</h1>
     </div>
 
-
     <div class="controls-container">
       <button class="btn-new-appointment" (click)="getModal(content)">
         <i class="bi bi-plus-circle"></i> {{ 'APPOINTMENTS.NEW_APPOINTMENT' | translate }}
@@ -61,8 +60,6 @@
         </div>
       </div>
     </div>
-
-
   </div>
 
   <div class="appointments-card">
@@ -84,12 +81,12 @@
             <td>{{a.appointmentId}}</td>
             <td>
               <span class="status-badge" [ngClass]="getStatusClass(a.status)">
-                {{getFormattedStatus(a.status)}}
-            </span>
+                {{ getFormattedStatus(a.status) | translate }}
+              </span>
             </td>
-            <td>{{ a.appointmentDate | date:'EEE, MMM d, y, h:mm a' }}</td>
+            <td>{{ a.appointmentDate | date:'EEE, MMM d, y, HH:mm':'Europe/Bucharest' }}</td>
             <td>Dr. {{a.doctor.firstName}} {{a.doctor.lastName}}</td>
-            <td>{{a.reason || '-'}}</td>
+            <td>{{ getTranslatedReason(a.reason) }}</td>
             <td class="actions-cell">
               <button (click)="getUpdateModal(a, updateContent)" class="btn-edit" [attr.aria-label]="'COMMON.ACTIONS.EDIT' | translate">
                 <i class="bi bi-pencil-square"></i>
@@ -142,7 +139,10 @@
     </ng-template>
   </div>
 </div>
-<!-- New Appointment Modal -->
+
+<!-- ===================================================== -->
+<!-- MODAL PENTRU PROGRAMARE NOUĂ - CU CALENDAR -->
+<!-- ===================================================== -->
 <ng-template #content let-modal>
   <div class="modal-container">
     <div class="modal-header">
@@ -157,22 +157,7 @@
         <div class="modal-body">
           <div class="form-fields">
 
-            <!-- Date & Time Field -->
-            <div class="form-group">
-              <label>{{ 'APPOINTMENTS.APPOINTMENT_DATE' | translate }}</label>
-              <input
-                type="datetime-local"
-                class="form-control"
-                [ngClass]="{'is-invalid': submitted && (appointmentFormGroup.controls['appointmentDate'].errors)}"
-                formControlName="appointmentDate"
-                [min]="minDate"
-              />
-              <div *ngIf="submitted && appointmentFormGroup.controls['appointmentDate'].errors" class="invalid-feedback">
-                {{ getDateErrorMessage() }}
-              </div>
-            </div>
-
-            <!-- Specialization Selection Field -->
+            <!-- 1. Specialization Selection Field -->
             <div class="form-group">
               <label>{{ 'DOCTORS.SPECIALIZATION' | translate }}</label>
               <select
@@ -190,7 +175,7 @@
               </div>
             </div>
 
-            <!-- Doctor Selection Field -->
+            <!-- 2. Doctor Selection Field -->
             <div class="form-group">
               <label>{{ 'APPOINTMENTS.DOCTOR' | translate }}</label>
               <select
@@ -201,6 +186,9 @@
                 <option [ngValue]="null" disabled>{{ 'APPOINTMENTS.SELECT_DOCTOR' | translate }}</option>
                 <option *ngFor="let doctor of filteredDoctors" [ngValue]="doctor">
                   Dr. {{doctor.firstName}} {{doctor.lastName}}
+                  <span *ngIf="doctor.workStartTime && doctor.workEndTime" class="work-hours">
+                    ({{doctor.workStartTime}} - {{doctor.workEndTime}})
+                  </span>
                 </option>
               </select>
               <div *ngIf="submitted && appointmentFormGroup.get('doctor')?.invalid" class="invalid-feedback">
@@ -211,15 +199,112 @@
               </div>
             </div>
 
+            <!-- 3. Calendar Selection CU SLOT-URI -->
+            <div class="form-group" *ngIf="appointmentFormGroup.get('doctor')?.value">
+              <label>{{ 'APPOINTMENTS.SELECT_DATE_AND_TIME' | translate }}</label>
+
+              <!-- Calendar Navigation -->
+              <div class="calendar-navigation">
+                <button
+                  type="button"
+                  class="calendar-nav-btn"
+                  (click)="navigateCalendarPrevious()"
+                  [disabled]="isAtMinDate()"
+                >
+                  <i class="bi bi-chevron-left"></i>
+                </button>
+
+                <span class="calendar-period">
+                  {{ getCurrentDateLabel() }}
+                </span>
+
+                <button
+                  type="button"
+                  class="calendar-nav-btn"
+                  (click)="navigateCalendarNext()"
+                >
+                  <i class="bi bi-chevron-right"></i>
+                </button>
+              </div>
+
+              <!-- Time Slots for Selected Date -->
+              <div class="selected-date-slots" *ngIf="currentSelectedDate">
+                <h4 class="slots-title">
+                  <i class="bi bi-clock"></i>
+                  {{ 'APPOINTMENTS.AVAILABLE_TIME_SLOTS' | translate }} - {{ getCurrentDateLabel() }}
+                </h4>
+
+                <!-- Loading Slots -->
+                <div *ngIf="isLoadingCalendarSlots" class="slots-loading">
+                  <i class="bi bi-arrow-repeat spin"></i>
+                  {{ 'LOADING.TIME_SLOTS' | translate }}
+                </div>
+
+                <!-- Time Slots Grid -->
+                <div
+                  *ngIf="!isLoadingCalendarSlots && currentDateTimeSlots.length > 0"
+                  class="time-slots-grid-calendar"
+                >
+                  <button
+                    *ngFor="let slot of currentDateTimeSlots"
+                    type="button"
+                    class="time-slot-btn-calendar"
+                    [ngClass]="{'selected': selectedTime === slot}"
+                    (click)="selectCalendarTimeSlot(slot)"
+                  >
+                    {{slot}}
+                  </button>
+                </div>
+
+                <!-- No Slots Available -->
+                <div
+                  *ngIf="!isLoadingCalendarSlots && currentDateTimeSlots.length === 0"
+                  class="no-slots-message-calendar"
+                >
+                  <i class="bi bi-exclamation-circle"></i>
+                  {{ 'APPOINTMENTS.NO_AVAILABLE_SLOTS_FOR_DATE' | translate }}
+                </div>
+              </div>
+
+              <!-- Doctor Selection Required Message -->
+              <div *ngIf="!appointmentFormGroup.get('doctor')?.value" class="select-doctor-message">
+                <i class="bi bi-info-circle"></i>
+                {{ 'APPOINTMENTS.SELECT_DOCTOR_FIRST' | translate }}
+              </div>
+
+              <!-- Validation Messages -->
+              <div *ngIf="submitted && (!currentSelectedDate || !selectedTime)" class="invalid-feedback" style="display: block;">
+                <span *ngIf="!currentSelectedDate">{{ 'VALIDATION.DATE_REQUIRED' | translate }}</span>
+                <span *ngIf="currentSelectedDate && !selectedTime">{{ 'VALIDATION.TIME_SLOT_REQUIRED' | translate }}</span>
+              </div>
+
+              <!-- Selected Date and Time Summary -->
+              <div *ngIf="currentSelectedDate && selectedTime" class="selected-summary">
+                <div class="summary-card">
+                  <i class="bi bi-calendar-check"></i>
+                  <div class="summary-content">
+                    <span class="summary-label">{{ 'APPOINTMENTS.SELECTED_APPOINTMENT' | translate }}:</span>
+                    <span class="summary-value">
+                      {{ getCurrentDateLabel() }}, {{ selectedTime }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 4. Reason Field - DROPDOWN CU TIPURI DE CONSULTĂRI -->
             <div class="form-group">
               <label>{{ 'APPOINTMENTS.APPOINTMENT_REASON' | translate }}</label>
-              <input
-                type="text"
+              <select
                 class="form-control"
-                [ngClass]="{'is-invalid': submitted && appointmentFormGroup.controls['reason'].errors}"
+                [ngClass]="{'is-invalid': submitted && appointmentFormGroup.get('reason')?.invalid}"
                 formControlName="reason"
-                placeholder="{{ 'APPOINTMENTS.APPOINTMENT_REASON' | translate }}"
               >
+                <option [ngValue]="null" disabled>{{ 'APPOINTMENTS.SELECT_TYPE' | translate }}</option>
+                <option *ngFor="let type of filteredAppointmentTypes" [ngValue]="type">
+                  {{ type | translate }}
+                </option>
+              </select>
               <div *ngIf="submitted && appointmentFormGroup.get('reason')?.invalid" class="invalid-feedback">
                 {{ 'VALIDATION.REASON_REQUIRED' | translate }}
               </div>
@@ -254,7 +339,10 @@
     </ng-template>
   </div>
 </ng-template>
-<!-- Update Appointment Modal -->
+
+<!-- ===================================================== -->
+<!-- MODAL PENTRU UPDATE PROGRAMARE - CU SLOT-URI SIMPLE -->
+<!-- ===================================================== -->
 <ng-template #updateContent let-updateModal>
   <div class="modal-container">
     <div class="modal-header">
@@ -268,6 +356,7 @@
       <form [formGroup]="updateAppointmentFormGroup" method="post" class="modal-form">
         <div class="modal-body">
           <div class="form-fields">
+
             <!-- ID Field (Read-only) -->
             <div class="form-group">
               <label>{{ 'APPOINTMENTS.ID' | translate }}</label>
@@ -277,20 +366,6 @@
                 formControlName="appointmentId"
                 readonly
               >
-            </div>
-
-            <div class="form-group">
-              <label>{{ 'APPOINTMENTS.APPOINTMENT_DATE' | translate }}</label>
-              <input
-                type="datetime-local"
-                class="form-control"
-                [ngClass]="{'is-invalid': submitted && updateAppointmentFormGroup.controls['appointmentDate'].errors}"
-                formControlName="appointmentDate"
-                [min]="minDate"
-              />
-              <div *ngIf="submitted && updateAppointmentFormGroup.controls['appointmentDate'].errors" class="invalid-feedback">
-                {{ getUpdateDateErrorMessage() }}
-              </div>
             </div>
 
             <!-- Specialization Selection Field -->
@@ -332,6 +407,58 @@
               </div>
             </div>
 
+            <!-- Date Selection Field -->
+            <div class="form-group">
+              <label>{{ 'APPOINTMENTS.APPOINTMENT_DATE' | translate }}</label>
+              <input
+                type="date"
+                class="form-control"
+                [ngClass]="{'is-invalid': submitted && updateAppointmentFormGroup.controls['appointmentDate'].errors}"
+                formControlName="appointmentDate"
+                [min]="minDateString"
+              />
+              <div *ngIf="submitted && updateAppointmentFormGroup.controls['appointmentDate'].errors" class="invalid-feedback">
+                {{ getUpdateDateErrorMessage() }}
+              </div>
+            </div>
+
+            <!-- Time Slots Selection for Update -->
+            <div class="form-group" *ngIf="updateAppointmentFormGroup.get('doctor')?.value && updateAppointmentFormGroup.get('appointmentDate')?.value">
+              <label>{{ 'APPOINTMENTS.AVAILABLE_TIME_SLOTS' | translate }}</label>
+
+              <!-- Loading indicator -->
+              <div *ngIf="loadingSlots" class="time-slots-loading">
+                <i class="bi bi-arrow-repeat spin"></i>
+                {{ 'LOADING.TIME_SLOTS' | translate }}
+              </div>
+
+              <!-- Time slots grid -->
+              <div *ngIf="!loadingSlots && availableTimeSlots.length > 0" class="time-slots-grid">
+                <button
+                  *ngFor="let slot of availableTimeSlots"
+                  type="button"
+                  class="time-slot-btn"
+                  [ngClass]="{'selected': selectedTime === slot}"
+                  (click)="selectUpdateTimeSlot(slot)"
+                >
+                  {{slot}}
+                </button>
+              </div>
+
+              <!-- No slots available message -->
+              <div *ngIf="!loadingSlots && availableTimeSlots.length === 0" class="no-slots-message">
+                <i class="bi bi-exclamation-circle"></i>
+                {{ 'APPOINTMENTS.NO_AVAILABLE_SLOTS' | translate }}
+              </div>
+
+              <!-- Show currently selected time -->
+              <div *ngIf="selectedTime" class="selected-time-info">
+                <i class="bi bi-clock"></i>
+                {{ 'APPOINTMENTS.SELECTED_TIME' | translate }}: <strong>{{selectedTime}}</strong>
+              </div>
+            </div>
+
+            <!-- Reason Field -->
             <div class="form-group">
               <label>{{ 'APPOINTMENTS.APPOINTMENT_REASON' | translate }}</label>
               <input
@@ -345,6 +472,7 @@
               </div>
             </div>
 
+            <!-- Status Field -->
             <div class="form-group">
               <label>{{ 'APPOINTMENTS.CURRENT_STATUS' | translate }}</label>
               <input

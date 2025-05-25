@@ -64,6 +64,28 @@ export class DoctorsService {
       headers: this.getHeaders() // Folosește metoda existentă pentru a adăuga token-ul de autorizare
     });
   }
+  getDoctorDetails(doctorId: number): Observable<Doctor> {
+    return this.http.get<Doctor>(`${environment.backendHost}/doctors/${doctorId}`, {
+      headers: this.getHeaders()
+    });
+  }
+
+  isRadiologistByDoctorId(doctorId: number): Observable<boolean> {
+    return this.http.get<boolean>(`${environment.backendHost}/doctors/${doctorId}/isRadiologist`, {
+      headers: this.getHeaders()
+    });
+  }
+
+  // Metodă existentă pentru verificarea locală (se păstrează pentru compatibilitate)
+  isRadiologist(doctor: Doctor): boolean {
+    if (!doctor || !doctor.specialization) return false;
+
+    const specialization = doctor.specialization;
+    const description = specialization.description?.toLowerCase() || '';
+
+    return description.includes('radiolog') || description.includes('radiogra');
+  }
+
 
 
 }

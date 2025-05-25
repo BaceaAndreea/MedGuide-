@@ -77,6 +77,7 @@
             <th>{{ 'APPOINTMENTS.PATIENT' | translate }}</th>
             <th>{{ 'APPOINTMENTS.REASON' | translate }}</th>
             <th colspan="2">{{ 'APPOINTMENTS.ACTIONS' | translate }}</th>
+            <th *ngIf="isRadiologist">{{ 'RADIOGRAPHY.RADIOGRAPHY' | translate }}</th>
           </tr>
           </thead>
           <tbody>
@@ -85,13 +86,13 @@
               [ngClass]="{ 'highlight-row': a.appointmentId === selectedAppointment?.appointmentId && consultationSaved, 'completed-row': isCompletedStatus(a.status)}">
             <td>{{a.appointmentId}}</td>
             <td>
-            <span class="status-badge" [ngClass]="{
-              'status-finalizata': a.status === 'COMPLETED' || a.status === 'Finalizată',
-              'status-confirmata': a.status === 'CONFIRMED' || a.status === 'Confirmată' || a.status.toLowerCase().includes('confirm'),
-              'status-anulata': a.status === 'CANCELED' || a.status === 'Anulată',
-              'status-scheduled': a.status === 'SCHEDULED' || a.status === 'Programată' || a.status.includes('Appointment')}">
-                {{ getStatusText(a.status) }}
-            </span>
+              <span class="status-badge" [ngClass]="{
+                'status-finalizata': a.status === 'COMPLETED' || a.status === 'Finalizată',
+                'status-confirmata': a.status === 'CONFIRMED' || a.status === 'Confirmată' || a.status.toLowerCase().includes('confirm'),
+                'status-anulata': a.status === 'CANCELED' || a.status === 'Anulată',
+                'status-scheduled': a.status === 'SCHEDULED' || a.status === 'Programată' || a.status.includes('Appointment')}">
+                  {{ getStatusText(a.status) | translate}}
+              </span>
             </td>
             <td>{{ a.appointmentDate | date:'EEE, MMM d, y, h:mm a' }}</td>
             <td>{{a.patient.firstName }} {{ a.patient.lastName }}</td>
@@ -107,6 +108,15 @@
                       *ngIf="!isCompletedStatus(a.status)"
                       [disabled]="processingConsultation">
                 <i class="bi bi-clipboard-check"></i>
+              </button>
+            </td>
+            <!-- Nou buton pentru analiza radiografiei - doar pentru radiologi -->
+            <td class="actions-cell" *ngIf="isRadiologist">
+              <button (click)="openRadiographyAnalysisModal(a, radiographyModal)" class="btn-radiography"
+                      aria-label="Analyze radiography"
+                      *ngIf="!isCompletedStatus(a.status)"
+                      [disabled]="processingConsultation">
+                <i class="bi bi-file-medical"></i>
               </button>
             </td>
           </tr>
@@ -384,6 +394,102 @@
         <button type="button" class="btn-cancel" (click)="consultModal.dismiss()">{{ 'COMMON.ACTIONS.CANCEL' | translate }}</button>
         <button type="button" class="btn-save" (click)="saveConsultation(consultModal)" [disabled]="submittedConsult && consultationFormGroup.invalid || processingConsultation">
           <i class="bi bi-check-circle"></i> {{ 'CONSULTATIONS.FINALIZE' | translate }}
+        </button>
+      </div>
+    </form>
+  </div>
+</ng-template>
+
+<!-- Modal pentru Analiza Radiografică - Layout Optimizat -->
+<ng-template #radiographyModal let-radiographyModal>
+  <div class="modal-container">
+    <div class="modal-header">
+      <div class="modal-title">
+        <i class="bi bi-file-medical"></i> {{ 'RADIOGRAPHY.ANALYZE_RADIOGRAPHY' | translate }}
+      </div>
+      <button type="button" class="btn-close" aria-label="Close" (click)="radiographyModal.dismiss('Cross click')">×</button>
+    </div>
+
+    <form [formGroup]="radiographyFormGroup" method="post" class="modal-form">
+      <div class="modal-body compact-modal">
+        <!-- Layout de tip grid pentru afișare pe 2 coloane -->
+        <div class="radiography-grid-layout">
+          <!-- Prima coloană: Încărcare imagine și pacient -->
+          <div class="left-column">
+            <!-- Informații despre pacient - pe scurt -->
+            <div class="radiography-info-compact">
+              <div class="patient-info">
+                <span class="info-label">{{ 'RADIOGRAPHY.PATIENT' | translate }}:</span>
+                <span class="info-value">{{ selectedAppointment?.patient?.firstName }} {{ selectedAppointment?.patient?.lastName }}</span>
+              </div>
+            </div>
+
+            <!-- Control încărcare imagine -->
+            <div class="upload-controls-compact">
+              <label for="radiography-upload" class="upload-label">
+                <i class="bi bi-upload"></i>
+                {{ 'RADIOGRAPHY.SELECT_FILE' | translate }}
+              </label>
+              <input type="file"
+                     id="radiography-upload"
+                     class="file-input"
+                     (change)="onFileSelected($event); previewImage($event)"
+                     accept="image/*">
+              <div class="selected-file" *ngIf="selectedFile">
+                {{ selectedFile.name }}
+              </div>
+
+              <button type="button"
+                      class="btn-analyze"
+                      [disabled]="!selectedFile || analyzeRadiographyInProgress"
+                      (click)="analyzeRadiography(radiographyModal)">
+                <i class="bi bi-search"></i> {{ 'RADIOGRAPHY.ANALYZE' | translate }}
+              </button>
+
+              <!-- Spinner pentru încărcare -->
+              <div class="loading-spinner" *ngIf="analyzeRadiographyInProgress">
+                <i class="bi bi-arrow-repeat spin"></i>
+                <span>{{ 'RADIOGRAPHY.ANALYZING' | translate }}</span>
+              </div>
+            </div>
+
+            <!-- Rezultatul analizei - acum în prima coloană -->
+            <div class="analysis-result-compact" *ngIf="radiographyAnalysisResult">
+              <h5>{{ 'RADIOGRAPHY.RESULT' | translate }}</h5>
+              <div class="result-content" [ngClass]="{
+                'result-warning': isTumorDetected(),
+                'result-normal': !isTumorDetected()
+              }">
+                {{ radiographyAnalysisResult }}
+              </div>
+            </div>
+          </div>
+
+          <!-- A doua coloană: Preview imagine -->
+          <div class="right-column">
+            <!-- Preview imagine - ocupă întreaga coloană dreaptă -->
+            <div class="image-preview-container" *ngIf="selectedFile">
+              <div class="image-preview">
+                <img [src]="imagePreviewUrl" alt="Preview radiografie" *ngIf="imagePreviewUrl">
+              </div>
+            </div>
+
+            <!-- Placeholder când nu este încărcată nicio imagine -->
+            <div class="image-placeholder" *ngIf="!selectedFile">
+              <i class="bi bi-image"></i>
+              <p>{{ 'RADIOGRAPHY.SELECT_IMAGE' | translate }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn-cancel" (click)="radiographyModal.dismiss()">{{ 'COMMON.ACTIONS.CANCEL' | translate }}</button>
+        <button type="button"
+                class="btn-next"
+                [disabled]="!radiographyAnalysisResult"
+                (click)="transferToConsultation(radiographyModal, consultationModal)">
+          <i class="bi bi-arrow-right"></i> {{ 'RADIOGRAPHY.CONTINUE_TO_CONSULTATION' | translate }}
         </button>
       </div>
     </form>
